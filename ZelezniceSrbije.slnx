@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ZelezniceSrbije.Tests/ZelezniceSrbije.Tests.csproj" />
+  <Project Path="ZelezniceSrbije/ZelezniceSrbije.csproj" />
+</Solution>
