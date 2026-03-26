@@ -8,10 +8,10 @@ namespace ZelezniceSrbije.Data
         public VozAppContext(DbContextOptions<VozAppContext> opcije):base(opcije)
         {
         }
-        public DbSet<Korisnik> Korisnici { get; set; }
-        public DbSet<Putnik> Putnici { get; set; }
-        public DbSet<Administrator> Admini { get; set; }
-        public DbSet<Kondukter> Kondukteri { get; set; }
+        public DbSet<Korisnik> Korisnik { get; set; }
+        public DbSet<Putnik> Putnik { get; set; }
+        public DbSet<Administrator> Admin { get; set; }
+        public DbSet<Kondukter> Kondukter { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

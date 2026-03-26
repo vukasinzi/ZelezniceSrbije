@@ -14,9 +14,17 @@ namespace ZelezniceSrbije.Repositories
         }
         public async Task<Korisnik> LogInAsync(string email, string lozinka)
         {
-            
-            return await db.Korisnici.FirstOrDefaultAsync(k => k.Email.ToLower() == cistMejl && k.Lozinka == lozinka);
+            var korisnik =  await db.Korisnik.FirstOrDefaultAsync(p => p.Email == email && p.Lozinka == lozinka);
+            if (korisnik == null) return korisnik;
 
+            var putnik =  await db.Putnik.FirstOrDefaultAsync(k => k.Id == korisnik.Id);
+            if (putnik != null) return putnik;
+            var admin = await db.Admin.FirstOrDefaultAsync(k => k.Id == korisnik.Id);
+            if (admin != null) return admin;
+            var kondukter = await db.Kondukter.FirstOrDefaultAsync(k => k.Id == korisnik.Id);
+            if (kondukter != null) return kondukter;
+
+            return null;
         }
     }
 }
