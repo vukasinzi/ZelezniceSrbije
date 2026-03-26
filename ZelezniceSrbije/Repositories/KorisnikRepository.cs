@@ -26,5 +26,18 @@ namespace ZelezniceSrbije.Repositories
 
             return null;
         }
+
+        public async Task<Korisnik> RegistrujAsync(string ime, string prezime, string email, string lozinka)
+        {
+            var postoji = await db.Korisnik.FirstOrDefaultAsync(p => p.Email == email);
+            if (postoji != null)
+            {
+                return null;
+            }
+            Korisnik k = new Korisnik(ime, prezime, email, lozinka);
+            await db.Korisnik.AddAsync(k);
+            await db.SaveChangesAsync();
+            return k;
+        }
     }
 }

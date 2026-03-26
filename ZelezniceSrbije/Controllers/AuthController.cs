@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
-using System.Security.Principal;
-using ZelezniceSrbije.Data;
 using ZelezniceSrbije.Services;
 
 namespace ZelezniceSrbije.Controllers
@@ -53,6 +49,17 @@ namespace ZelezniceSrbije.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login");
+        }
+        [HttpPost]
+        public async Task<IActionResult> Registracija(string ime,string prezime,string email, string lozinka)
+        {
+            var korisnik = await servis.RegistrujAsync(ime,prezime,email, lozinka);
+            return RedirectToAction("Index", "Home");
+        }
+        [HttpGet]
+        public IActionResult Registracija()
+        {
+            return View();
         }
     }
 }

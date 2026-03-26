@@ -1,4 +1,6 @@
-﻿@{
+﻿@model dynamic  
+
+@{
 
 }
 
@@ -8,6 +10,9 @@
             <h2>Logovanje</h2>
 
             <form method="post">
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
                 <div class="mb-3">
                     <label class="form-label">Email</label>
                     <input type="email" class="form-control" name="email" required>
@@ -20,6 +25,12 @@
 
                 <button type="submit" class="btn btn-primary w-100">Uloguj se</button>
             </form>
+            <div class="mt-3 text-center">
+                <small>
+                    Nemate nalog?
+                    <a asp-controller="Auth" asp-action="Registracija">Registrujte se</a>
+                </small>
+            </div>
         </div>
     </div>
 </div>
