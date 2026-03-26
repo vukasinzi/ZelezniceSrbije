@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using ZelezniceSrbije.Data;
 using ZelezniceSrbije.Models;
 
@@ -14,8 +15,14 @@ namespace ZelezniceSrbije.Repositories
         }
         public async Task<Korisnik> LogInAsync(string email, string lozinka)
         {
-            var korisnik =  await db.Korisnik.FirstOrDefaultAsync(p => p.Email == email && p.Lozinka == lozinka);
+            PasswordHasher<string> hasher = new PasswordHasher<string>();
+           
+            var korisnik =  await db.Korisnik.FirstOrDefaultAsync(p => p.Email == email);
             if (korisnik == null) return korisnik;
+
+            if (hasher.VerifyHashedPassword(null, korisnik.Lozinka, lozinka) == PasswordVerificationResult.Failed)
+                return null;
+
 
             var putnik =  await db.Putnik.FirstOrDefaultAsync(k => k.Id == korisnik.Id);
             if (putnik != null) return putnik;
@@ -24,18 +31,20 @@ namespace ZelezniceSrbije.Repositories
             var kondukter = await db.Kondukter.FirstOrDefaultAsync(k => k.Id == korisnik.Id);
             if (kondukter != null) return kondukter;
 
-            return null;
+            return korisnik;
         }
 
-        public async Task<Korisnik> RegistrujAsync(string ime, string prezime, string email, string lozinka)
+        public async Task<Korisnik> RegistrujAsync(Putnik p)
         {
-            var postoji = await db.Korisnik.FirstOrDefaultAsync(p => p.Email == email);
+            var postoji = await db.Korisnik.FirstOrDefaultAsync(x => x.Email == p.Email);
             if (postoji != null)
             {
                 return null;
             }
-            Korisnik k = new Korisnik(ime, prezime, email, lozinka);
-            await db.Korisnik.AddAsync(k);
+            Korisnik k = new Korisnik(p.Ime, p.Prezime, p.Email, p.Lozinka);
+ 
+       
+            await db.Putnik.AddAsync(p);
             await db.SaveChangesAsync();
             return k;
         }

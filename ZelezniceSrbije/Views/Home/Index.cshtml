@@ -1,8 +1,94 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Početna";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Srbija voz vam želi prijatno putovanje.</p>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Source+Sans+3:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+    :root { --sz-red: #CC0000; --sz-blue: #003B8E; }
+
+    .sz-hero {
+        background: var(--sz-blue);
+        padding: 3rem 2rem 2.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    .sz-hero::before {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0; right: 0; height: 6px;
+        background: repeating-linear-gradient(90deg, var(--sz-red) 0px, var(--sz-red) 40px, #fff 40px, #fff 44px, var(--sz-red) 44px);
+    }
+    .sz-headline h1 {
+        font-family: 'Oswald', sans-serif;
+        font-size: 42px; color: white; font-weight: 600;
+    }
+    .sz-headline h1 span { color: var(--sz-red); }
+    .sz-headline p { color: rgba(255,255,255,0.8); font-size: 16px; }
+</style>
+
+<div class="sz-hero">
+    <div class="sz-headline">
+        <h1>Vaše putovanje,<br><span>naša briga.</span></h1>
+        <p>Brzo, sigurno i udobno do odredišta širom Srbije.</p>
+    </div>
+</div>
+<div class="container my-4">
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <h5 class="text-uppercase fw-bold mb-3" style="color: var(--sz-blue); letter-spacing: 1.5px; font-size: 13px;">Pretraga karata</h5>
+            <form method="get" asp-controller="Karte" asp-action="Pretrazi">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted text-uppercase" style="letter-spacing: 1px; font-size: 11px;">Polazište</label>
+                        <input type="text" class="form-control" name="polaziste" placeholder="Npr. Beograd" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted text-uppercase" style="letter-spacing: 1px; font-size: 11px;">Odredište</label>
+                        <input type="text" class="form-control" name="odrediste" placeholder="Npr. Novi Sad" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted text-uppercase" style="letter-spacing: 1px; font-size: 11px;">Datum polaska</label>
+                        <input type="date" class="form-control" name="datum" required>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn w-100 text-white fw-bold" style="background: var(--sz-red);">
+                            Pretraži
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card border-top border-danger border-3">
+                <div class="card-body">
+                    <h5>Kupovina karata</h5>
+                    <p class="text-muted">Rezervišite kartu online bez čekanja na blagajni.</p>
+                    <a asp-controller="Karte" asp-action="Index" class="btn btn-danger">Kupi kartu</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-top border-primary border-3">
+                <div class="card-body">
+                    <h5>Red vožnje</h5>
+                    <p class="text-muted">Aktuelni polasci i dolasci za sve stanice.</p>
+                    <a asp-controller="RedVoznje" asp-action="Index" class="btn btn-primary">Pogledaj</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-top border-secondary border-3">
+                <div class="card-body">
+                    <h5>Informacije</h5>
+                    <p class="text-muted">Cenovnik, popusti i pravila prevoza.</p>
+                    <a asp-controller="Info" asp-action="Index" class="btn btn-secondary">Saznaj više</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

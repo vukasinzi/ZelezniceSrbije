@@ -1,4 +1,4 @@
-﻿@model dynamic
+﻿@model Putnik
 
 @{
 
@@ -27,15 +27,15 @@
                     <label class="form-label">Email</label>
                     <input type="email" class="form-control" name="email" required>
                 </div>
+    
+                <div class="mb-3">
+                    <label class="form-label">Broj telefona</label>
+                    <input type="number" class="form-control" name="broj_telefona" required>
+                </div>
 
                 <div class="mb-3">
                     <label class="form-label">Lozinka</label>
                     <input type="password" class="form-control" name="lozinka" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Potvrdi lozinku</label>
-                    <input type="password" class="form-control" name="lozinkaPotvrdjena" required>
                 </div>
 
                 <button type="submit" class="btn btn-primary w-100">Registruj se</button>

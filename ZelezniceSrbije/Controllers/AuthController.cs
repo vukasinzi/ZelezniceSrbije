@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using ZelezniceSrbije.Models;
 using ZelezniceSrbije.Services;
 
 namespace ZelezniceSrbije.Controllers
@@ -17,6 +18,8 @@ namespace ZelezniceSrbije.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Home");
             return View();
         }
 
@@ -39,27 +42,48 @@ namespace ZelezniceSrbije.Controllers
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal,new AuthenticationProperties { IsPersistent = true});
+
 
             return RedirectToAction("Index", "Home");
 
         }
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login");
+            return RedirectToAction("Login","Auth");
         }
         [HttpPost]
-        public async Task<IActionResult> Registracija(string ime,string prezime,string email, string lozinka)
+        public async Task<IActionResult> Registracija(string ime,string prezime,string email,string broj_telefona, string lozinka)
         {
-            var korisnik = await servis.RegistrujAsync(ime,prezime,email, lozinka);
+            Putnik p = new(ime, prezime, email, broj_telefona, lozinka);
+            var korisnik = await servis.RegistrujAsync(p);
+            if(korisnik == null)
+            {
+                ModelState.AddModelError("", "Već postoji korisnik sa tim mejlom.");
+                return View();
+            }
+            var rola = korisnik.GetType().Name;
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, korisnik.Id.ToString()),
+                new Claim(ClaimTypes.Name, korisnik.Ime),
+                new Claim(ClaimTypes.Role, rola)
+            };
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, new AuthenticationProperties { IsPersistent = true });
+
             return RedirectToAction("Index", "Home");
         }
         [HttpGet]
         public IActionResult Registracija()
         {
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Home");   
             return View();
         }
+
     }
 }

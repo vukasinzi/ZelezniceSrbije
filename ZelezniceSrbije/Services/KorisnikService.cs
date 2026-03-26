@@ -15,23 +15,23 @@ namespace ZelezniceSrbije.Services
         public async Task<Korisnik> LogInAsync(string email, string lozinka)
         {
             string novi_mejl = email.ToLowerInvariant().Trim();
-            PasswordHasher<string> hasher = new PasswordHasher<string>();
-            string nova_lozinka = hasher.HashPassword(null, lozinka);
-           return await repo.LogInAsync(novi_mejl, nova_lozinka);
+           
+           return await repo.LogInAsync(novi_mejl, lozinka);
 
         }
 
        
 
-        public async Task<Korisnik> RegistrujAsync(string ime, string prezime, string email, string lozinka)
+        public async Task<Korisnik> RegistrujAsync(Putnik p)
         {
-            string novi_mejl = email.ToLowerInvariant().Trim();
+            Putnik novi = new Putnik(p.Ime, p.Prezime, p.Email, p.Broj_telefona, p.Lozinka);
+             novi.Email = p.Email.ToLowerInvariant().Trim();
             PasswordHasher<string> hasher = new();
-            string nova_lozinka = hasher.HashPassword(null, lozinka);
-            if (ime.Length > 20 || prezime.Length > 20)
+            novi.Lozinka = hasher.HashPassword(null, p.Lozinka);
+            if (p.Ime.Length > 20 || p.Prezime.Length > 20)
                 return null;
             
-            return await repo.RegistrujAsync(ime,prezime,novi_mejl,nova_lozinka);
+            return await repo.RegistrujAsync(novi);
 
         }
     }

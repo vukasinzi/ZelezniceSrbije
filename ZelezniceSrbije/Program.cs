@@ -19,8 +19,10 @@ builder.Services.AddAuthentication("Cookies")
         options.LoginPath = "/Auth/Login";
         options.LogoutPath = "/Auth/Logout";
         options.AccessDeniedPath = "/Auth/Login";
-    });
 
+        options.ExpireTimeSpan = TimeSpan.FromDays(7);
+        options.SlidingExpiration = true;
+    });
 builder.Services.AddAuthorization();
 
 var app = builder.Build();

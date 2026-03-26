@@ -1,0 +1,39 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# C#
+*.cs     text diff=csharp linguist-language=C#
+*.csproj text diff=xml
+*.sln    text
+
+# ASP.NET Razor
+*.cshtml text linguist-language=HTML
+
+# Web
+*.css    text diff=css
+*.js     text
+*.json   text
+*.html   text diff=html
+
+# Config
+*.xml    text
+*.yml    text
+*.yaml   text
+*.config text
+
+# Images — binary, don't diff
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.ico    binary
+*.svg    text
+
+# Fonts
+*.ttf    binary
+*.woff   binary
+*.woff2  binary
+
+# Force Linguist to detect the project as C#
+*.cs     linguist-detectable=true
+*.cshtml linguist-detectable=true
