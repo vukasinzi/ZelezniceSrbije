@@ -24,6 +24,10 @@ namespace ZelezniceSrbije.Services
 
         public async Task<Korisnik> RegistrujAsync(Putnik p)
         {
+            if(!p.Broj_telefona.All(char.IsDigit) || !p.Email.Contains("@") || p.Ime.Length == 0|| p.Ime.Length > 20 || p.Prezime.Length > 20 || p.Prezime.Length == 0 || p.Broj_telefona.Length == 0 || p.Lozinka.Length == 0)
+                return null;
+            
+            
             Putnik novi = new Putnik(p.Ime, p.Prezime, p.Email, p.Broj_telefona, p.Lozinka);
              novi.Email = p.Email.ToLowerInvariant().Trim();
             PasswordHasher<string> hasher = new();
