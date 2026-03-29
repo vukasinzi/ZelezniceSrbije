@@ -12,6 +12,8 @@ builder.Services.AddDbContext<VozAppContext>(options =>
 
 builder.Services.AddScoped<IKorisnikRepository, KorisnikRepository>();
 builder.Services.AddScoped<IKorisnikService, KorisnikService>();
+builder.Services.AddScoped<IRasporedRepository, RasporedRepository>();
+builder.Services.AddScoped<IRasporedService, RasporedService>();
 
 builder.Services.AddAuthentication("Cookies")
     .AddCookie("Cookies", options =>

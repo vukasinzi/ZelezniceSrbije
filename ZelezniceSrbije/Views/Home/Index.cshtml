@@ -1,5 +1,7 @@
-﻿@{
+﻿@model StaniceViewModel
+@{
     ViewData["Title"] = "Početna";
+    var vm = Model;
 }
 
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Source+Sans+3:wght@400;500&display=swap" rel="stylesheet">
@@ -30,33 +32,41 @@
 <div class="sz-hero">
     <div class="sz-headline">
         <h1>Vaše putovanje,<br><span>naša briga.</span></h1>
-        <p>Brzo, sigurno i udobno do odredišta širom Srbije.</p>
+      <p>Brzo, <s>sigurno</s> i udobno do odredišta širom Srbije.</p>
     </div>
 </div>
 <div class="container my-4">
     <div class="card shadow-sm">
         <div class="card-body p-4">
-            <h5 class="text-uppercase fw-bold mb-3" style="color: var(--sz-blue); letter-spacing: 1.5px; font-size: 13px;">Pretraga karata</h5>
+            <h5 class="text-uppercase fw-bold mb-3" style="color: var(--sz-blue); letter-spacing: 1.5px; font-size: 13px;">Pretraga vozova</h5>
             <form method="get" asp-controller="Karte" asp-action="Pretrazi">
                 <div class="row g-3 align-items-end">
                     <div class="col-md-3">
                         <label class="form-label small text-muted text-uppercase" style="letter-spacing: 1px; font-size: 11px;">Polazište</label>
-                        <input type="text" class="form-control" name="polaziste" placeholder="Npr. Beograd" required>
+                        <input type="text" class="form-control" name="polaziste" list="stanice" placeholder="Npr. Beograd" required>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label small text-muted text-uppercase" style="letter-spacing: 1px; font-size: 11px;">Odredište</label>
-                        <input type="text" class="form-control" name="odrediste" placeholder="Npr. Novi Sad" required>
+                        <input type="text" class="form-control" name="odrediste" list="stanice" placeholder="Npr. Novi Sad" required>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label small text-muted text-uppercase" style="letter-spacing: 1px; font-size: 11px;">Datum polaska</label>
-                        <input type="date" class="form-control" name="datum" required>
+                        <input type="date" class="form-control" name="datum" required min="@DateTime.Today.ToString("yyyy-MM-dd")">
                     </div>
                     <div class="col-md-3">
+                       <form asp-controller="Raspored" asp-action="Pretrazi" method="get">
                         <button type="submit" class="btn w-100 text-white fw-bold" style="background: var(--sz-red);">
                             Pretraži
                         </button>
+                    </form>
                     </div>
                 </div>
+                <datalist id="stanice">
+                    @foreach (var s in vm.Stanice)
+                    {
+                        <option value="@s.Naziv"></option>
+                    }
+                </datalist>
             </form>
         </div>
     </div>

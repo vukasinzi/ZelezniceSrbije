@@ -28,8 +28,6 @@ namespace ZelezniceSrbije.Tests.AuthTest
         public async Task<Korisnik> RegistrujAsync(Putnik p)
         {
 
- 
-
             if (korisnici.Any(k => k.Email == p.Email))
                 return null;
             korisnici.Add(p);
