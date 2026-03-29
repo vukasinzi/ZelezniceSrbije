@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using ZelezniceSrbije.Models;
@@ -6,12 +7,12 @@ using ZelezniceSrbije.Services;
 
 namespace ZelezniceSrbije.Tests.AuthTest
 {
-    public class KorisnikServiceTest
+    public class KorisnikControllerTest
     {
         private readonly KorisnikService servis;
         private readonly FakeKorisnikRepository repo;
 
-        public KorisnikServiceTest()
+        public KorisnikControllerTest()
         {
             repo = new FakeKorisnikRepository();
             servis = new KorisnikService(repo);
@@ -38,6 +39,7 @@ namespace ZelezniceSrbije.Tests.AuthTest
         [Fact]
         public async Task DupliMejlovi()
         {
+
             var putnik1 = new Putnik("Marko", "Marković", "marko@gmail.com", "0611234567", "sifra");
             var putnik2 = new Putnik("Ana", "Anić", "marko@gmail.com", "0621234567", "sifra");
 
@@ -46,5 +48,37 @@ namespace ZelezniceSrbije.Tests.AuthTest
 
             Assert.Null(rezultat);
         }
+        [Fact]
+        public async Task NepostojeciLogInTest()
+        {
+     
+            var putnik1 = new Putnik("Marko", "Marković", "marko@gmail.com", "06030120", "marko123");
+            var putnik2 = new Putnik("Ana", "Anić", "ana@gmail.com", "07463063", "ana123");
+       
+            await servis.RegistrujAsync(putnik1);
+            await servis.RegistrujAsync(putnik2);
+
+            var lazniPutnik = new Putnik("Ana", "Anić", "ana@nepostojeca.com", "07463063", "ana123");
+            var rez = await servis.LogInAsync(lazniPutnik.Email, lazniPutnik.Lozinka);
+
+            Assert.Null(rez);
+
+        }
+        [Fact]
+        public async Task PostojeciLogInTest()
+        {
+            var putnik1 = new Putnik("Marko", "Marković", "marko@gmail.com", "06030120", "marko123");
+            var putnik2 = new Putnik("Ana", "Anić", "ana@gmail.com", "07463063", "ana123");
+
+            await servis.RegistrujAsync(putnik1);
+            await servis.RegistrujAsync(putnik2);
+
+            var praviPutnik = new Putnik("Ana", "Anić", "ana@gmail.com", "07463063", "ana123");
+            var rez = await servis.LogInAsync(praviPutnik.Email, praviPutnik.Lozinka);
+
+            Assert.NotNull(rez);
+
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using System.Security.Claims;
 using ZelezniceSrbije.Models;
 using ZelezniceSrbije.Services;
@@ -33,6 +34,8 @@ namespace ZelezniceSrbije.Controllers
                 return View();
             }
             var rola = korisnik.GetType().Name;
+            Debug.WriteLine(rola);
+
             var claims = new List<Claim>
              {
                 new Claim(ClaimTypes.NameIdentifier, korisnik.Id.ToString()),

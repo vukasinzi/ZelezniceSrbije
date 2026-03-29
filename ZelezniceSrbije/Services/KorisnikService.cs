@@ -32,9 +32,6 @@ namespace ZelezniceSrbije.Services
              novi.Email = p.Email.ToLowerInvariant().Trim();
             PasswordHasher<string> hasher = new();
             novi.Lozinka = hasher.HashPassword(null, p.Lozinka);
-            if (p.Ime.Length > 20 || p.Prezime.Length > 20)
-                return null;
-            
             return await repo.RegistrujAsync(novi);
 
         }

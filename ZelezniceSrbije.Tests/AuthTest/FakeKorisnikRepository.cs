@@ -9,15 +9,16 @@ namespace ZelezniceSrbije.Tests.AuthTest
 {
     internal class FakeKorisnikRepository : IKorisnikRepository
     {
-        List<Korisnik> korisnici { get; set; } = new();
-      
+        public List<Korisnik> korisnici { get; set; } = new();
+
+        PasswordHasher<string> hasher = new();
 
         public async Task<Korisnik> LogInAsync(string email, string lozinka)
         {
+          
             var postoji = korisnici.FirstOrDefault(k => k.Email == email);
             if (postoji == null)
                 return null;
-            PasswordHasher<string> hasher = new();
             if (hasher.VerifyHashedPassword(null, postoji.Lozinka, lozinka) == PasswordVerificationResult.Failed)
                 return null;
             return await Task.FromResult(postoji);
@@ -26,6 +27,8 @@ namespace ZelezniceSrbije.Tests.AuthTest
 
         public async Task<Korisnik> RegistrujAsync(Putnik p)
         {
+
+ 
 
             if (korisnici.Any(k => k.Email == p.Email))
                 return null;
