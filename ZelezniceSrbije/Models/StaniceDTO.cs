@@ -1,6 +1,6 @@
 ﻿namespace ZelezniceSrbije.Models
 {
-    public class StaniceViewModel
+    public class StaniceDTO
     {
         public List<Stanica> Stanice { get; set; } = new();
     }

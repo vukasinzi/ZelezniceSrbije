@@ -1,4 +1,6 @@
-﻿@model StaniceViewModel
+﻿@using ZelezniceSrbije.Models.ViewModels
+@model HomeIndexVM
+
 @{
     ViewData["Title"] = "Početna";
     var vm = Model;
@@ -39,7 +41,7 @@
     <div class="card shadow-sm">
         <div class="card-body p-4">
             <h5 class="text-uppercase fw-bold mb-3" style="color: var(--sz-blue); letter-spacing: 1.5px; font-size: 13px;">Pretraga vozova</h5>
-            <form method="get" asp-controller="Karte" asp-action="Pretrazi">
+            <form method="get" asp-controller="Home" asp-action="Pretrazi">
                 <div class="row g-3 align-items-end">
                     <div class="col-md-3">
                         <label class="form-label small text-muted text-uppercase" style="letter-spacing: 1px; font-size: 11px;">Polazište</label>
@@ -54,11 +56,9 @@
                         <input type="date" class="form-control" name="datum" required min="@DateTime.Today.ToString("yyyy-MM-dd")">
                     </div>
                     <div class="col-md-3">
-                       <form asp-controller="Raspored" asp-action="Pretrazi" method="get">
                         <button type="submit" class="btn w-100 text-white fw-bold" style="background: var(--sz-red);">
                             Pretraži
                         </button>
-                    </form>
                     </div>
                 </div>
                 <datalist id="stanice">
@@ -68,6 +68,11 @@
                     }
                 </datalist>
             </form>
+            
+            @if (Model.Rasporedi != null && Model.Rasporedi.Count > 0)
+            {
+                @await Html.PartialAsync("Rasporedi", Model.Rasporedi)
+            }
         </div>
     </div>
 </div>

@@ -1,6 +1,7 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using ZelezniceSrbije.Models;
+using ZelezniceSrbije.Models.ViewModels;
 using ZelezniceSrbije.Services;
 
 namespace ZelezniceSrbije.Controllers;
@@ -12,26 +13,40 @@ public class HomeController : Controller
     {
         this.servis = servis;
     }
-    public async Task<IActionResult> Pretraga(string polaziste,string odrediste,DateTime datum)
+    [HttpGet]
+    public async Task<IActionResult> Pretrazi(string polaziste, string odrediste, DateTime datum)
     {
+        ViewData["Datum"] = datum;
+
         if (datum.Date < DateTime.Today)
         {
             ModelState.AddModelError("datum", "Datum ne može biti u prošlosti.");
-            return View("Index");
+            var vmErr = new HomeIndexVM
+            {
+                Stanice = await servis.UcitajStaniceAsync(),
+                Rasporedi = new List<RasporedDTO>()
+            };
+            return View("~/Views/Home/Index.cshtml", vmErr);
         }
-        List<Raspored> rasporedi = await servis.PretraziAsync(polaziste,odrediste,datum);
-        
 
-        return View();
+        var vm = new HomeIndexVM
+        {
+            Stanice = await servis.UcitajStaniceAsync(),
+            Rasporedi = await servis.PretraziAsync(polaziste, odrediste, datum)
+        };
+
+        return View("~/Views/Home/Index.cshtml", vm);
     }
 
+    [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var svm = new StaniceViewModel
+        var vm = new HomeIndexVM
         {
-            Stanice = await servis.UcitajStaniceAsync()
+            Stanice = await servis.UcitajStaniceAsync(),
+            Rasporedi = new List<RasporedDTO>()
         };
-        return View(svm);
+        return View(vm);
     }
 
     public IActionResult Privacy()
