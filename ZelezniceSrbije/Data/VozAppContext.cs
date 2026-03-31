@@ -15,6 +15,7 @@ namespace ZelezniceSrbije.Data
         public DbSet<StanicaLinija> StanicaLinija { get; set; }//LINIJA STANICA
         public DbSet<Raspored> Raspored { get; set; }
         public DbSet<Voz> Voz { get; set; }
+        public DbSet<TipVoza> TipVoza { get; set; }
         public DbSet<Linija> Linija { get; set; }
         public DbSet<Stanica> Stanica { get; set; }
 
@@ -29,6 +30,7 @@ namespace ZelezniceSrbije.Data
             modelBuilder.Entity<Voz>().ToTable("Voz");
             modelBuilder.Entity<Stanica>().ToTable("Stanica");
             modelBuilder.Entity<Linija>().ToTable("Linija");
+            modelBuilder.Entity<TipVoza>().ToTable("TipVoza");
         }
     }
 }

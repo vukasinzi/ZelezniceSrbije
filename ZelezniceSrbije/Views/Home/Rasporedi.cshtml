@@ -1,13 +1,51 @@
-﻿@model List<RasporedDTO>
-
+@model List<RasporedDTO>
 
 <style>
   .rr-card { border-radius: 14px; overflow: hidden; border: 1px solid rgba(0,0,0,.08); }
   .rr-head { background: var(--sz-blue, #003B8E); color: #fff; }
   .rr-chip { font-size: 12px; border-radius: 999px; padding: 4px 10px; background: #f1f3f5; color: #333; }
-  .rr-time { font-weight: 700; font-size: 18px; letter-spacing: .5px; }
+  .rr-time { font-weight: 700; font-size: 18px; letter-spacing: .5px; font-variant-numeric: tabular-nums; }
   .rr-sub { font-size: 12px; color: #6c757d; }
+  .rr-station { font-size: 11px; color: #6c757d; }
   .rr-row { border-top: 1px solid rgba(0,0,0,.06); }
+  .rr-row-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
+  }
+  .rr-col-line { min-width: 0; }
+  .rr-col-times { justify-self: center; }
+  .rr-times-grid {
+    display: grid;
+    grid-template-columns: 120px 120px;
+    gap: 16px;
+    text-align: center;
+  }
+  .rr-col-time { text-align: center; }
+  .rr-col-chip { justify-self: end; text-align: right; }
+
+  @@media (max-width: 768px) {
+    .rr-row-grid {
+      grid-template-columns: 1fr;
+    }
+    .rr-col-line {
+      grid-column: 1 / -1;
+    }
+    .rr-col-times {
+      grid-column: 1 / -1;
+      justify-self: center;
+    }
+    .rr-times-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .rr-col-chip {
+      grid-column: 1 / -1;
+      justify-self: start;
+      text-align: left;
+    }
+  }
 </style>
 
 <div class="card rr-card shadow-sm mt-4">
@@ -15,7 +53,6 @@
     <div class="d-flex align-items-center justify-content-between">
       <div class="fw-bold">Rezultati pretrage</div>
       <div class="small opacity-75">@(((DateTime)ViewData["Datum"]).ToString("dd.MM.yyyy"))</div>
-</div>
     </div>
   </div>
 
@@ -27,30 +64,45 @@
   }
   else
   {
+    var polaziste = ViewData["Polaziste"] as string;
+    var odrediste = ViewData["Odrediste"] as string;
     <div class="list-group list-group-flush">
       @foreach (var r in Model)
       {
         <div class="list-group-item rr-row">
-          <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <div class="d-flex flex-column">
+          <div class="rr-row-grid">
+            <div class="rr-col-line d-flex flex-column">
               <div class="fw-bold">@r.Linija</div>
-              <div class="rr-sub">@r.Voz</div>
+              <div class="rr-sub">@r.TipVoza</div>
             </div>
 
-            <div class="text-center">
-              <div class="rr-time">@r.PolazakSaPol.ToString("HH:mm")</div>
-              <div class="rr-sub">Polazak</div>
+            <div class="rr-col-times">
+              <div class="rr-times-grid">
+                <div class="rr-col-time">
+                  <div class="rr-time">@r.PolazakSaPol.ToString("HH:mm")</div>
+                  @if (!string.IsNullOrWhiteSpace(polaziste))
+                  {
+                    <div class="rr-station">@polaziste</div>
+                  }
+                  <div class="rr-sub">Polazak</div>
+                </div>
+
+                <div class="rr-col-time">
+                  <div class="rr-time">@r.DolazakNaOdr.ToString("HH:mm")</div>
+                  @if (!string.IsNullOrWhiteSpace(odrediste))
+                  {
+                    <div class="rr-station">@odrediste</div>
+                  }
+                  <div class="rr-sub">Dolazak</div>
+                </div>
+              </div>
             </div>
 
-            <div class="text-center">
-              <div class="rr-time">@r.DolazakNaOdr.ToString("HH:mm")</div>
-              <div class="rr-sub">Dolazak</div>
+            <div class="rr-col-chip">
+              <span class="rr-chip">
+                Trajanje: @((r.DolazakNaOdr - r.PolazakSaPol).ToString(@"hh\:mm"))
+              </span>
             </div>
-
-            <div class="text-center">
-            <span class="rr-chip">
-            Trajanje: @((r.DolazakNaOdr - r.PolazakSaPol).ToString(@"hh\:mm"))
-            </span></div>
           </div>
         </div>
       }

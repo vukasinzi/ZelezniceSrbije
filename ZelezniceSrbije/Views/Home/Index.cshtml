@@ -4,6 +4,9 @@
 @{
     ViewData["Title"] = "Početna";
     var vm = Model;
+    var polazisteVal = ViewData["Polaziste"] as string ?? string.Empty;
+    var odredisteVal = ViewData["Odrediste"] as string ?? string.Empty;
+    var datumVal = ViewData["Datum"] is DateTime d ? d.ToString("yyyy-MM-dd") : string.Empty;
 }
 
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Source+Sans+3:wght@400;500&display=swap" rel="stylesheet">
@@ -45,15 +48,15 @@
                 <div class="row g-3 align-items-end">
                     <div class="col-md-3">
                         <label class="form-label small text-muted text-uppercase" style="letter-spacing: 1px; font-size: 11px;">Polazište</label>
-                        <input type="text" class="form-control" name="polaziste" list="stanice" placeholder="Npr. Beograd" required>
+                        <input type="text" class="form-control" name="polaziste" list="stanice" placeholder="Npr. Beograd" required value="@polazisteVal">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label small text-muted text-uppercase" style="letter-spacing: 1px; font-size: 11px;">Odredište</label>
-                        <input type="text" class="form-control" name="odrediste" list="stanice" placeholder="Npr. Novi Sad" required>
+                        <input type="text" class="form-control" name="odrediste" list="stanice" placeholder="Npr. Novi Sad" required value="@odredisteVal">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label small text-muted text-uppercase" style="letter-spacing: 1px; font-size: 11px;">Datum polaska</label>
-                        <input type="date" class="form-control" name="datum" required min="@DateTime.Today.ToString("yyyy-MM-dd")">
+                        <input type="date" class="form-control" name="datum" required min="@DateTime.Today.ToString("yyyy-MM-dd")" value="@datumVal">
                     </div>
                     <div class="col-md-3">
                         <button type="submit" class="btn w-100 text-white fw-bold" style="background: var(--sz-red);">

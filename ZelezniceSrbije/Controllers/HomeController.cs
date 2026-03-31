@@ -17,6 +17,8 @@ public class HomeController : Controller
     public async Task<IActionResult> Pretrazi(string polaziste, string odrediste, DateTime datum)
     {
         ViewData["Datum"] = datum;
+        ViewData["Polaziste"] = polaziste;
+        ViewData["Odrediste"] = odrediste;
 
         if (datum.Date < DateTime.Today)
         {

@@ -17,7 +17,7 @@ namespace ZelezniceSrbije.Services
                 return null;
             if (polaziste == odrediste)
                 return null;
-            if (datum < DateTime.Now)
+            if (datum < DateTime.Today)
                 return null;
 
             lista =  await repo.PretraziAsync(polaziste, odrediste, datum);
