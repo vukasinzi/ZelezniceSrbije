@@ -7,12 +7,12 @@ using ZelezniceSrbije.Services;
 
 namespace ZelezniceSrbije.Tests.AuthTest
 {
-    public class KorisnikControllerTest
+    public class KorisnikServiceTest
     {
         private readonly KorisnikService servis;
         private readonly FakeKorisnikRepository repo;
 
-        public KorisnikControllerTest()
+        public KorisnikServiceTest()
         {
             repo = new FakeKorisnikRepository();
             servis = new KorisnikService(repo);
@@ -23,15 +23,16 @@ namespace ZelezniceSrbije.Tests.AuthTest
         [InlineData("Marko", "", "marko3@gmail.com", "0611234567", "sifra123", false)]          // prazno prezime
         [InlineData("Marko", "Marković", "", "0611234567", "sifra123", false)]                  // prazan email
         [InlineData("Marko", "Marković", "nijemail", "0611234567", "sifra123", false)]          // email bez @
-        [InlineData("ImeKojeJePredugo123456", "Marković", "marko4@gmail.com", "0611234567", "sifra", false)] // ime > 20
-        [InlineData("Marko", "PrezimeKojeJePredugoO", "marko5@gmail.com", "0611234567", "sifra", false)]      // prezime > 20
-        [InlineData("ImeKojeJePrecizno20k", "Marković", "marko6@gmail.com", "0611234567", "sifra", true)]  // ime = 20
-        [InlineData("Ime","Prezime","marecar@gmail.com","421dsada4","sifra",false)]
+        [InlineData("ImeKojeJePredugo123456", "Marković", "marko4@gmail.com", "0611234567", "sifra123", false)] // ime > 20
+        [InlineData("Marko", "PrezimeKojeJePredugoO", "marko5@gmail.com", "0611234567", "sifra123", false)]      // prezime > 20
+        [InlineData("ImeKojeJePrecizno20k", "Marković", "marko6@gmail.com", "0611234567", "sifra123", true)]  // ime = 20
+        [InlineData("Ime", "Prezime", "marecar@gmail.com", "421dsada4", "sifra", false)] // ovde ostaje sifra, pada zbog nje
         public async Task RegistracijaTestovi(string ime, string prezime, string email, string broj_telefona, string lozinka, bool trebaDaUspe)
         {
             Putnik p = new(ime, prezime, email, broj_telefona, lozinka);
             var rezultat = await servis.RegistrujAsync(p);
-            if (trebaDaUspe == true)
+
+            if (trebaDaUspe)
                 Assert.NotNull(rezultat);
             else
                 Assert.Null(rezultat);
