@@ -2,10 +2,23 @@
 {
     public class Kondukter : Korisnik
     {
-        public Kondukter(string ime, string prezime, string email, string lozinka) : base(ime, prezime, email, lozinka)
+        public string Broj_legitimacije { get; set; }
+
+        public Kondukter(string ime, string prezime, string email, string lozinka, string broj_legitimacije)
+            : base(ime, prezime, email, lozinka)
         {
+            Broj_legitimacije = broj_legitimacije;
         }
 
-        public string Broj_legitimacije { get; set; }
+        public override bool JeValidan()
+        {
+            if (!base.JeValidan())
+                return false;
+
+            if (string.IsNullOrWhiteSpace(Broj_legitimacije))
+                return false;
+
+            return true;
+        }
     }
 }

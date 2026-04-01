@@ -16,9 +16,6 @@ public class HomeController : Controller
     [HttpGet]
     public async Task<IActionResult> Pretrazi(string polaziste, string odrediste, DateTime datum)
     {
-        ViewData["Datum"] = datum;
-        ViewData["Polaziste"] = polaziste;
-        ViewData["Odrediste"] = odrediste;
 
         if (datum.Date < DateTime.Today)
         {
@@ -30,6 +27,9 @@ public class HomeController : Controller
             };
             return View("~/Views/Home/Index.cshtml", vmErr);
         }
+        ViewData["Datum"] = datum;
+        ViewData["Polaziste"] = polaziste;
+        ViewData["Odrediste"] = odrediste;
 
         var vm = new HomeIndexVM
         {

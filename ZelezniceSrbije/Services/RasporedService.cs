@@ -23,9 +23,8 @@ namespace ZelezniceSrbije.Services
             lista =  await repo.PretraziAsync(polaziste, odrediste, datum);
 
             return lista;
-
-
         }
+
 
         public async Task<List<Stanica>> UcitajStaniceAsync()
         {
