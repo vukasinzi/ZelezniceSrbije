@@ -1,0 +1,515 @@
+﻿<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel – Železnice Srbije</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --sz-red: #CC0000;
+            --sz-blue: #003B8E;
+        }
+
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            background-color: #f4f6f9;
+        }
+
+        .sz-hero {
+            background: var(--sz-blue);
+            padding: 3rem 2rem 2.5rem;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        .sz-hero::before {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0; height: 6px;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--sz-red) 0px, var(--sz-red) 40px,
+                #fff 40px, #fff 44px
+            );
+        }
+        .sz-hero h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 42px;
+            color: white;
+            font-weight: 600;
+            margin: 0 0 8px;
+        }
+        .sz-hero h1 span { color: var(--sz-red); }
+        .sz-hero p {
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .nav-tabs .nav-link {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6c757d;
+            border: none;
+            border-bottom: 3px solid transparent;
+            padding: 10px 20px;
+            background: none;
+        }
+        .nav-tabs .nav-link:hover { color: var(--sz-blue); border-bottom-color: var(--sz-blue); }
+        .nav-tabs .nav-link.active {
+            color: var(--sz-blue);
+            border-bottom: 3px solid var(--sz-blue);
+            font-weight: 600;
+            background: none;
+        }
+        .nav-tabs { border-bottom: 2px solid #dee2e6; margin-bottom: 1.5rem; }
+
+        .card { border: none; border-radius: 4px; }
+        .card-header-label {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 13px;
+            color: var(--sz-blue);
+        }
+
+        .sz-table thead th {
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6c757d;
+            border-bottom: 2px solid var(--sz-blue);
+            padding: 10px 12px;
+        }
+        .sz-table tbody td {
+            padding: 14px 12px;
+            font-size: 0.95rem;
+            vertical-align: middle;
+            border-color: #f0f0f0;
+        }
+        .sz-table tbody tr:last-child td { border-bottom: none; }
+
+        .sz-badge {
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 3px 9px;
+            border-radius: 2px;
+        }
+        .badge-admin     { background: #e6f0ff; color: var(--sz-blue); }
+        .badge-kondukter { background: #ffe6e6; color: var(--sz-red);  }
+        .badge-putnik    { background: #f0f0f0; color: #6c757d;        }
+        .badge-aktivan   { background: #e8f5e9; color: #198754;        }
+        .badge-neaktivan { background: #fdecea; color: #b71c1c;        }
+
+        .btn-sz-primary {
+            background: var(--sz-red); color: white; border: none;
+            font-weight: 600; font-size: 0.875rem; border-radius: 2px; padding: 8px 18px;
+        }
+        .btn-sz-primary:hover { background: #aa0000; color: white; }
+
+        .btn-sz-outline {
+            border: 1px solid var(--sz-blue); color: var(--sz-blue);
+            background: transparent; font-size: 0.8rem; font-weight: 600;
+            border-radius: 2px; padding: 4px 12px;
+        }
+        .btn-sz-outline:hover { background: var(--sz-blue); color: white; }
+
+        .sz-route {
+            display: flex; flex-wrap: wrap; gap: 4px;
+            list-style: none; padding: 0; margin: 0;
+            font-size: 0.85rem; color: #444;
+        }
+        .sz-route li + li::before {
+            content: '›'; color: var(--sz-red); margin-right: 4px; font-weight: 700;
+        }
+        .sz-route .vreme {
+            font-size: 0.72rem; color: #aaa; display: block;
+        }
+
+        .field-label {
+            font-size: 0.7rem; text-transform: uppercase;
+            letter-spacing: 0.5px; color: #aaa; display: block; margin-bottom: 1px;
+        }
+    </style>
+</head>
+<body>
+
+
+<div class="sz-hero">
+    <div class="container">
+        <h1>Admin <span>Panel</span></h1>
+        <p>Centralni sistem za upravljanje infrastrukturom Železnica Srbije</p>
+    </div>
+</div>
+
+<div class="container mb-5">
+
+    <ul class="nav nav-tabs" id="adminTabs">
+        <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-korisnici">Korisnici</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-vozovi">Vozovi i Tipovi</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-linije">Linije i Stanice</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-rasporedi">Rasporedi</button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+
+
+        <div class="tab-pane fade show active" id="tab-korisnici">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="card-header-label">Registar Korisnika</span>
+                        <button class="btn btn-sz-primary">+ Dodaj Korisnika</button>
+                    </div>
+                    <table class="table sz-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Ime i Prezime</th>
+                                <th>Email</th>
+                                <th>Uloga</th>
+                                <th>Specifično polje</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                     
+                            <tr>
+                                <td class="text-muted">1</td>
+                                <td><strong>Marko Marković</strong></td>
+                                <td class="text-muted">marko@zeleznice.rs</td>
+                                <td><span class="sz-badge badge-admin">Administrator</span></td>
+                                <td>
+                                    <span class="field-label">Datum zaposlenja</span>
+                                    12.05.2023.
+                                </td>
+                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                            </tr>
+                   
+                            <tr>
+                                <td class="text-muted">2</td>
+                                <td><strong>Jovan Jovanović</strong></td>
+                                <td class="text-muted">jovan@zeleznice.rs</td>
+                                <td><span class="sz-badge badge-kondukter">Kondukter</span></td>
+                                <td>
+                                    <span class="field-label">Broj legitimacije</span>
+                                    #84729
+                                </td>
+                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                            </tr>
+                  
+                            <tr>
+                                <td class="text-muted">3</td>
+                                <td><strong>Ana Anić</strong></td>
+                                <td class="text-muted">ana@putnik.rs</td>
+                                <td><span class="sz-badge badge-putnik">Putnik</span></td>
+                                <td>
+                                    <span class="field-label">Broj telefona</span>
+                                    0641234567
+                                </td>
+                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tab-vozovi">
+
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="card-header-label">Vozovi</span>
+                        <button class="btn btn-sz-primary">+ Dodaj Voz</button>
+                    </div>
+                    <table class="table sz-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Naziv</th>
+                                <th>Serijski broj</th>
+                                <th>Tip voza</th>
+                                <th>Aktivan</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-muted">1</td>
+                                <td><strong>Soko</strong></td>
+                                <td class="text-muted">SOK-410-001</td>
+                                <td>InterCity</td>
+                                <td><span class="sz-badge badge-aktivan">Da</span></td>
+                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">2</td>
+                                <td><strong>Regio Express</strong></td>
+                                <td class="text-muted">RE-210-007</td>
+                                <td>Regio</td>
+                                <td><span class="sz-badge badge-aktivan">Da</span></td>
+                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">3</td>
+                                <td><strong>Stari Putnik</strong></td>
+                                <td class="text-muted">SP-100-002</td>
+                                <td>Lokalni</td>
+                                <td><span class="sz-badge badge-neaktivan">Ne</span></td>
+                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="card-header-label">Tipovi Voza</span>
+                        <button class="btn btn-sz-primary">+ Dodaj Tip</button>
+                    </div>
+                    <table class="table sz-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Naziv</th>
+                                <th>Opis</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-muted">1</td>
+                                <td><strong>InterCity</strong></td>
+                                <td class="text-muted">Brzi međugradski vozovi</td>
+                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">2</td>
+                                <td><strong>Regio</strong></td>
+                                <td class="text-muted">Regionalni vozovi</td>
+                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">3</td>
+                                <td><strong>Lokalni</strong></td>
+                                <td class="text-muted">Lokalni putnički saobraćaj</td>
+                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="tab-pane fade" id="tab-linije">
+
+ 
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="card-header-label">Linije</span>
+                        <button class="btn btn-sz-primary">+ Nova Linija</button>
+                    </div>
+                    <table class="table sz-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Naziv</th>
+                                <th>Cena po minutu</th>
+                                <th>Ruta (redosled · min od polaska)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-muted">1</td>
+                                <td><strong>Beograd – Novi Sad</strong></td>
+                                <td>15 RSD</td>
+                                <td>
+                                    <ul class="sz-route">
+                                        <li>Beograd Centar<span class="vreme">+0 min</span></li>
+                                        <li>Novi Beograd<span class="vreme">+8 min</span></li>
+                                        <li>Zemun<span class="vreme">+15 min</span></li>
+                                        <li>Stara Pazova<span class="vreme">+30 min</span></li>
+                                        <li>Novi Sad<span class="vreme">+45 min</span></li>
+                                    </ul>
+                                </td>
+                                <td><button class="btn btn-sz-outline">Uredi Rutu</button></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">2</td>
+                                <td><strong>Novi Sad – Subotica</strong></td>
+                                <td>12 RSD</td>
+                                <td>
+                                    <ul class="sz-route">
+                                        <li>Novi Sad<span class="vreme">+0 min</span></li>
+                                        <li>Vrbas<span class="vreme">+20 min</span></li>
+                                        <li>Bačka Topola<span class="vreme">+40 min</span></li>
+                                        <li>Subotica<span class="vreme">+65 min</span></li>
+                                    </ul>
+                                </td>
+                                <td><button class="btn btn-sz-outline">Uredi Rutu</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="card-header-label">Stanice</span>
+                        <button class="btn btn-sz-primary">+ Dodaj Stanicu</button>
+                    </div>
+                    <table class="table sz-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Naziv</th>
+                                <th>Opština</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-muted">1</td>
+                                <td><strong>Beograd Centar</strong></td>
+                                <td class="text-muted">Beograd</td>
+                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">2</td>
+                                <td><strong>Novi Beograd</strong></td>
+                                <td class="text-muted">Beograd</td>
+                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">3</td>
+                                <td><strong>Zemun</strong></td>
+                                <td class="text-muted">Beograd</td>
+                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">4</td>
+                                <td><strong>Stara Pazova</strong></td>
+                                <td class="text-muted">Stara Pazova</td>
+                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">5</td>
+                                <td><strong>Novi Sad</strong></td>
+                                <td class="text-muted">Novi Sad</td>
+                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">6</td>
+                                <td><strong>Vrbas</strong></td>
+                                <td class="text-muted">Vrbas</td>
+                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">7</td>
+                                <td><strong>Bačka Topola</strong></td>
+                                <td class="text-muted">Bačka Topola</td>
+                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">8</td>
+                                <td><strong>Subotica</strong></td>
+                                <td class="text-muted">Subotica</td>
+                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="tab-pane fade" id="tab-rasporedi">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="card-header-label">Rasporedi Vožnje</span>
+                        <button class="btn btn-sz-primary">+ Novi Raspored</button>
+                    </div>
+                    <table class="table sz-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Linija</th>
+                                <th>Voz</th>
+                                <th>Polazak s polazišta</th>
+                                <th>Dolazak na odredište</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-muted">1</td>
+                                <td><strong>Beograd – Novi Sad</strong></td>
+                                <td>
+                                    Soko
+                                    <span class="field-label">SOK-410-001 · InterCity</span>
+                                </td>
+                                <td>07:00, 01.04.2026.</td>
+                                <td>07:45, 01.04.2026.</td>
+                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">2</td>
+                                <td><strong>Beograd – Novi Sad</strong></td>
+                                <td>
+                                    Regio Express
+                                    <span class="field-label">RE-210-007 · Regio</span>
+                                </td>
+                                <td>09:30, 01.04.2026.</td>
+                                <td>10:15, 01.04.2026.</td>
+                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">3</td>
+                                <td><strong>Novi Sad – Subotica</strong></td>
+                                <td>
+                                    Regio Express
+                                    <span class="field-label">RE-210-007 · Regio</span>
+                                </td>
+                                <td>11:00, 01.04.2026.</td>
+                                <td>12:05, 01.04.2026.</td>
+                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

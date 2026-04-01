@@ -24,12 +24,12 @@ namespace ZelezniceSrbije.Repositories
                 return null;
 
 
-            var putnik =  await db.Putnik.FirstOrDefaultAsync(k => k.Id == korisnik.Id);
-            if (putnik != null) return putnik;
             var admin = await db.Admin.FirstOrDefaultAsync(k => k.Id == korisnik.Id);
             if (admin != null) return admin;
             var kondukter = await db.Kondukter.FirstOrDefaultAsync(k => k.Id == korisnik.Id);
             if (kondukter != null) return kondukter;
+            var putnik =  await db.Putnik.FirstOrDefaultAsync(k => k.Id == korisnik.Id);
+            if (putnik != null) return putnik;
 
             return korisnik;
         }
