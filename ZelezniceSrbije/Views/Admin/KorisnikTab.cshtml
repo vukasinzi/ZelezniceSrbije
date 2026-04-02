@@ -1,0 +1,97 @@
+﻿@using System.Linq
+@model ZelezniceSrbije.Models.ViewModels.KorisniciVM
+@{
+    Layout = null;
+}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="card-header-label">Administratori</span>
+        </div>
+        <table class="table sz-table mb-0">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Ime i Prezime</th>
+                    <th>Email</th>
+                    <th>Datum zaposlenja</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model?.Admini == null || !Model.Admini.Any())
+                {
+                    <tr>
+                        <td class="text-muted" colspan="5">Nema administratora.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var a in Model.Admini)
+                    {
+                        <tr>
+                            <td class="text-muted">@a.Id</td>
+                            <td><strong>@a.Ime @a.Prezime</strong></td>
+                            <td class="text-muted">@a.Email</td>
+            <td>
+                <span class="cell-view">@a.Datum_zaposlenja.ToString("dd.MM.yyyy.")</span>
+                <input class="form-control form-control-sm cell-edit d-none" value="@a.Datum_zaposlenja.ToString("dd.MM.yyyy.")">
+            </td>
+            <td class="cell-actions">
+                <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                <button class="btn btn-sz-danger ms-2">Ukloni</button>
+            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="card-header-label">Kondukteri</span>
+        </div>
+        <table class="table sz-table mb-0">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Ime i Prezime</th>
+                    <th>Email</th>
+                    <th>Broj legitimacije</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model?.Kondukteri == null || !Model.Kondukteri.Any())
+                {
+                    <tr>
+                        <td class="text-muted" colspan="5">Nema konduktera.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var k in Model.Kondukteri)
+                    {
+                        <tr>
+                            <td class="text-muted">@k.Id</td>
+                            <td><strong>@k.Ime @k.Prezime</strong></td>
+                            <td class="text-muted">@k.Email</td>
+            <td>
+                <span class="cell-view">@k.Broj_legitimacije</span>
+                <input class="form-control form-control-sm cell-edit d-none" value="@k.Broj_legitimacije">
+            </td>
+            <td class="cell-actions">
+                <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                <button class="btn btn-sz-danger ms-2">Ukloni</button>
+            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

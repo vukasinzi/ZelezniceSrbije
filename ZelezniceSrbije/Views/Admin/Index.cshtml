@@ -1,20 +1,13 @@
-﻿<!DOCTYPE html>
-<html lang="sr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel – Železnice Srbije</title>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
+﻿@{
+    ViewData["Title"] = "Admin Panel";
+}
+<style>
         :root {
             --sz-red: #CC0000;
             --sz-blue: #003B8E;
         }
 
         body {
-            font-family: 'Source Sans 3', sans-serif;
             background-color: #f4f6f9;
         }
 
@@ -68,8 +61,7 @@
             background: none;
         }
         .nav-tabs { border-bottom: 2px solid #dee2e6; margin-bottom: 1.5rem; }
-
-        .card { border: none; border-radius: 4px; }
+.card { border: none; border-radius: 4px; }
         .card-header-label {
             font-family: 'Oswald', sans-serif;
             text-transform: uppercase;
@@ -94,6 +86,9 @@
             border-color: #f0f0f0;
         }
         .sz-table tbody tr:last-child td { border-bottom: none; }
+        .sz-table thead th:last-child { text-align: center; }
+        .sz-table th:last-child,
+        .sz-table td:last-child { width: 160px; }
 
         .sz-badge {
             font-size: 0.72rem;
@@ -138,11 +133,66 @@
             font-size: 0.7rem; text-transform: uppercase;
             letter-spacing: 0.5px; color: #aaa; display: block; margin-bottom: 1px;
         }
+
+        .sz-subtle {
+            font-size: 0.7rem;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            color: #9aa4b2;
+        }
+        .sz-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: #7a8796;
+            margin-bottom: 0.35rem;
+        }
+        .sz-input {
+            border-radius: 2px;
+            border-color: #dee2e6;
+            font-size: 0.95rem;
+        }
+        .sz-input:focus {
+            border-color: var(--sz-blue);
+            box-shadow: 0 0 0 0.15rem rgba(0, 59, 142, 0.15);
+        }
+        .sz-divider {
+            height: 1px;
+            background: #eef1f4;
+            margin: 1.25rem 0;
+        }
+        .sz-help {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        .sz-note {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #4f5b6b;
+        }
+        .btn-sz-danger {
+            border: 1px solid #b71c1c;
+            color: #b71c1c;
+            background: #fff5f5;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 2px;
+            padding: 4px 12px;
+        }
+        .btn-sz-danger:hover { background: #b71c1c; color: white; }
+        .cell-actions {
+            white-space: nowrap;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            align-items: center;
+        }
+        .btn-match-input {
+            height: 38px;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
     </style>
-</head>
-<body>
-
-
 <div class="sz-hero">
     <div class="container">
         <h1>Admin <span>Panel</span></h1>
@@ -151,6 +201,7 @@
 </div>
 
 <div class="container mb-5">
+    <div id="topNotice" class="alert text-center d-none" role="alert"></div>
 
     <ul class="nav nav-tabs" id="adminTabs">
         <li class="nav-item">
@@ -171,62 +222,102 @@
 
 
         <div class="tab-pane fade show active" id="tab-korisnici">
-            <div class="card shadow-sm">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="card-header-label">Registar Korisnika</span>
-                        <button class="btn btn-sz-primary">+ Dodaj Korisnika</button>
+            <div class="row g-4">
+                <div class="col-lg-5">
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="card-header-label">Promocija korisnika</span>
+                                <span class="sz-subtle">Pretraga po emailu</span>
+                            </div>
+                            <form id="promocijaForm" asp-controller="Admin" asp-action="PromovisiUlogu" method="post">
+                                <div class="mb-3">
+                                    <label class="form-label sz-label">Email korisnika</label>
+                                    <input type="email" name="email" class="form-control sz-input" placeholder="ime.prezime@email.com">
+                                </div>
+
+                                <div class="row g-3 align-items-end">
+                                    <div class="col-md-6">
+                                        <label class="form-label sz-label">Uloga</label>
+                                        <select name="uloga" class="form-select sz-input">
+                                            <option value="Administrator" selected>Administrator</option>
+                                            <option value="Kondukter">Kondukter</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="submit" class="btn btn-sz-primary w-100">Promoviši</button>
+                                    </div>
+                                </div>
+
+                                <div class="sz-divider"></div>
+
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label sz-label">Datum zaposlenja (admin)</label>
+                                        <input type="date" name="datum" class="form-control sz-input">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label sz-label">Broj legitimacije (kondukter)</label>
+                                        <input type="text" name="broj_legitimacije" class="form-control sz-input" placeholder="#84729">
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
                     </div>
-                    <table class="table sz-table mb-0">
-                        <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>Ime i Prezime</th>
-                                <th>Email</th>
-                                <th>Uloga</th>
-                                <th>Specifično polje</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                     
-                            <tr>
-                                <td class="text-muted">1</td>
-                                <td><strong>Marko Marković</strong></td>
-                                <td class="text-muted">marko@zeleznice.rs</td>
-                                <td><span class="sz-badge badge-admin">Administrator</span></td>
-                                <td>
-                                    <span class="field-label">Datum zaposlenja</span>
-                                    12.05.2023.
-                                </td>
-                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
-                            </tr>
-                   
-                            <tr>
-                                <td class="text-muted">2</td>
-                                <td><strong>Jovan Jovanović</strong></td>
-                                <td class="text-muted">jovan@zeleznice.rs</td>
-                                <td><span class="sz-badge badge-kondukter">Kondukter</span></td>
-                                <td>
-                                    <span class="field-label">Broj legitimacije</span>
-                                    #84729
-                                </td>
-                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
-                            </tr>
-                  
-                            <tr>
-                                <td class="text-muted">3</td>
-                                <td><strong>Ana Anić</strong></td>
-                                <td class="text-muted">ana@putnik.rs</td>
-                                <td><span class="sz-badge badge-putnik">Putnik</span></td>
-                                <td>
-                                    <span class="field-label">Broj telefona</span>
-                                    0641234567
-                                </td>
-                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+                </div>
+
+                <div class="col-lg-7">
+                    <div id="korisniciTabContent">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="card-header-label">Administratori</span>
+                                </div>
+                                <table class="table sz-table mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Ime i Prezime</th>
+                                            <th>Email</th>
+                                            <th>Datum zaposlenja</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-muted" colspan="5">Učitavanje...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="card shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="card-header-label">Kondukteri</span>
+                                </div>
+                                <table class="table sz-table mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Ime i Prezime</th>
+                                            <th>Email</th>
+                                            <th>Broj legitimacije</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-muted" colspan="5">Učitavanje...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -254,27 +345,81 @@
                         <tbody>
                             <tr>
                                 <td class="text-muted">1</td>
-                                <td><strong>Soko</strong></td>
-                                <td class="text-muted">SOK-410-001</td>
-                                <td>InterCity</td>
-                                <td><span class="sz-badge badge-aktivan">Da</span></td>
-                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                                <td>
+                                    <strong class="cell-view">Soko</strong>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Soko">
+                                </td>
+                                <td class="text-muted">
+                                    <span class="cell-view">SOK-410-001</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="SOK-410-001">
+                                </td>
+                                <td>
+                                    <span class="cell-view">InterCity</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="InterCity">
+                                </td>
+                                <td>
+                                    <span class="sz-badge badge-aktivan cell-view">Da</span>
+                                    <select class="form-select form-select-sm cell-edit d-none">
+                                        <option selected>Da</option>
+                                        <option>Ne</option>
+                                    </select>
+                                </td>
+                                <td class="cell-actions">
+                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="text-muted">2</td>
-                                <td><strong>Regio Express</strong></td>
-                                <td class="text-muted">RE-210-007</td>
-                                <td>Regio</td>
-                                <td><span class="sz-badge badge-aktivan">Da</span></td>
-                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                                <td>
+                                    <strong class="cell-view">Regio Express</strong>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Regio Express">
+                                </td>
+                                <td class="text-muted">
+                                    <span class="cell-view">RE-210-007</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="RE-210-007">
+                                </td>
+                                <td>
+                                    <span class="cell-view">Regio</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Regio">
+                                </td>
+                                <td>
+                                    <span class="sz-badge badge-aktivan cell-view">Da</span>
+                                    <select class="form-select form-select-sm cell-edit d-none">
+                                        <option selected>Da</option>
+                                        <option>Ne</option>
+                                    </select>
+                                </td>
+                                <td class="cell-actions">
+                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="text-muted">3</td>
-                                <td><strong>Stari Putnik</strong></td>
-                                <td class="text-muted">SP-100-002</td>
-                                <td>Lokalni</td>
-                                <td><span class="sz-badge badge-neaktivan">Ne</span></td>
-                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                                <td>
+                                    <strong class="cell-view">Stari Putnik</strong>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Stari Putnik">
+                                </td>
+                                <td class="text-muted">
+                                    <span class="cell-view">SP-100-002</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="SP-100-002">
+                                </td>
+                                <td>
+                                    <span class="cell-view">Lokalni</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Lokalni">
+                                </td>
+                                <td>
+                                    <span class="sz-badge badge-neaktivan cell-view">Ne</span>
+                                    <select class="form-select form-select-sm cell-edit d-none">
+                                        <option>Da</option>
+                                        <option selected>Ne</option>
+                                    </select>
+                                </td>
+                                <td class="cell-actions">
+                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -300,21 +445,48 @@
                         <tbody>
                             <tr>
                                 <td class="text-muted">1</td>
-                                <td><strong>InterCity</strong></td>
-                                <td class="text-muted">Brzi međugradski vozovi</td>
-                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                                <td>
+                                    <strong class="cell-view">InterCity</strong>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="InterCity">
+                                </td>
+                                <td class="text-muted">
+                                    <span class="cell-view">Brzi medugradski vozovi</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Brzi medugradski vozovi">
+                                </td>
+                                <td class="cell-actions">
+                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="text-muted">2</td>
-                                <td><strong>Regio</strong></td>
-                                <td class="text-muted">Regionalni vozovi</td>
-                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                                <td>
+                                    <strong class="cell-view">Regio</strong>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Regio">
+                                </td>
+                                <td class="text-muted">
+                                    <span class="cell-view">Regionalni vozovi</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Regionalni vozovi">
+                                </td>
+                                <td class="cell-actions">
+                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="text-muted">3</td>
-                                <td><strong>Lokalni</strong></td>
-                                <td class="text-muted">Lokalni putnički saobraćaj</td>
-                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                                <td>
+                                    <strong class="cell-view">Lokalni</strong>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Lokalni">
+                                </td>
+                                <td class="text-muted">
+                                    <span class="cell-view">Lokalni putnicki saobracaj</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Lokalni putnicki saobracaj">
+                                </td>
+                                <td class="cell-actions">
+                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -339,15 +511,21 @@
                                 <th>Id</th>
                                 <th>Naziv</th>
                                 <th>Cena po minutu</th>
-                                <th>Ruta (redosled · min od polaska)</th>
+                                <th>Ruta</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td class="text-muted">1</td>
-                                <td><strong>Beograd – Novi Sad</strong></td>
-                                <td>15 RSD</td>
+                                <td>
+                                    <strong class="cell-view">Beograd – Novi Sad</strong>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Beograd – Novi Sad">
+                                </td>
+                                <td>
+                                    <span class="cell-view">15 RSD</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="15 RSD">
+                                </td>
                                 <td>
                                     <ul class="sz-route">
                                         <li>Beograd Centar<span class="vreme">+0 min</span></li>
@@ -357,21 +535,33 @@
                                         <li>Novi Sad<span class="vreme">+45 min</span></li>
                                     </ul>
                                 </td>
-                                <td><button class="btn btn-sz-outline">Uredi Rutu</button></td>
+                                <td class="cell-actions">
+                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="text-muted">2</td>
-                                <td><strong>Novi Sad – Subotica</strong></td>
-                                <td>12 RSD</td>
+                                <td>
+                                    <strong class="cell-view">Novi Sad – Subotica</strong>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Novi Sad – Subotica">
+                                </td>
+                                <td>
+                                    <span class="cell-view">12 RSD</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="12 RSD">
+                                </td>
                                 <td>
                                     <ul class="sz-route">
                                         <li>Novi Sad<span class="vreme">+0 min</span></li>
                                         <li>Vrbas<span class="vreme">+20 min</span></li>
-                                        <li>Bačka Topola<span class="vreme">+40 min</span></li>
+                                        <li>Backa Topola<span class="vreme">+40 min</span></li>
                                         <li>Subotica<span class="vreme">+65 min</span></li>
                                     </ul>
                                 </td>
-                                <td><button class="btn btn-sz-outline">Uredi Rutu</button></td>
+                                <td class="cell-actions">
+                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -384,63 +574,150 @@
                         <span class="card-header-label">Stanice</span>
                         <button class="btn btn-sz-primary">+ Dodaj Stanicu</button>
                     </div>
+                    <div class="row g-3 align-items-end mb-3">
+                        <div class="col-md-8">
+                            <label class="form-label sz-label">Region</label>
+                            <input type="text" class="form-control sz-input" list="regionList" placeholder="Izaberi region">
+                            <datalist id="regionList">
+                                <option value="Beogradski region"></option>
+                                <option value="Vojvodina"></option>
+                                <option value="Šumadija i Zapadna Srbija"></option>
+                                <option value="Južna i Istocna Srbija"></option>
+                            </datalist>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-sz-outline w-100 btn-match-input">Prikaži stanice</button>
+                        </div>
+                    </div>
                     <table class="table sz-table mb-0">
                         <thead>
                             <tr>
                                 <th>Id</th>
                                 <th>Naziv</th>
-                                <th>Opština</th>
+                                <th>Region</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td class="text-muted">1</td>
-                                <td><strong>Beograd Centar</strong></td>
-                                <td class="text-muted">Beograd</td>
-                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                                <td>
+                                    <strong class="cell-view">Beograd Centar</strong>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Beograd Centar">
+                                </td>
+                                <td class="text-muted">
+                                    <span class="cell-view">Beogradski region</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Beogradski region">
+                                </td>
+                                <td class="cell-actions">
+                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="text-muted">2</td>
-                                <td><strong>Novi Beograd</strong></td>
-                                <td class="text-muted">Beograd</td>
-                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                                <td>
+                                    <strong class="cell-view">Novi Beograd</strong>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Novi Beograd">
+                                </td>
+                                <td class="text-muted">
+                                    <span class="cell-view">Beogradski region</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Beogradski region">
+                                </td>
+                                <td class="cell-actions">
+                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="text-muted">3</td>
-                                <td><strong>Zemun</strong></td>
-                                <td class="text-muted">Beograd</td>
-                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                                <td>
+                                    <strong class="cell-view">Zemun</strong>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Zemun">
+                                </td>
+                                <td class="text-muted">
+                                    <span class="cell-view">Beogradski region</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Beogradski region">
+                                </td>
+                                <td class="cell-actions">
+                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="text-muted">4</td>
-                                <td><strong>Stara Pazova</strong></td>
-                                <td class="text-muted">Stara Pazova</td>
-                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                                <td>
+                                    <strong class="cell-view">Stara Pazova</strong>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Stara Pazova">
+                                </td>
+                                <td class="text-muted">
+                                    <span class="cell-view">Vojvodina</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Vojvodina">
+                                </td>
+                                <td class="cell-actions">
+                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="text-muted">5</td>
-                                <td><strong>Novi Sad</strong></td>
-                                <td class="text-muted">Novi Sad</td>
-                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                                <td>
+                                    <strong class="cell-view">Novi Sad</strong>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Novi Sad">
+                                </td>
+                                <td class="text-muted">
+                                    <span class="cell-view">Vojvodina</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Vojvodina">
+                                </td>
+                                <td class="cell-actions">
+                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="text-muted">6</td>
-                                <td><strong>Vrbas</strong></td>
-                                <td class="text-muted">Vrbas</td>
-                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                                <td>
+                                    <strong class="cell-view">Vrbas</strong>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Vrbas">
+                                </td>
+                                <td class="text-muted">
+                                    <span class="cell-view">Vojvodina</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Vojvodina">
+                                </td>
+                                <td class="cell-actions">
+                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="text-muted">7</td>
-                                <td><strong>Bačka Topola</strong></td>
-                                <td class="text-muted">Bačka Topola</td>
-                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                                <td>
+                                    <strong class="cell-view">Backa Topola</strong>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Backa Topola">
+                                </td>
+                                <td class="text-muted">
+                                    <span class="cell-view">Vojvodina</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Vojvodina">
+                                </td>
+                                <td class="cell-actions">
+                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="text-muted">8</td>
-                                <td><strong>Subotica</strong></td>
-                                <td class="text-muted">Subotica</td>
-                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                                <td>
+                                    <strong class="cell-view">Subotica</strong>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Subotica">
+                                </td>
+                                <td class="text-muted">
+                                    <span class="cell-view">Vojvodina</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="Vojvodina">
+                                </td>
+                                <td class="cell-actions">
+                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -462,8 +739,8 @@
                                 <th>Id</th>
                                 <th>Linija</th>
                                 <th>Voz</th>
-                                <th>Polazak s polazišta</th>
-                                <th>Dolazak na odredište</th>
+                                <th>Polazak</th>
+                                <th>Dolazak</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -475,9 +752,18 @@
                                     Soko
                                     <span class="field-label">SOK-410-001 · InterCity</span>
                                 </td>
-                                <td>07:00, 01.04.2026.</td>
-                                <td>07:45, 01.04.2026.</td>
-                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                                <td>
+                                    <span class="cell-view">07:00, 01.04.2026.</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="07:00, 01.04.2026.">
+                                </td>
+                                <td>
+                                    <span class="cell-view">07:45, 01.04.2026.</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="07:45, 01.04.2026.">
+                                </td>
+                                <td class="cell-actions">
+                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="text-muted">2</td>
@@ -486,9 +772,18 @@
                                     Regio Express
                                     <span class="field-label">RE-210-007 · Regio</span>
                                 </td>
-                                <td>09:30, 01.04.2026.</td>
-                                <td>10:15, 01.04.2026.</td>
-                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                                <td>
+                                    <span class="cell-view">09:30, 01.04.2026.</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="09:30, 01.04.2026.">
+                                </td>
+                                <td>
+                                    <span class="cell-view">10:15, 01.04.2026.</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="10:15, 01.04.2026.">
+                                </td>
+                                <td class="cell-actions">
+                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="text-muted">3</td>
@@ -497,9 +792,18 @@
                                     Regio Express
                                     <span class="field-label">RE-210-007 · Regio</span>
                                 </td>
-                                <td>11:00, 01.04.2026.</td>
-                                <td>12:05, 01.04.2026.</td>
-                                <td><button class="btn btn-sz-outline">Izmeni</button></td>
+                                <td>
+                                    <span class="cell-view">11:00, 01.04.2026.</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="11:00, 01.04.2026.">
+                                </td>
+                                <td>
+                                    <span class="cell-view">12:05, 01.04.2026.</span>
+                                    <input class="form-control form-control-sm cell-edit d-none" value="12:05, 01.04.2026.">
+                                </td>
+                                <td class="cell-actions">
+                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -510,6 +814,119 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const korisniciTabBtn = document.querySelector('[data-bs-target="#tab-korisnici"]');
+            const korisniciTabContent = document.querySelector('#korisniciTabContent');
+            if (!korisniciTabBtn || !korisniciTabContent) return;
+
+            let loaded = false;
+            const loadLists = () => {
+                if (loaded) return;
+                loaded = true;
+                $('#korisniciTabContent').load('/Admin/UcitajKorisnike');
+            };
+
+            korisniciTabBtn.addEventListener('shown.bs.tab', loadLists);
+
+            if (korisniciTabBtn.classList.contains('active')) {
+                loadLists();
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('.js-edit-toggle');
+            if (!btn) return;
+
+            const row = btn.closest('tr');
+            if (!row) return;
+
+            const isEditing = row.dataset.editing === '1';
+
+            if (!isEditing) {
+                row.dataset.editing = '1';
+                row.querySelectorAll('.cell-view').forEach(el => el.classList.add('d-none'));
+                row.querySelectorAll('.cell-edit').forEach(el => {
+                    const cell = el.closest('td');
+                    const view = cell ? cell.querySelector('.cell-view') : null;
+                    if (view) {
+                        el.value = view.textContent.trim();
+                    }
+                    el.classList.remove('d-none');
+                });
+                btn.textContent = 'Sačuvaj';
+                btn.classList.remove('btn-sz-outline');
+                btn.classList.add('btn-sz-primary');
+                return;
+            }
+
+            row.querySelectorAll('.cell-edit').forEach(el => {
+                const cell = el.closest('td');
+                const view = cell ? cell.querySelector('.cell-view') : null;
+                if (view) {
+                    const newValue = el.value;
+                    view.textContent = newValue;
+                    if (view.classList.contains('badge-aktivan') || view.classList.contains('badge-neaktivan')) {
+                        const yes = newValue.trim().toLowerCase().startsWith('d');
+                        if (yes) {
+                            view.classList.add('badge-aktivan');
+                            view.classList.remove('badge-neaktivan');
+                        } else {
+                            view.classList.add('badge-neaktivan');
+                            view.classList.remove('badge-aktivan');
+                        }
+                    }
+                }
+                el.classList.add('d-none');
+            });
+            row.querySelectorAll('.cell-view').forEach(el => el.classList.remove('d-none'));
+            row.dataset.editing = '0';
+            btn.textContent = 'Izmeni';
+            btn.classList.add('btn-sz-outline');
+            btn.classList.remove('btn-sz-primary');
+            // TODO: ovde pozovi akciju za cuvanje
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('#promocijaForm');
+            const notice = document.querySelector('#topNotice');
+            if (!form || !notice) return;
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                notice.classList.add('d-none');
+                notice.classList.remove('alert-success', 'alert-danger');
+
+                try {
+                    const res = await fetch(form.action, {
+                        method: 'POST',
+                        body: new FormData(form)
+                    });
+                    const text = await res.text();
+                    notice.textContent = text || (res.ok ? 'Uspešno sačuvano.' : 'Greška pri snimanju.');
+                    notice.classList.add(res.ok ? 'alert-success' : 'alert-danger');
+                    notice.classList.remove('d-none');
+
+                    if (res.ok && window.$ && $('#korisniciTabContent').length) {
+                        $('#korisniciTabContent').load('/Admin/UcitajKorisnike');
+                    }
+                } catch (err) {
+                    notice.textContent = 'Greška u komunikaciji sa serverom.';
+                    notice.classList.add('alert-danger');
+                    notice.classList.remove('d-none');
+                }
+            });
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+

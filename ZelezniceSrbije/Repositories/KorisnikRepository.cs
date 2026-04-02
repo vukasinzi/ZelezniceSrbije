@@ -48,5 +48,54 @@ namespace ZelezniceSrbije.Repositories
             await db.SaveChangesAsync();
             return k;
         }
+
+        public async Task<List<Administrator>> UcitajSveAdmine()
+        {
+            return await db.Admin.ToListAsync();
+        }
+
+        public async Task<List<Kondukter>> UcitajSveKonduktere()
+        {
+            return await db.Kondukter.ToListAsync();
+        }
+        public async Task<Korisnik> PronadjiKorisnika(string email)
+        {
+            var korisnik = await db.Korisnik.FirstOrDefaultAsync(k => k.Email == email);
+            if (korisnik == null) return null;
+
+            var admin = await db.Admin.FindAsync(korisnik.Id);
+            if (admin != null) return admin;
+
+            var kondukter = await db.Kondukter.FindAsync(korisnik.Id);
+            if (kondukter != null) return kondukter;
+
+            var putnik = await db.Putnik.FindAsync(korisnik.Id);
+            if (putnik != null) return putnik;
+
+            return korisnik;
+        }
+
+        public async Task IzbrisiDrugeUloge(int id)
+        {
+            await db.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM Putnik WHERE Id = {id}");
+            await db.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM Kondukter WHERE Id = {id}");
+            await db.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM Administrator WHERE Id = {id}");
+        }
+
+
+        public async Task Promovisi(int id, string uloga, DateTime? datum,string broj_legitimacije)
+        {
+            if (uloga == "Kondukter")
+                await db.Database.ExecuteSqlInterpolatedAsync($"INSERT INTO Kondukter (id, broj_legitimacije) VALUES ({id}, {broj_legitimacije})");
+            else if (uloga == "Administrator")
+                await db.Database.ExecuteSqlInterpolatedAsync($"INSERT INTO Administrator (id, datum_zaposlenja) VALUES ({id}, {datum})");
+
+        }
+
+        public async Task<Korisnik> Pronadji(string email)
+        {
+            Korisnik k = await db.Korisnik.FirstOrDefaultAsync(x => x.Email == email);
+            return k;
+        }
     }
 }

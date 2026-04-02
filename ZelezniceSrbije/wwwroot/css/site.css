@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Source+Sans+3:wght@400;500;600&display=swap');
+
 html {
   font-size: 14px;
 }
@@ -19,6 +21,7 @@ html {
 
 body {
   margin-bottom: 60px;
+  font-family: 'Source Sans 3', sans-serif;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
