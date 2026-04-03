@@ -12,6 +12,14 @@ namespace ZelezniceSrbije.Models
             Aktivan = aktivan;
             Tip_voza_id = tip_voza_id;
         }
+        public Voz(string naziv, string serijski_broj, bool aktivan, int tip_voza_id)
+        {
+
+            Naziv = naziv;
+            Serijski_broj = serijski_broj;
+            Aktivan = aktivan;
+            Tip_voza_id = tip_voza_id;
+        }
 
         public int Id { get; set; }
         public string Naziv { get; set; }
@@ -21,6 +29,21 @@ namespace ZelezniceSrbije.Models
         [ForeignKey(nameof(Tip_voza_id))]
 
         public TipVoza TipVoza { get; set; }
-        
+
+        public bool JeValidan()
+        {
+            if (string.IsNullOrWhiteSpace(Naziv) || Naziv.Trim().Length > 100)
+                return false;
+
+            if (string.IsNullOrWhiteSpace(Serijski_broj) || Serijski_broj.Trim().Length > 50)
+                return false;
+
+            if (Tip_voza_id < 0)
+                return false;
+
+            return true;
+        }
+
+
     }
 }

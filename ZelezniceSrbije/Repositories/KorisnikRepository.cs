@@ -141,5 +141,73 @@ namespace ZelezniceSrbije.Repositories
             );
            
         }
+
+        public async Task DodajTipVoza(TipVoza tv)
+        {
+            await db.TipVoza.AddAsync(tv);
+            await db.SaveChangesAsync();
+        }
+
+        public async Task<List<TipVoza>> UcitajSveTipoveVoza()
+        {
+            List<TipVoza> lista = new();
+            lista = await db.TipVoza.ToListAsync();
+            return lista;
+        }
+
+        public async Task<List<Voz>> UcitajSveVozove()
+        {
+            List<Voz> lista = new();
+            lista = await db.Voz.ToListAsync();
+            return lista;
+        }
+
+        public async Task UkloniTipVoza(int id)
+        {
+            var tip = await db.TipVoza.FindAsync(id);
+            if (tip == null) return;
+
+            db.TipVoza.Remove(tip);
+            await db.SaveChangesAsync();
+        }
+
+        public async Task UkloniVoz(int id)
+        {
+            var voz = await db.Voz.FindAsync(id);
+            if (voz == null) return;
+
+            db.Voz.Remove(voz);
+            await db.SaveChangesAsync();
+        }
+
+        public async Task IzmeniTipVoza(TipVoza tv)
+        {
+            var tip = await db.TipVoza.FindAsync(tv.Id);
+            if (tip == null)
+                return;
+            tip.Naziv = tv.Naziv;
+            tip.Opis = tv.Opis;
+            await db.SaveChangesAsync();
+        }
+
+        public async Task IzmeniVoz(Voz v)
+        {
+            var voz = await db.Voz.FindAsync(v.Id);
+            var tip = await db.TipVoza.FindAsync(v.Tip_voza_id);
+            if (voz == null || tip == null)
+                return;
+            voz.Naziv = v.Naziv;
+            voz.Aktivan = v.Aktivan;
+            voz.Serijski_broj = v.Serijski_broj;
+            voz.Tip_voza_id = v.Tip_voza_id;
+            
+            await db.SaveChangesAsync();
+        }
+
+        public async Task DodajVoz(Voz v)
+        {
+            await db.Voz.AddAsync(v);
+            await db.SaveChangesAsync();
+        }
     }
 }

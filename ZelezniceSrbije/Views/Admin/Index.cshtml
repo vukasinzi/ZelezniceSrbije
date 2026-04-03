@@ -325,176 +325,13 @@
         </div>
 
         <div class="tab-pane fade" id="tab-vozovi">
-
-
-            <div class="card shadow-sm mb-4">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="card-header-label">Vozovi</span>
-                        <button class="btn btn-sz-primary">+ Dodaj Voz</button>
+            <div id="vozTabContent">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <span class="text-muted">Učitavanje...</span>
                     </div>
-                    <table class="table sz-table mb-0">
-                        <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>Naziv</th>
-                                <th>Serijski broj</th>
-                                <th>Tip voza</th>
-                                <th>Aktivan</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="text-muted">1</td>
-                                <td>
-                                    <strong class="cell-view">Soko</strong>
-                                    <input class="form-control form-control-sm cell-edit d-none" value="Soko">
-                                </td>
-                                <td class="text-muted">
-                                    <span class="cell-view">SOK-410-001</span>
-                                    <input class="form-control form-control-sm cell-edit d-none" value="SOK-410-001">
-                                </td>
-                                <td>
-                                    <span class="cell-view">InterCity</span>
-                                    <input class="form-control form-control-sm cell-edit d-none" value="InterCity">
-                                </td>
-                                <td>
-                                    <span class="sz-badge badge-aktivan cell-view">Da</span>
-                                    <select class="form-select form-select-sm cell-edit d-none">
-                                        <option selected>Da</option>
-                                        <option>Ne</option>
-                                    </select>
-                                </td>
-                                <td class="cell-actions">
-                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
-                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-muted">2</td>
-                                <td>
-                                    <strong class="cell-view">Regio Express</strong>
-                                    <input class="form-control form-control-sm cell-edit d-none" value="Regio Express">
-                                </td>
-                                <td class="text-muted">
-                                    <span class="cell-view">RE-210-007</span>
-                                    <input class="form-control form-control-sm cell-edit d-none" value="RE-210-007">
-                                </td>
-                                <td>
-                                    <span class="cell-view">Regio</span>
-                                    <input class="form-control form-control-sm cell-edit d-none" value="Regio">
-                                </td>
-                                <td>
-                                    <span class="sz-badge badge-aktivan cell-view">Da</span>
-                                    <select class="form-select form-select-sm cell-edit d-none">
-                                        <option selected>Da</option>
-                                        <option>Ne</option>
-                                    </select>
-                                </td>
-                                <td class="cell-actions">
-                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
-                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-muted">3</td>
-                                <td>
-                                    <strong class="cell-view">Stari Putnik</strong>
-                                    <input class="form-control form-control-sm cell-edit d-none" value="Stari Putnik">
-                                </td>
-                                <td class="text-muted">
-                                    <span class="cell-view">SP-100-002</span>
-                                    <input class="form-control form-control-sm cell-edit d-none" value="SP-100-002">
-                                </td>
-                                <td>
-                                    <span class="cell-view">Lokalni</span>
-                                    <input class="form-control form-control-sm cell-edit d-none" value="Lokalni">
-                                </td>
-                                <td>
-                                    <span class="sz-badge badge-neaktivan cell-view">Ne</span>
-                                    <select class="form-select form-select-sm cell-edit d-none">
-                                        <option>Da</option>
-                                        <option selected>Ne</option>
-                                    </select>
-                                </td>
-                                <td class="cell-actions">
-                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
-                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
-
-
-            <div class="card shadow-sm">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="card-header-label">Tipovi Voza</span>
-                        <button class="btn btn-sz-primary">+ Dodaj Tip</button>
-                    </div>
-                    <table class="table sz-table mb-0">
-                        <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>Naziv</th>
-                                <th>Opis</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="text-muted">1</td>
-                                <td>
-                                    <strong class="cell-view">InterCity</strong>
-                                    <input class="form-control form-control-sm cell-edit d-none" value="InterCity">
-                                </td>
-                                <td class="text-muted">
-                                    <span class="cell-view">Brzi medugradski vozovi</span>
-                                    <input class="form-control form-control-sm cell-edit d-none" value="Brzi medugradski vozovi">
-                                </td>
-                                <td class="cell-actions">
-                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
-                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-muted">2</td>
-                                <td>
-                                    <strong class="cell-view">Regio</strong>
-                                    <input class="form-control form-control-sm cell-edit d-none" value="Regio">
-                                </td>
-                                <td class="text-muted">
-                                    <span class="cell-view">Regionalni vozovi</span>
-                                    <input class="form-control form-control-sm cell-edit d-none" value="Regionalni vozovi">
-                                </td>
-                                <td class="cell-actions">
-                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
-                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-muted">3</td>
-                                <td>
-                                    <strong class="cell-view">Lokalni</strong>
-                                    <input class="form-control form-control-sm cell-edit d-none" value="Lokalni">
-                                </td>
-                                <td class="text-muted">
-                                    <span class="cell-view">Lokalni putnicki saobracaj</span>
-                                    <input class="form-control form-control-sm cell-edit d-none" value="Lokalni putnicki saobracaj">
-                                </td>
-                                <td class="cell-actions">
-                                    <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
-                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
         </div>
 
 
@@ -822,19 +659,48 @@
         document.addEventListener('DOMContentLoaded', () => {
             const korisniciTabBtn = document.querySelector('[data-bs-target="#tab-korisnici"]');
             const korisniciTabContent = document.querySelector('#korisniciTabContent');
-            if (!korisniciTabBtn || !korisniciTabContent) return;
+            if (korisniciTabBtn && korisniciTabContent) {
+                let loaded = false;
+                const loadLists = () => {
+                    if (loaded) return;
+                    loaded = true;
+                    $('#korisniciTabContent').load('/Admin/UcitajKorisnike?ts=' + Date.now());
+                };
 
-            let loaded = false;
-            const loadLists = () => {
-                if (loaded) return;
-                loaded = true;
-                $('#korisniciTabContent').load('/Admin/UcitajKorisnike?ts=' + Date.now());
-            };
+                korisniciTabBtn.addEventListener('shown.bs.tab', loadLists);
 
-            korisniciTabBtn.addEventListener('shown.bs.tab', loadLists);
+                if (korisniciTabBtn.classList.contains('active')) {
+                    loadLists();
+                }
+            }
 
-            if (korisniciTabBtn.classList.contains('active')) {
-                loadLists();
+            const vozTabBtn = document.querySelector('[data-bs-target="#tab-vozovi"]');
+            const vozTabContent = document.querySelector('#vozTabContent');
+            if (vozTabBtn && vozTabContent) {
+                let vozLoaded = false;
+                const loadVozTab = () => {
+                    if (vozLoaded) return;
+                    vozLoaded = true;
+
+                    if (!window.$) {
+                        vozLoaded = false;
+                        vozTabContent.innerHTML = '<div class="alert alert-danger">Nedostaje jQuery za učitavanje taba.</div>';
+                        return;
+                    }
+
+                    $('#vozTabContent').load('/Admin/UcitajSveVozove?ts=' + Date.now(), function (_, status) {
+                        if (status === 'error') {
+                            vozLoaded = false;
+                            vozTabContent.innerHTML = '<div class="alert alert-danger">Greška pri učitavanju vozova i tipova.</div>';
+                        }
+                    });
+                };
+
+                vozTabBtn.addEventListener('shown.bs.tab', loadVozTab);
+
+                if (vozTabBtn.classList.contains('active')) {
+                    loadVozTab();
+                }
             }
         });
 
@@ -848,6 +714,8 @@
             const isEditing = row.dataset.editing === '1';
             const role = row.dataset.role;
             const isUserRow = role === 'Administrator' || role === 'Kondukter';
+            const isVozRow = role === 'Voz';
+            const isTipVozaRow = role === 'TipVoza';
 
             const showNotice = (message, ok) => {
                 const notice = document.querySelector('#topNotice');
@@ -867,6 +735,19 @@
                         if (el.type === 'date') {
                             const raw = el.getAttribute('data-raw');
                             el.value = raw ? raw : view.textContent.trim();
+                        } else if (el.tagName.toLowerCase() === 'select') {
+                            const raw = el.getAttribute('data-raw');
+                            if (raw) {
+                                el.value = raw;
+                            } else if (!view.classList.contains('badge-aktivan') && !view.classList.contains('badge-neaktivan')) {
+                                const viewText = view.textContent.trim().toLowerCase();
+                                const matched = Array.from(el.options).find(opt => (opt.textContent || '').trim().toLowerCase() === viewText);
+                                if (matched) {
+                                    el.value = matched.value;
+                                }
+                            } else {
+                                el.value = view.textContent.trim();
+                            }
                         } else {
                             el.value = view.textContent.trim();
                         }
@@ -892,10 +773,15 @@
                                 view.textContent = '';
                             }
                             el.setAttribute('data-raw', newValue);
-                        } else {
-                            view.textContent = newValue;
+                        } else if (el.tagName.toLowerCase() === 'select') {
+                            const selectedOption = el.options[el.selectedIndex];
+                            const selectedText = selectedOption ? (selectedOption.textContent || '') : newValue;
+                            const selectedValue = selectedOption ? selectedOption.value : newValue;
+                            el.setAttribute('data-raw', selectedValue);
+                            view.textContent = selectedText;
+
                             if (view.classList.contains('badge-aktivan') || view.classList.contains('badge-neaktivan')) {
-                                const yes = newValue.trim().toLowerCase().startsWith('d');
+                                const yes = selectedText.trim().toLowerCase().startsWith('d');
                                 if (yes) {
                                     view.classList.add('badge-aktivan');
                                     view.classList.remove('badge-neaktivan');
@@ -904,6 +790,8 @@
                                     view.classList.remove('badge-aktivan');
                                 }
                             }
+                        } else {
+                            view.textContent = newValue;
                         }
                     }
                     el.classList.add('d-none');
@@ -921,12 +809,18 @@
                 return;
             }
 
-            if (!isUserRow) {
+            if (!isUserRow && !isVozRow && !isTipVozaRow) {
                 applyEdits();
                 return;
             }
 
             const id = row.dataset.id;
+            if (!id || (id === '-' && (isVozRow || isTipVozaRow))) {
+                applyEdits();
+                showNotice('Lokalna izmena (red još nije snimljen na serveru).', true);
+                return;
+            }
+
             if (!id) {
                 showNotice('Nedostaje ID za čuvanje.', false);
                 return;
@@ -934,13 +828,22 @@
 
             const url = role === 'Administrator'
                 ? '/Admin/IzmeniAdministratora'
-                : '/Admin/IzmeniKonduktera';
+                : role === 'Kondukter'
+                    ? '/Admin/IzmeniKonduktera'
+                    : role === 'Voz'
+                        ? '/Admin/IzmeniVoz'
+                        : '/Admin/IzmeniTipVoza';
 
             const form = new FormData();
             form.append('id', id);
             row.querySelectorAll('.cell-edit').forEach(el => {
                 if (el.name) {
-                    form.append(el.name, el.value);
+                    if (isVozRow && el.name === 'aktivan') {
+                        const boolValue = el.value.trim().toLowerCase().startsWith('d') ? 'true' : 'false';
+                        form.append(el.name, boolValue);
+                    } else {
+                        form.append(el.name, el.value);
+                    }
                 }
             });
 
@@ -1024,6 +927,241 @@
                 btn.disabled = false;
                 btn.textContent = originalText;
             }
+        });
+
+        document.addEventListener('click', async (e) => {
+            const btn = e.target.closest('.js-delete-local');
+            if (!btn) return;
+
+            const row = btn.closest('tr');
+            if (!row) return;
+
+            const tbody = row.closest('tbody');
+            const role = row.dataset.role;
+            const id = row.dataset.id;
+            const isVozRow = role === 'Voz';
+            const isTipVozaRow = role === 'TipVoza';
+            const shouldDeleteOnServer = (isVozRow || isTipVozaRow) && id && id !== '-';
+
+            const notice = document.querySelector('#topNotice');
+            const showNotice = (message, ok) => {
+                if (!notice) return;
+                notice.textContent = message;
+                notice.classList.remove('d-none', 'alert-success', 'alert-danger');
+                notice.classList.add(ok ? 'alert-success' : 'alert-danger');
+            };
+
+            const applyLocalDelete = () => {
+                row.remove();
+                if (tbody && !tbody.querySelector('tr')) {
+                    const emptyRow = document.createElement('tr');
+                    if (tbody.id === 'vozoviTableBody') {
+                        emptyRow.className = 'js-voz-empty';
+                        emptyRow.innerHTML = '<td class="text-muted" colspan="6">Nema vozova.</td>';
+                    } else if (tbody.id === 'tipoviTableBody') {
+                        emptyRow.className = 'js-tip-empty';
+                        emptyRow.innerHTML = '<td class="text-muted" colspan="4">Nema tipova vozova.</td>';
+                    }
+                    tbody.appendChild(emptyRow);
+                }
+            };
+
+            const potvrda = confirm('Da li ste sigurni da želite da obrišete ovu stavku?');
+            if (!potvrda) return;
+
+            if (!shouldDeleteOnServer) {
+                applyLocalDelete();
+                showNotice('Stavka je obrisana lokalno (frontend).', true);
+                return;
+            }
+
+            const url = isVozRow ? '/Admin/UkloniVoz' : '/Admin/UkloniTipVoza';
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'Brišem...';
+
+            try {
+                const res = await fetch(url + '?id=' + encodeURIComponent(id), {
+                    method: 'DELETE'
+                });
+                const text = await res.text();
+                if (!res.ok) {
+                    showNotice(text || 'Greška pri brisanju.', false);
+                    btn.disabled = false;
+                    btn.textContent = originalText;
+                    return;
+                }
+
+                if (isTipVozaRow) {
+                    const tipName = row.querySelector('td:nth-child(2) .cell-view')?.textContent?.trim();
+                    const tipSelect = document.querySelector('#vozTipSelect');
+                    if (tipSelect && tipName) {
+                        const optionToRemove = Array.from(tipSelect.options)
+                            .find(opt => opt.textContent.trim().toLowerCase() === tipName.toLowerCase());
+                        if (optionToRemove) {
+                            optionToRemove.remove();
+                        }
+                        tipSelect.disabled = tipSelect.options.length <= 1;
+                        const vozBtn = document.querySelector('#dodajVozBtn');
+                        if (vozBtn) {
+                            vozBtn.disabled = tipSelect.disabled;
+                        }
+                    }
+                }
+
+                applyLocalDelete();
+                showNotice(text || 'Uspešno obrisano.', true);
+            } catch (err) {
+                showNotice('Greška u komunikaciji sa serverom.', false);
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        });
+
+        document.addEventListener('submit', async (e) => {
+            const form = e.target;
+            if (!(form instanceof HTMLFormElement)) return;
+
+            const isDodajVoz = form.id === 'dodajVozForm';
+            const isDodajTip = form.id === 'dodajTipVozaForm';
+            if (!isDodajVoz && !isDodajTip) return;
+
+            e.preventDefault();
+
+            const notice = document.querySelector('#topNotice');
+            const showNotice = (message, ok) => {
+                if (!notice) return;
+                notice.textContent = message;
+                notice.classList.remove('d-none', 'alert-success', 'alert-danger');
+                notice.classList.add(ok ? 'alert-success' : 'alert-danger');
+            };
+
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn ? submitBtn.textContent : '';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Čuvam...';
+            }
+
+            const createEditableCell = (value, inputName, strong, cssClass, editValue = null) => {
+                const cell = document.createElement('td');
+                if (cssClass) {
+                    cell.className = cssClass;
+                }
+
+                const viewEl = document.createElement(strong ? 'strong' : 'span');
+                viewEl.className = 'cell-view';
+                viewEl.textContent = value;
+
+                const editEl = document.createElement('input');
+                editEl.name = inputName;
+                editEl.className = 'form-control form-control-sm cell-edit d-none';
+                editEl.value = editValue ?? value;
+
+                cell.appendChild(viewEl);
+                cell.appendChild(editEl);
+                return cell;
+            };
+
+            const createActionsCell = () => {
+                const cell = document.createElement('td');
+                cell.className = 'cell-actions';
+
+                const editBtn = document.createElement('button');
+                editBtn.className = 'btn btn-sz-outline js-edit-toggle';
+                editBtn.textContent = 'Izmeni';
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'btn btn-sz-danger ms-2 js-delete-local';
+                deleteBtn.textContent = 'Ukloni';
+
+                cell.appendChild(editBtn);
+                cell.appendChild(deleteBtn);
+                return cell;
+            };
+
+            try {
+                const res = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form)
+                });
+                const text = await res.text();
+
+                if (!res.ok) {
+                    showNotice(text || 'Greška pri čuvanju.', false);
+                    return;
+                }
+
+                if (isDodajTip) {
+                    if (window.$ && $('#vozTabContent').length) {
+                        $('#vozTabContent').load('/Admin/UcitajSveVozove?ts=' + Date.now());
+                    }
+                }
+
+                if (isDodajVoz) {
+                    const naziv = (form.querySelector('input[name="naziv"]')?.value || '').trim();
+                    const serijski = (form.querySelector('input[name="serijski_broj"]')?.value || '').trim();
+                    const tipSelect = form.querySelector('select[name="tip_voza_id"]');
+                    const tipVoza = tipSelect && tipSelect.selectedOptions.length
+                        ? (tipSelect.selectedOptions[0].textContent || '').trim()
+                        : '';
+                    const tipVozaId = tipSelect && tipSelect.selectedOptions.length
+                        ? (tipSelect.selectedOptions[0].value || '').trim()
+                        : '';
+                    const aktivan = (form.querySelector('select[name="aktivan"]')?.value || '') === 'true';
+                    const vozoviBody = document.querySelector('#vozoviTableBody');
+
+                    if (vozoviBody && naziv && serijski && tipVoza && tipVozaId) {
+                        vozoviBody.querySelector('.js-voz-empty')?.remove();
+                        const row = document.createElement('tr');
+                        row.dataset.role = 'Voz';
+                        row.dataset.id = '-';
+
+                        const idCell = document.createElement('td');
+                        idCell.className = 'text-muted';
+                        idCell.textContent = '-';
+
+                        const activeCell = document.createElement('td');
+                        const badge = document.createElement('span');
+                        badge.className = `sz-badge ${aktivan ? 'badge-aktivan' : 'badge-neaktivan'} cell-view`;
+                        badge.textContent = aktivan ? 'Da' : 'Ne';
+                        const select = document.createElement('select');
+                        select.name = 'aktivan';
+                        select.className = 'form-select form-select-sm cell-edit d-none';
+                        select.innerHTML = aktivan
+                            ? '<option selected>Da</option><option>Ne</option>'
+                            : '<option>Da</option><option selected>Ne</option>';
+                        activeCell.appendChild(badge);
+                        activeCell.appendChild(select);
+
+                        row.appendChild(idCell);
+                        row.appendChild(createEditableCell(naziv, 'naziv', true, null));
+                        row.appendChild(createEditableCell(serijski, 'serijski_broj', false, 'text-muted'));
+                        row.appendChild(createEditableCell(tipVoza, 'tip_voza_id', false, null, tipVozaId));
+                        row.appendChild(activeCell);
+                        row.appendChild(createActionsCell());
+                        vozoviBody.prepend(row);
+                    }
+                }
+
+                showNotice(text || 'Uspešno sačuvano.', true);
+                form.reset();
+            } catch (err) {
+                showNotice('Greška u komunikaciji sa serverom.', false);
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                }
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const tipSelect = document.querySelector('#vozTipSelect');
+            const vozBtn = document.querySelector('#dodajVozBtn');
+            if (!tipSelect || !vozBtn) return;
+
+            vozBtn.disabled = tipSelect.options.length <= 1;
         });
 
         document.addEventListener('DOMContentLoaded', () => {

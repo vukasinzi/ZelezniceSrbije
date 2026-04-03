@@ -30,8 +30,8 @@ namespace ZelezniceSrbije.Controllers
             var korisnik = await servis.LogInAsync(email, lozinka);
             if (korisnik == null)
             {
-                ModelState.AddModelError("", "Pogresna lozinka ili mejl");
-                return View();
+
+                return BadRequest("Pogresna lozinka ili mejl");
             }
             var rola = korisnik.GetType().Name;
             Debug.WriteLine(rola);
@@ -64,8 +64,8 @@ namespace ZelezniceSrbije.Controllers
             var korisnik = await servis.RegistrujAsync(p);
             if(korisnik == null)
             {
-                ModelState.AddModelError("", "Već postoji korisnik sa tim mejlom.");
-                return View();
+                return BadRequest("Mejl je zauzet");
+
             }
             var rola = korisnik.GetType().Name;
             Debug.WriteLine(rola);
