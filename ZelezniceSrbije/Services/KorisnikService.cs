@@ -3,6 +3,7 @@ using NuGet.Packaging.Signing;
 using System.Threading.Tasks;
 using ZelezniceSrbije.Models;
 using ZelezniceSrbije.Repositories;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ZelezniceSrbije.Services
 {
@@ -50,7 +51,7 @@ namespace ZelezniceSrbije.Services
             return await repo.UcitajSveKonduktere();
         }
 
-        //netestiran
+      
         public async Task<bool> PromovisiUlogu(string email, string uloga, DateTime? datum, string? broj_legitimacije)
         {
             var pronadji = await repo.Pronadji(email);
@@ -64,6 +65,43 @@ namespace ZelezniceSrbije.Services
             await repo.Promovisi(pronadji.Id, uloga,datum,broj_legitimacije);
             return true;
              
+        }
+
+        public async Task<bool> IzmeniAdministratora(int id, string ime, string prezime, string email, DateTime? datum)
+        {
+            if (datum == null || datum.Value > DateTime.Now || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(ime) || string.IsNullOrEmpty(prezime))
+                return false;
+            Administrator admin = new(ime, prezime, email,"dummypolje",datum.Value);
+            await repo.IzmeniAdministratora(admin,id);
+
+            return true;
+
+        }
+
+        public async Task<bool> IzmeniKonduktera(int id, string ime, string prezime, string email, string broj_legitimacije)
+        {
+            if (string.IsNullOrEmpty(broj_legitimacije) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(ime) || string.IsNullOrEmpty(prezime))
+                return false;
+            Kondukter kondukter = new(ime, prezime, email, "dummypolje", broj_legitimacije);
+            await repo.IzmeniKonduktera(kondukter, id);
+
+            return true;
+        }
+
+        public async Task<bool> UkloniAdministratora(int id)
+        {
+           
+            await repo.UkloniAdministratora(id);
+
+            return true;
+        }
+
+        public async Task<bool> UkloniKonduktera(int id)
+        {
+    
+            await repo.UkloniKonduktera(id);
+
+            return true;
         }
     }
 }

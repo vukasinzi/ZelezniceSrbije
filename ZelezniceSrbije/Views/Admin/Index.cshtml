@@ -279,7 +279,8 @@
                                     <thead>
                                         <tr>
                                             <th>Id</th>
-                                            <th>Ime i Prezime</th>
+                                            <th>Ime</th>
+                                            <th>Prezime</th>
                                             <th>Email</th>
                                             <th>Datum zaposlenja</th>
                                             <th></th>
@@ -287,7 +288,7 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td class="text-muted" colspan="5">Učitavanje...</td>
+                                            <td class="text-muted" colspan="6">Učitavanje...</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -303,7 +304,8 @@
                                     <thead>
                                         <tr>
                                             <th>Id</th>
-                                            <th>Ime i Prezime</th>
+                                            <th>Ime</th>
+                                            <th>Prezime</th>
                                             <th>Email</th>
                                             <th>Broj legitimacije</th>
                                             <th></th>
@@ -311,7 +313,7 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td class="text-muted" colspan="5">Učitavanje...</td>
+                                            <td class="text-muted" colspan="6">Učitavanje...</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -826,7 +828,7 @@
             const loadLists = () => {
                 if (loaded) return;
                 loaded = true;
-                $('#korisniciTabContent').load('/Admin/UcitajKorisnike');
+                $('#korisniciTabContent').load('/Admin/UcitajKorisnike?ts=' + Date.now());
             };
 
             korisniciTabBtn.addEventListener('shown.bs.tab', loadLists);
@@ -836,7 +838,7 @@
             }
         });
 
-        document.addEventListener('click', (e) => {
+        document.addEventListener('click', async (e) => {
             const btn = e.target.closest('.js-edit-toggle');
             if (!btn) return;
 
@@ -844,49 +846,184 @@
             if (!row) return;
 
             const isEditing = row.dataset.editing === '1';
+            const role = row.dataset.role;
+            const isUserRow = role === 'Administrator' || role === 'Kondukter';
 
-            if (!isEditing) {
+            const showNotice = (message, ok) => {
+                const notice = document.querySelector('#topNotice');
+                if (!notice) return;
+                notice.textContent = message;
+                notice.classList.remove('d-none', 'alert-success', 'alert-danger');
+                notice.classList.add(ok ? 'alert-success' : 'alert-danger');
+            };
+
+            const enterEditMode = () => {
                 row.dataset.editing = '1';
                 row.querySelectorAll('.cell-view').forEach(el => el.classList.add('d-none'));
                 row.querySelectorAll('.cell-edit').forEach(el => {
                     const cell = el.closest('td');
                     const view = cell ? cell.querySelector('.cell-view') : null;
                     if (view) {
-                        el.value = view.textContent.trim();
+                        if (el.type === 'date') {
+                            const raw = el.getAttribute('data-raw');
+                            el.value = raw ? raw : view.textContent.trim();
+                        } else {
+                            el.value = view.textContent.trim();
+                        }
                     }
                     el.classList.remove('d-none');
                 });
                 btn.textContent = 'Sačuvaj';
                 btn.classList.remove('btn-sz-outline');
                 btn.classList.add('btn-sz-primary');
+            };
+
+            const applyEdits = () => {
+                row.querySelectorAll('.cell-edit').forEach(el => {
+                    const cell = el.closest('td');
+                    const view = cell ? cell.querySelector('.cell-view') : null;
+                    if (view) {
+                        const newValue = el.value;
+                        if (el.type === 'date') {
+                            if (newValue && newValue.includes('-')) {
+                                const parts = newValue.split('-');
+                                view.textContent = `${parts[2]}.${parts[1]}.${parts[0]}.`;
+                            } else {
+                                view.textContent = '';
+                            }
+                            el.setAttribute('data-raw', newValue);
+                        } else {
+                            view.textContent = newValue;
+                            if (view.classList.contains('badge-aktivan') || view.classList.contains('badge-neaktivan')) {
+                                const yes = newValue.trim().toLowerCase().startsWith('d');
+                                if (yes) {
+                                    view.classList.add('badge-aktivan');
+                                    view.classList.remove('badge-neaktivan');
+                                } else {
+                                    view.classList.add('badge-neaktivan');
+                                    view.classList.remove('badge-aktivan');
+                                }
+                            }
+                        }
+                    }
+                    el.classList.add('d-none');
+                });
+                row.querySelectorAll('.cell-view').forEach(el => el.classList.remove('d-none'));
+                row.dataset.editing = '0';
+                btn.textContent = 'Izmeni';
+                btn.classList.add('btn-sz-outline');
+                btn.classList.remove('btn-sz-primary');
+                btn.disabled = false;
+            };
+
+            if (!isEditing) {
+                enterEditMode();
                 return;
             }
 
+            if (!isUserRow) {
+                applyEdits();
+                return;
+            }
+
+            const id = row.dataset.id;
+            if (!id) {
+                showNotice('Nedostaje ID za čuvanje.', false);
+                return;
+            }
+
+            const url = role === 'Administrator'
+                ? '/Admin/IzmeniAdministratora'
+                : '/Admin/IzmeniKonduktera';
+
+            const form = new FormData();
+            form.append('id', id);
             row.querySelectorAll('.cell-edit').forEach(el => {
-                const cell = el.closest('td');
-                const view = cell ? cell.querySelector('.cell-view') : null;
-                if (view) {
-                    const newValue = el.value;
-                    view.textContent = newValue;
-                    if (view.classList.contains('badge-aktivan') || view.classList.contains('badge-neaktivan')) {
-                        const yes = newValue.trim().toLowerCase().startsWith('d');
-                        if (yes) {
-                            view.classList.add('badge-aktivan');
-                            view.classList.remove('badge-neaktivan');
-                        } else {
-                            view.classList.add('badge-neaktivan');
-                            view.classList.remove('badge-aktivan');
-                        }
-                    }
+                if (el.name) {
+                    form.append(el.name, el.value);
                 }
-                el.classList.add('d-none');
             });
-            row.querySelectorAll('.cell-view').forEach(el => el.classList.remove('d-none'));
-            row.dataset.editing = '0';
-            btn.textContent = 'Izmeni';
-            btn.classList.add('btn-sz-outline');
-            btn.classList.remove('btn-sz-primary');
-            // TODO: ovde pozovi akciju za cuvanje
+
+            btn.disabled = true;
+            const originalText = btn.textContent;
+            btn.textContent = 'Čuvam...';
+
+            try {
+                const res = await fetch(url, {
+                    method: 'PUT',
+                    body: form
+                });
+                const text = await res.text();
+                if (!res.ok) {
+                    showNotice(text || 'Greška pri čuvanju.', false);
+                    btn.disabled = false;
+                    btn.textContent = originalText;
+                    return;
+                }
+                showNotice(text || 'Uspešno sačuvano.', true);
+                applyEdits();
+            } catch (err) {
+                showNotice('Greška u komunikaciji sa serverom.', false);
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        });
+
+        document.addEventListener('click', async (e) => {
+            const btn = e.target.closest('.js-delete-user');
+            if (!btn) return;
+
+            const row = btn.closest('tr');
+            if (!row) return;
+
+            const role = row.dataset.role;
+            if (role !== 'Administrator' && role !== 'Kondukter') return;
+
+            const id = row.dataset.id;
+            const showNotice = (message, ok) => {
+                const notice = document.querySelector('#topNotice');
+                if (!notice) return;
+                notice.textContent = message;
+                notice.classList.remove('d-none', 'alert-success', 'alert-danger');
+                notice.classList.add(ok ? 'alert-success' : 'alert-danger');
+            };
+
+            if (!id) {
+                showNotice('Nedostaje ID za brisanje.', false);
+                return;
+            }
+
+            const potvrda = confirm('Da li ste sigurni da želite da obrišete ovog korisnika?');
+            if (!potvrda) return;
+
+            const url = role === 'Administrator'
+                ? '/Admin/UkloniAdministratora'
+                : '/Admin/UkloniKonduktera';
+
+            btn.disabled = true;
+            const originalText = btn.textContent;
+            btn.textContent = 'Brišem...';
+
+            try {
+                const res = await fetch(url + '?id=' + encodeURIComponent(id), {
+                    method: 'DELETE'
+                });
+                const text = await res.text();
+                if (!res.ok) {
+                    showNotice(text || 'Greška pri čuvanju.', false);
+                    btn.disabled = false;
+                    btn.textContent = originalText;
+                    return;
+                }
+                showNotice(text || 'Uspešno obrisano.', true);
+                if (window.$ && $('#korisniciTabContent').length) {
+                    $('#korisniciTabContent').load('/Admin/UcitajKorisnike?ts=' + Date.now());
+                }
+            } catch (err) {
+                showNotice('Greška u komunikaciji sa serverom.', false);
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
         });
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -905,12 +1042,12 @@
                         body: new FormData(form)
                     });
                     const text = await res.text();
-                    notice.textContent = text || (res.ok ? 'Uspešno sačuvano.' : 'Greška pri snimanju.');
+                    notice.textContent = text || (res.ok ? 'Uspešno sačuvano.' : 'Greška pri čuvanju.');
                     notice.classList.add(res.ok ? 'alert-success' : 'alert-danger');
                     notice.classList.remove('d-none');
 
                     if (res.ok && window.$ && $('#korisniciTabContent').length) {
-                        $('#korisniciTabContent').load('/Admin/UcitajKorisnike');
+                        $('#korisniciTabContent').load('/Admin/UcitajKorisnike?ts=' + Date.now());
                     }
                 } catch (err) {
                     notice.textContent = 'Greška u komunikaciji sa serverom.';

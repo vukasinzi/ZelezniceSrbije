@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using ZelezniceSrbije.Data;
 using ZelezniceSrbije.Models;
 
@@ -96,6 +98,48 @@ namespace ZelezniceSrbije.Repositories
         {
             Korisnik k = await db.Korisnik.FirstOrDefaultAsync(x => x.Email == email);
             return k;
+        }
+
+        public async Task IzmeniAdministratora(Administrator admin,int id)
+        {
+            var a = await db.Admin.FirstOrDefaultAsync(x => x.Id == id);
+            if (a == null) return ;
+
+            a.Ime = admin.Ime;
+            a.Prezime = admin.Prezime;
+            a.Email = admin.Email;
+            a.Datum_zaposlenja = admin.Datum_zaposlenja;
+
+            await db.SaveChangesAsync();
+            return;
+        }
+        public async Task IzmeniKonduktera(Kondukter kondukter, int id)
+        {
+            var k = await db.Kondukter.FirstOrDefaultAsync(x => x.Id == id);
+            if (k == null) return;
+
+            k.Ime = kondukter.Ime;
+            k.Prezime = kondukter.Prezime;
+            k.Email = kondukter.Email;
+            k.Broj_legitimacije = kondukter.Broj_legitimacije;
+
+            await db.SaveChangesAsync();
+            return;
+        }
+
+        public async Task UkloniAdministratora(int id)
+        {
+            await db.Database.ExecuteSqlInterpolatedAsync(
+                $"DELETE FROM Administrator WHERE Id = {id}"
+            );
+        }
+
+        public async Task UkloniKonduktera(int id)
+        {
+            await db.Database.ExecuteSqlInterpolatedAsync(
+                $"DELETE FROM Kondukter WHERE Id = {id}"
+            );
+           
         }
     }
 }

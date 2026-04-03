@@ -13,7 +13,8 @@
             <thead>
                 <tr>
                     <th>Id</th>
-                    <th>Ime i Prezime</th>
+                    <th>Ime</th>
+                    <th>Prezime</th>
                     <th>Email</th>
                     <th>Datum zaposlenja</th>
                     <th></th>
@@ -23,24 +24,34 @@
                 @if (Model?.Admini == null || !Model.Admini.Any())
                 {
                     <tr>
-                        <td class="text-muted" colspan="5">Nema administratora.</td>
+                        <td class="text-muted" colspan="6">Nema administratora.</td>
                     </tr>
                 }
                 else
                 {
                     foreach (var a in Model.Admini)
                     {
-                        <tr>
+                        <tr data-role="Administrator" data-id="@a.Id">
                             <td class="text-muted">@a.Id</td>
-                            <td><strong>@a.Ime @a.Prezime</strong></td>
-                            <td class="text-muted">@a.Email</td>
+                            <td>
+                                <strong class="cell-view">@a.Ime</strong>
+                                <input name="ime" class="form-control form-control-sm cell-edit d-none" value="@a.Ime">
+                            </td>
+                            <td>
+                                <strong class="cell-view">@a.Prezime</strong>
+                                <input name="prezime" class="form-control form-control-sm cell-edit d-none" value="@a.Prezime">
+                            </td>
+                            <td class="text-muted">
+                                <span class="cell-view">@a.Email</span>
+                                <input name="email" type="email" class="form-control form-control-sm cell-edit d-none" value="@a.Email">
+                            </td>
             <td>
                 <span class="cell-view">@a.Datum_zaposlenja.ToString("dd.MM.yyyy.")</span>
-                <input class="form-control form-control-sm cell-edit d-none" value="@a.Datum_zaposlenja.ToString("dd.MM.yyyy.")">
+                <input name="datum_zaposlenja" type="date" class="form-control form-control-sm cell-edit d-none" value="@a.Datum_zaposlenja.ToString("yyyy-MM-dd")" data-raw="@a.Datum_zaposlenja.ToString("yyyy-MM-dd")">
             </td>
             <td class="cell-actions">
                 <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
-                <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                <button class="btn btn-sz-danger ms-2 js-delete-user">Ukloni</button>
             </td>
                         </tr>
                     }
@@ -59,7 +70,8 @@
             <thead>
                 <tr>
                     <th>Id</th>
-                    <th>Ime i Prezime</th>
+                    <th>Ime</th>
+                    <th>Prezime</th>
                     <th>Email</th>
                     <th>Broj legitimacije</th>
                     <th></th>
@@ -69,24 +81,34 @@
                 @if (Model?.Kondukteri == null || !Model.Kondukteri.Any())
                 {
                     <tr>
-                        <td class="text-muted" colspan="5">Nema konduktera.</td>
+                        <td class="text-muted" colspan="6">Nema konduktera.</td>
                     </tr>
                 }
                 else
                 {
                     foreach (var k in Model.Kondukteri)
                     {
-                        <tr>
+                        <tr data-role="Kondukter" data-id="@k.Id">
                             <td class="text-muted">@k.Id</td>
-                            <td><strong>@k.Ime @k.Prezime</strong></td>
-                            <td class="text-muted">@k.Email</td>
+                            <td>
+                                <strong class="cell-view">@k.Ime</strong>
+                                <input name="ime" class="form-control form-control-sm cell-edit d-none" value="@k.Ime">
+                            </td>
+                            <td>
+                                <strong class="cell-view">@k.Prezime</strong>
+                                <input name="prezime" class="form-control form-control-sm cell-edit d-none" value="@k.Prezime">
+                            </td>
+                            <td class="text-muted">
+                                <span class="cell-view">@k.Email</span>
+                                <input name="email" type="email" class="form-control form-control-sm cell-edit d-none" value="@k.Email">
+                            </td>
             <td>
                 <span class="cell-view">@k.Broj_legitimacije</span>
-                <input class="form-control form-control-sm cell-edit d-none" value="@k.Broj_legitimacije">
+                <input name="broj_legitimacije" class="form-control form-control-sm cell-edit d-none" value="@k.Broj_legitimacije">
             </td>
             <td class="cell-actions">
                 <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
-                <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                <button class="btn btn-sz-danger ms-2 js-delete-user">Ukloni</button>
             </td>
                         </tr>
                     }
