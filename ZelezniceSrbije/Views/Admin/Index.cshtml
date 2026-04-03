@@ -1099,48 +1099,8 @@
                 }
 
                 if (isDodajVoz) {
-                    const naziv = (form.querySelector('input[name="naziv"]')?.value || '').trim();
-                    const serijski = (form.querySelector('input[name="serijski_broj"]')?.value || '').trim();
-                    const tipSelect = form.querySelector('select[name="tip_voza_id"]');
-                    const tipVoza = tipSelect && tipSelect.selectedOptions.length
-                        ? (tipSelect.selectedOptions[0].textContent || '').trim()
-                        : '';
-                    const tipVozaId = tipSelect && tipSelect.selectedOptions.length
-                        ? (tipSelect.selectedOptions[0].value || '').trim()
-                        : '';
-                    const aktivan = (form.querySelector('select[name="aktivan"]')?.value || '') === 'true';
-                    const vozoviBody = document.querySelector('#vozoviTableBody');
-
-                    if (vozoviBody && naziv && serijski && tipVoza && tipVozaId) {
-                        vozoviBody.querySelector('.js-voz-empty')?.remove();
-                        const row = document.createElement('tr');
-                        row.dataset.role = 'Voz';
-                        row.dataset.id = '-';
-
-                        const idCell = document.createElement('td');
-                        idCell.className = 'text-muted';
-                        idCell.textContent = '-';
-
-                        const activeCell = document.createElement('td');
-                        const badge = document.createElement('span');
-                        badge.className = `sz-badge ${aktivan ? 'badge-aktivan' : 'badge-neaktivan'} cell-view`;
-                        badge.textContent = aktivan ? 'Da' : 'Ne';
-                        const select = document.createElement('select');
-                        select.name = 'aktivan';
-                        select.className = 'form-select form-select-sm cell-edit d-none';
-                        select.innerHTML = aktivan
-                            ? '<option selected>Da</option><option>Ne</option>'
-                            : '<option>Da</option><option selected>Ne</option>';
-                        activeCell.appendChild(badge);
-                        activeCell.appendChild(select);
-
-                        row.appendChild(idCell);
-                        row.appendChild(createEditableCell(naziv, 'naziv', true, null));
-                        row.appendChild(createEditableCell(serijski, 'serijski_broj', false, 'text-muted'));
-                        row.appendChild(createEditableCell(tipVoza, 'tip_voza_id', false, null, tipVozaId));
-                        row.appendChild(activeCell);
-                        row.appendChild(createActionsCell());
-                        vozoviBody.prepend(row);
+                    if (window.$ && $('#vozTabContent').length) {
+                        $('#vozTabContent').load('/Admin/UcitajSveVozove?ts=' + Date.now());
                     }
                 }
 
