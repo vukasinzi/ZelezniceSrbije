@@ -14,6 +14,7 @@ namespace ZelezniceSrbije.Models
 
         public override bool JeValidan()
         {
+            
             if (!base.JeValidan())
                 return false;
 

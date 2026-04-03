@@ -39,8 +39,6 @@ namespace ZelezniceSrbije.Services
 
             return await repo.RegistrujAsync(p);
         }
-
-        //netestiran
         public async Task<List<Administrator>> UcitajSveAdmine()
         {
             return await repo.UcitajSveAdmine();
@@ -51,6 +49,8 @@ namespace ZelezniceSrbije.Services
         {
             return await repo.UcitajSveKonduktere();
         }
+
+        //netestiran
         public async Task<bool> PromovisiUlogu(string email, string uloga, DateTime? datum, string? broj_legitimacije)
         {
             var pronadji = await repo.Pronadji(email);
@@ -58,7 +58,7 @@ namespace ZelezniceSrbije.Services
                 return false;
             if (uloga == "Kondukter" && string.IsNullOrEmpty(broj_legitimacije))
                 return false;
-            if (uloga == "Administrator" && datum  == null)
+            if (uloga == "Administrator" && datum == null)
                 return false;
             await repo.IzbrisiDrugeUloge(pronadji.Id);
             await repo.Promovisi(pronadji.Id, uloga,datum,broj_legitimacije);
