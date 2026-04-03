@@ -90,7 +90,8 @@ namespace ZelezniceSrbije.Services
 
         public async Task<bool> UkloniAdministratora(int id)
         {
-           
+            if (id == null || id < 0)
+                return false;
             await repo.UkloniAdministratora(id);
 
             return true;
@@ -98,7 +99,8 @@ namespace ZelezniceSrbije.Services
 
         public async Task<bool> UkloniKonduktera(int id)
         {
-    
+            if (id == null || id < 0)
+                return false;
             await repo.UkloniKonduktera(id);
 
             return true;

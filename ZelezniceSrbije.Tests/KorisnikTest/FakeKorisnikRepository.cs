@@ -80,5 +80,43 @@ namespace ZelezniceSrbije.Tests.KorisnikTest
             return Task.FromResult(kondukteri);
 
         }
+
+        public Task IzmeniAdministratora(Administrator admin, int id)
+        {
+            var a = admini.FirstOrDefault(x => x.Id == id);
+            if (a == null) return Task.CompletedTask;
+
+            a.Ime = admin.Ime;
+            a.Prezime = admin.Prezime;
+            a.Email = admin.Email;
+            a.Datum_zaposlenja = admin.Datum_zaposlenja;
+
+            return Task.CompletedTask;
+        }
+
+        public Task IzmeniKonduktera(Kondukter kondukter, int id)
+        {
+            var k = kondukteri.FirstOrDefault(x => x.Id == id);
+            if (k == null) return Task.CompletedTask;
+
+            k.Ime = kondukter.Ime;
+            k.Prezime = kondukter.Prezime;
+            k.Email = kondukter.Email;
+            k.Broj_legitimacije = kondukter.Broj_legitimacije;
+
+            return Task.CompletedTask;
+        }
+
+        public Task UkloniAdministratora(int id)
+        {
+            admini.RemoveAll(x => x.Id == id);
+            return Task.CompletedTask;
+        }
+
+        public Task UkloniKonduktera(int id)
+        {
+            kondukteri.RemoveAll(x => x.Id == id);
+            return Task.CompletedTask;
+        }
     }
 }

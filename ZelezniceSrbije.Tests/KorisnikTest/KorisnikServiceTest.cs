@@ -27,7 +27,7 @@ namespace ZelezniceSrbije.Tests.KorisnikTest
         [InlineData("ImeKojeJePredugo123456", "Markovic", "marko4@gmail.com", "0611234567", "sifra123", false)] // ime > 20
         [InlineData("Marko", "PrezimeKojeJePredugoO", "marko5@gmail.com", "0611234567", "sifra123", false)]      // prezime > 20
         [InlineData("ImeKojeJePrecizno20k", "Markovic", "marko6@gmail.com", "0611234567", "sifra123", true)]  // ime = 20
-        [InlineData("Ime", "Prezime", "marecar@gmail.com", "421dsada4", "sifra", false)] // ovde ostaje sifra, pada zbog nje
+        [InlineData("Ime", "Prezime", "marecar@gmail.com", "421dsada4", "sifra", false)] 
         public async Task RegistracijaTestovi(string ime, string prezime, string email, string broj_telefona, string lozinka, bool trebaDaUspe)
         {
             Putnik p = new(ime, prezime, email, broj_telefona, lozinka);
@@ -131,5 +131,104 @@ namespace ZelezniceSrbije.Tests.KorisnikTest
 
             Assert.Equal(trebaDaUspe, rezultat);
         }
+        [Theory]
+        [InlineData(1, true)]
+        [InlineData(-1, false)]
+        public async Task UkloniAdministratoraTest(int id, bool trebaDaUspe)
+        {
+            var admin1 = new Administrator("Milos", "Milosevic", "milos@gmail.com", "lozinka123", DateTime.Now);
+            admin1.Id = 1;
+            var admin2 = new Administrator("Ana", "Anic", "ana@gmail.com", "lozinka456", DateTime.Now);
+            admin2.Id = 2;
+
+            repo.admini.Add(admin1);
+            repo.admini.Add(admin2);
+
+            var ok = await servis.UkloniAdministratora(id);
+
+            Assert.Equal(trebaDaUspe, ok);
+
+            if (trebaDaUspe)
+            {
+                Assert.Single(repo.admini);
+                Assert.Equal("Ana", repo.admini[0].Ime);
+                Assert.Equal("Anic", repo.admini[0].Prezime);
+            }
+            else
+            {
+                Assert.Equal(2, repo.admini.Count);
+            }
+        }
+
+        [Theory]
+        [InlineData(1, true)]
+        [InlineData(-1, false)]
+        public async Task UkloniKondukteraTest(int id, bool trebaDaUspe)
+        {
+            var kondukter1 = new Kondukter("Borko", "Borkovic", "borko@gmail.com", "lozinka123", "99999");
+            kondukter1.Id = 1;
+            var kondukter2 = new Kondukter("Jovan", "Jovanovic", "jovan@gmail.com", "lozinka456", "88888");
+            kondukter2.Id = 2;
+
+            repo.kondukteri.Add(kondukter1);
+            repo.kondukteri.Add(kondukter2);
+
+            var ok = await servis.UkloniKonduktera(id);
+
+            Assert.Equal(trebaDaUspe, ok);
+
+            if (trebaDaUspe)
+            {
+                Assert.Single(repo.kondukteri);
+                Assert.Equal("Jovan", repo.kondukteri[0].Ime);
+                Assert.Equal("Jovanovic", repo.kondukteri[0].Prezime);
+            }
+            else
+            {
+                Assert.Equal(2, repo.kondukteri.Count);
+            }
+        }
+
+        [Theory]
+        [InlineData(1, "Pera", "Peric", "pera@mail.com", "2024-01-01", true)]
+        [InlineData(1, "", "Peric", "pera@mail.com", "2024-01-01", false)]
+        [InlineData(1, "Pera", "", "pera@mail.com", "2024-01-01", false)]
+        [InlineData(1, "Pera", "Peric", "", "2024-01-01", false)]
+        [InlineData(1, "Pera", "Peric", "pera@mail.com", "", false)]
+        [InlineData(1, "Pera", "Peric", "pera@mail.com", "2100-01-01", false)]
+        public async Task IzmeniAdministratoraTest(int id, string ime, string prezime, string email, string datumIso, bool trebaDaUspe)
+        {
+            var admin = new Administrator("Stari", "Ime", "stari@gmail.com", "lozinka123", new DateTime(2020, 1, 1));
+            admin.Id = 1;
+            repo.admini.Add(admin);
+
+            DateTime? datum = null;
+            if (!string.IsNullOrWhiteSpace(datumIso))
+                datum = DateTime.ParseExact(datumIso, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+            var ok = await servis.IzmeniAdministratora(id, ime, prezime, email, datum);
+            Assert.Equal(trebaDaUspe, ok);
+            if (trebaDaUspe)
+                Assert.Equal(ime, repo.admini[0].Ime);
+        }
+
+        [Theory]
+        [InlineData(1, "Pera", "Peric", "pera@mail.com", "12345", true)]
+        [InlineData(1, "", "Peric", "pera@mail.com", "12345", false)]
+        [InlineData(1, "Pera", "", "pera@mail.com", "12345", false)]
+        [InlineData(1, "Pera", "Peric", "", "12345", false)]
+        [InlineData(1, "Pera", "Peric", "pera@mail.com", "", false)]
+        public async Task IzmeniKondukteraTest(int id, string ime, string prezime, string email, string brojLegitimacije, bool trebaDaUspe)
+        {
+            var kondukter = new Kondukter("Stari", "Ime", "stari@gmail.com", "lozinka123", "00000");
+            kondukter.Id = 1;
+            repo.kondukteri.Add(kondukter);
+
+            var ok = await servis.IzmeniKonduktera(id, ime, prezime, email, brojLegitimacije);
+            Assert.Equal(trebaDaUspe, ok);
+            if (trebaDaUspe)
+                Assert.Equal(ime, repo.kondukteri[0].Ime);
+        }
+
     }
 }
