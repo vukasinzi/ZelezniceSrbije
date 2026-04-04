@@ -10,10 +10,10 @@
 
         public Korisnik(string ime, string prezime, string email, string lozinka)
         {
-            Ime = ime;
-            Prezime = prezime;
-            Email = email;
-            Lozinka = lozinka;
+            Ime = ime?.Trim();
+            Prezime = prezime?.Trim();
+            Email = email?.Trim();
+            Lozinka = lozinka?.Trim();
         }
 
         public virtual bool JeValidan()

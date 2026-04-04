@@ -15,8 +15,8 @@ namespace ZelezniceSrbije.Models
         public Voz(string naziv, string serijski_broj, bool aktivan, int tip_voza_id)
         {
 
-            Naziv = naziv;
-            Serijski_broj = serijski_broj;
+            Naziv = naziv?.Trim(); ;
+            Serijski_broj = serijski_broj?.Trim(); ;
             Aktivan = aktivan;
             Tip_voza_id = tip_voza_id;
         }
@@ -38,7 +38,7 @@ namespace ZelezniceSrbije.Models
             if (string.IsNullOrWhiteSpace(Serijski_broj) || Serijski_broj.Trim().Length > 50)
                 return false;
 
-            if (Tip_voza_id < 0)
+            if (Tip_voza_id <= 0)
                 return false;
 
             return true;

@@ -9,7 +9,7 @@ namespace ZelezniceSrbije.Models
         public Putnik(string ime, string prezime, string email, string broj_telefona, string lozinka)
             : base(ime, prezime, email, lozinka)
         {
-            Broj_telefona = broj_telefona;
+            Broj_telefona = broj_telefona?.Trim(); ;
         }
 
         public override bool JeValidan()

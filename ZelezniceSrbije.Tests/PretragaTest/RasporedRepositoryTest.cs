@@ -17,7 +17,7 @@ namespace ZelezniceSrbije.Tests.PretragaTest
             var sub = new Stanica(3, "Subotica", "Subotica");
             context.Stanica.AddRange(bg, ns, sub);
 
-            context.TipVoza.Add(new TipVoza { Id = 1, Naziv = "SOKO", Opis = "Brzi voz" });
+            context.TipVoza.Add(new TipVoza (1,"SOKO","Brzi voz" ));
             var voz = new Voz(1, "IC", "Letacki", true, 1);
             context.Voz.Add(voz);
 

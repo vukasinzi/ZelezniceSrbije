@@ -7,7 +7,7 @@
         public Kondukter(string ime, string prezime, string email, string lozinka, string broj_legitimacije)
             : base(ime, prezime, email, lozinka)
         {
-            Broj_legitimacije = broj_legitimacije;
+            Broj_legitimacije = broj_legitimacije?.Trim();
         }
 
         public override bool JeValidan()

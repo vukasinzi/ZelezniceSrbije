@@ -5,8 +5,8 @@
         public TipVoza(int id,string naziv, string opis)
         {
             Id = id;
-            Naziv = naziv;
-            Opis = opis;
+            Naziv = naziv?.Trim();
+            Opis = opis?.Trim();
         }
         public TipVoza(string naziv,string opis)
         {
@@ -21,10 +21,11 @@
         {
             if (string.IsNullOrWhiteSpace(Naziv) || Naziv.Trim().Length > 100)
                 return false;
-
+            if (string.IsNullOrWhiteSpace(Opis))
+                return false;
             if (Opis != null && Opis.Length > 500)
                 return false;
-
+            
             return true;
         }
 

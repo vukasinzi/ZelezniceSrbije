@@ -5,8 +5,8 @@
         public Stanica(int id, string naziv, string region)
         {
             Id = id;
-            Naziv = naziv;
-            Region = region;
+            Naziv = naziv?.Trim(); 
+            Region = region?.Trim(); 
         }
 
         public int Id { get; set; }
