@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ZelezniceSrbije.Models
+﻿namespace ZelezniceSrbije.Models
 {
     public class Administrator : Korisnik
     {

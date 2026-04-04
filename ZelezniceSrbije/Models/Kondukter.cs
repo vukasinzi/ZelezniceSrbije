@@ -15,7 +15,7 @@
             if (!base.JeValidan())
                 return false;
 
-            if (string.IsNullOrWhiteSpace(Broj_legitimacije))
+            if (string.IsNullOrWhiteSpace(Broj_legitimacije) || Broj_legitimacije.Length > 50)
                 return false;
 
             return true;

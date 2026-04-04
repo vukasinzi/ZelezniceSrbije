@@ -18,11 +18,13 @@
 
         public virtual bool JeValidan()
         {
-            if (string.IsNullOrWhiteSpace(Ime) || Ime.Length > 20 ||
-                string.IsNullOrWhiteSpace(Prezime) || Prezime.Length > 20)
+            if (string.IsNullOrWhiteSpace(Ime) || Ime.Length > 20)
                 return false;
 
-            if (string.IsNullOrWhiteSpace(Email) || !Email.Contains("@"))
+            if (string.IsNullOrWhiteSpace(Prezime) || Prezime.Length > 20)
+                return false;
+
+            if (string.IsNullOrWhiteSpace(Email) || !Email.Contains("@") || Email.Length > 150)
                 return false;
 
             if (string.IsNullOrWhiteSpace(Lozinka) || Lozinka.Length < 6)

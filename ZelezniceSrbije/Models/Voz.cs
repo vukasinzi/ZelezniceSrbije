@@ -7,16 +7,15 @@ namespace ZelezniceSrbije.Models
         public Voz(int id, string naziv, string serijski_broj, bool aktivan, int tip_voza_id)
         {
             Id = id;
-            Naziv = naziv;
-            Serijski_broj = serijski_broj;
+            Naziv = naziv?.Trim();
+            Serijski_broj = serijski_broj?.Trim();
             Aktivan = aktivan;
             Tip_voza_id = tip_voza_id;
         }
         public Voz(string naziv, string serijski_broj, bool aktivan, int tip_voza_id)
         {
-
-            Naziv = naziv?.Trim(); ;
-            Serijski_broj = serijski_broj?.Trim(); ;
+            Naziv = naziv?.Trim();
+            Serijski_broj = serijski_broj?.Trim();
             Aktivan = aktivan;
             Tip_voza_id = tip_voza_id;
         }
@@ -27,15 +26,14 @@ namespace ZelezniceSrbije.Models
         public bool Aktivan { get; set; }
         public int Tip_voza_id { get; set; }
         [ForeignKey(nameof(Tip_voza_id))]
-
         public TipVoza TipVoza { get; set; }
 
         public bool JeValidan()
         {
-            if (string.IsNullOrWhiteSpace(Naziv) || Naziv.Trim().Length > 100)
+            if (string.IsNullOrWhiteSpace(Naziv) || Naziv.Length > 100)
                 return false;
 
-            if (string.IsNullOrWhiteSpace(Serijski_broj) || Serijski_broj.Trim().Length > 50)
+            if (string.IsNullOrWhiteSpace(Serijski_broj) || Serijski_broj.Length > 50)
                 return false;
 
             if (Tip_voza_id <= 0)
@@ -43,7 +41,5 @@ namespace ZelezniceSrbije.Models
 
             return true;
         }
-
-
     }
 }

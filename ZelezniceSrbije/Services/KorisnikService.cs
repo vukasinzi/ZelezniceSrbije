@@ -64,20 +64,20 @@ namespace ZelezniceSrbije.Services
 
         public async Task<bool> IzmeniAdministratora(int id, string ime, string prezime, string email, DateTime? datum)
         {
-            if (datum == null || datum.Value > DateTime.Now || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(ime) || string.IsNullOrEmpty(prezime))
-                return false;
-
+         
             Administrator admin = new(ime, prezime, email, "dummypolje", datum.Value);
+            if (!admin.JeValidan())
+                return false;
             await repo.IzmeniAdministratora(admin, id);
             return true;
         }
 
         public async Task<bool> IzmeniKonduktera(int id, string ime, string prezime, string email, string broj_legitimacije)
-        {
-            if (string.IsNullOrEmpty(broj_legitimacije) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(ime) || string.IsNullOrEmpty(prezime))
-                return false;
 
+        { 
             Kondukter kondukter = new(ime, prezime, email, "dummypolje", broj_legitimacije);
+            if (!kondukter.JeValidan())
+                return false;
             await repo.IzmeniKonduktera(kondukter, id);
             return true;
         }

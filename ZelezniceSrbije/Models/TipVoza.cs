@@ -2,32 +2,31 @@
 {
     public class TipVoza
     {
-        public TipVoza(int id,string naziv, string opis)
+        public TipVoza(int id, string naziv, string opis)
         {
             Id = id;
             Naziv = naziv?.Trim();
             Opis = opis?.Trim();
         }
-        public TipVoza(string naziv,string opis)
+        public TipVoza(string naziv, string opis)
         {
-            Naziv = naziv;
-            Opis = opis;
+            Naziv = naziv?.Trim();
+            Opis = opis?.Trim();
         }
 
         public int Id { get; set; }
         public string Naziv { get; set; }
         public string Opis { get; set; }
+
         public bool JeValidan()
         {
-            if (string.IsNullOrWhiteSpace(Naziv) || Naziv.Trim().Length > 100)
+            if (string.IsNullOrWhiteSpace(Naziv) || Naziv.Length > 100)
                 return false;
-            if (string.IsNullOrWhiteSpace(Opis))
+
+            if (Opis != null && (string.IsNullOrWhiteSpace(Opis) || Opis.Length > 500))
                 return false;
-            if (Opis != null && Opis.Length > 500)
-                return false;
-            
+
             return true;
         }
-
     }
 }
