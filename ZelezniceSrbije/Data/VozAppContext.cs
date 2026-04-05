@@ -25,7 +25,25 @@ namespace ZelezniceSrbije.Data
             modelBuilder.Entity<Kondukter>().ToTable("Kondukter");
             modelBuilder.Entity<Administrator>().ToTable("Administrator");
             modelBuilder.Entity<Korisnik>().ToTable("Korisnik");
-             modelBuilder.Entity<StanicaLinija>().ToTable("StanicaLinija");
+            modelBuilder.Entity<StanicaLinija>(entity =>
+            {
+                entity.ToTable("StanicaLinija");
+
+                entity.Property(x => x.Stanica_id).HasColumnName("Stanica_id");
+                entity.Property(x => x.Linija_id).HasColumnName("Linija_id");
+                entity.Property(x => x.Vreme_od_polaska).HasColumnName("Vreme_od_polaska");
+                entity.Property(x => x.Redosled).HasColumnName("Redosled");
+
+                entity.HasOne(x => x.Stanica)
+                    .WithMany()
+                    .HasForeignKey(x => x.Stanica_id)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(x => x.Linija)
+                    .WithMany()
+                    .HasForeignKey(x => x.Linija_id)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
             modelBuilder.Entity<Raspored>().ToTable("Raspored");
             modelBuilder.Entity<Voz>().ToTable("Voz");
             modelBuilder.Entity<Stanica>().ToTable("Stanica");

@@ -14,6 +14,8 @@ builder.Services.AddScoped<IKorisnikRepository, KorisnikRepository>();
 builder.Services.AddScoped<IKorisnikService, KorisnikService>();
 builder.Services.AddScoped<IVozRepository, VozRepository>();
 builder.Services.AddScoped<IVozService, VozService>();
+builder.Services.AddScoped<ILinijeServis, LinijeServis>();
+builder.Services.AddScoped<ILinijeRepository, LinijeRepository>();
 builder.Services.AddScoped<IRasporedRepository, RasporedRepository>();
 builder.Services.AddScoped<IRasporedService, RasporedService>();
 

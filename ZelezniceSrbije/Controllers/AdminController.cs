@@ -10,11 +10,13 @@ namespace ZelezniceSrbije.Controllers
     {
         private readonly IKorisnikService korisnikServis;
         private readonly IVozService vozServis;
+        private readonly ILinijeServis linijeServis;
 
-        public AdminController(IKorisnikService korisnikServis, IVozService vozServis)
+        public AdminController(IKorisnikService korisnikServis, IVozService vozServis, ILinijeServis linijeServis)
         {
             this.korisnikServis = korisnikServis;
             this.vozServis = vozServis;
+            this.linijeServis = linijeServis;
         }
 
         public IActionResult Index()
@@ -176,6 +178,40 @@ namespace ZelezniceSrbije.Controllers
                 return BadRequest("Neuspesna izmena!");
 
             return Ok("Uspesno izmenjen tip voza.");
+        }
+
+        [HttpGet]
+        public async Task <IActionResult> UcitajLinijeStanice(string region)
+        {
+            var vm = new LinijeStaniceVM()
+            {
+                Linije = await linijeServis.UcitajSveLinije(),
+                Stanice = await linijeServis.UcitajSveStanice(region)
+            };
+          
+            return PartialView("LinijeStaniceTab", vm);
+           
+        }
+        [HttpPost]
+        public async Task<IActionResult> DodajStanicu(string naziv,string region)
+        {
+            var ok = await linijeServis.DodajStanicu(naziv, region);
+            if (!ok)
+                return BadRequest("Neuspesno dodavanje!");
+
+            return Ok("Uspesno dodata stanica.");
+        }
+        [HttpPost]
+        public async Task<IActionResult> DodajLiniju(string naziv, int cena_po_minutu, List<int> stanicaIds, List<int> redosled, List<int> vreme_od_polaska)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest("Cena po minutu mora biti broj.");
+
+            var ok = await linijeServis.DodajLiniju(naziv, cena_po_minutu,stanicaIds,redosled,vreme_od_polaska);
+            if (!ok)
+                return BadRequest("Neuspesno dodavanje!");
+
+            return Ok("Uspesno dodata linija.");
         }
     }
 }

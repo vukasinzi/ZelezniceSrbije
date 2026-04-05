@@ -1,0 +1,398 @@
+@using System.Linq
+@using ZelezniceSrbije.Models.ViewModels
+@model object
+@{
+    Layout = null;
+    var vm = Model as LinijeStaniceVM;
+
+    if (vm == null && Model is ValueTuple<LinijeVM, StaniceVM> tupleModel)
+    {
+        vm = new LinijeStaniceVM
+        {
+            Linije = tupleModel.Item1?.linije?.Select(l => new LinijaDTO
+            {
+                linija = l,
+                stanice = new List<Stanica>()
+            }).ToList() ?? new List<LinijaDTO>(),
+            Stanice = tupleModel.Item2?.stanice ?? new List<Stanica>()
+        };
+    }
+    else if (vm == null && Model is Tuple<LinijeVM, StaniceVM> legacyTuple)
+    {
+        vm = new LinijeStaniceVM
+        {
+            Linije = legacyTuple.Item1?.linije?.Select(l => new LinijaDTO
+            {
+                linija = l,
+                stanice = new List<Stanica>()
+            }).ToList() ?? new List<LinijaDTO>(),
+            Stanice = legacyTuple.Item2?.stanice ?? new List<Stanica>()
+        };
+    }
+    else if (vm == null && Model is LinijeVM onlyLinije)
+    {
+        vm = new LinijeStaniceVM
+        {
+            Linije = onlyLinije.linije?.Select(l => new LinijaDTO
+            {
+                linija = l,
+                stanice = new List<Stanica>()
+            }).ToList() ?? new List<LinijaDTO>(),
+            Stanice = new List<Stanica>()
+        };
+    }
+    else if (vm == null && Model is StaniceVM onlyStanice)
+    {
+        vm = new LinijeStaniceVM
+        {
+            Linije = new List<LinijaDTO>(),
+            Stanice = onlyStanice.stanice ?? new List<Stanica>()
+        };
+    }
+
+    if (vm == null)
+    {
+        var linijeVm = ViewData["LinijeVM"] as LinijeVM ?? ViewBag.LinijeVM as LinijeVM;
+        var staniceVm = ViewData["StaniceVM"] as StaniceVM ?? ViewBag.StaniceVM as StaniceVM;
+        vm = new LinijeStaniceVM
+        {
+            Linije = linijeVm?.linije?.Select(l => new LinijaDTO
+            {
+                linija = l,
+                stanice = new List<Stanica>()
+            }).ToList() ?? new List<LinijaDTO>(),
+            Stanice = staniceVm?.stanice ?? new List<Stanica>()
+        };
+    }
+
+    var linije = vm.Linije ?? Enumerable.Empty<LinijaDTO>();
+    var stanice = vm.Stanice ?? Enumerable.Empty<Stanica>();
+    var regioni = stanice
+        .Select(s => s.Region)
+        .Where(r => !string.IsNullOrWhiteSpace(r))
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .OrderBy(r => r)
+        .ToList();
+}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="card-header-label">Linije</span>
+        </div>
+
+        <form id="dodajLinijaForm" asp-controller="Admin" asp-action="DodajLiniju" method="post" class="row g-3 mb-4">
+            <div class="col-md-7">
+                <label class="form-label sz-label">Naziv linije</label>
+                <input type="text" name="naziv" class="form-control sz-input" placeholder="npr. Beograd - Novi Sad" required>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label sz-label">Cena po minutu (RSD)</label>
+                <input type="number" name="cena_po_minutu" min="0" step="1" class="form-control sz-input" placeholder="npr. 15" required>
+            </div>
+            <div class="col-md-3 d-grid align-content-end">
+                <button type="submit" class="btn btn-sz-primary btn-match-input">Dodaj novu liniju</button>
+            </div>
+
+            <div class="col-12">
+                <div class="row g-2">
+                    <div class="col-md-9">
+                        <input id="linijaStanicaInput" class="form-control sz-input" list="linijaStaniceList" placeholder="Izaberi stanicu i klikni Dodaj">
+                        <datalist id="linijaStaniceList">
+                            @foreach (var stanica in stanice.OrderBy(s => s.Naziv))
+                            {
+                                var optionLabel = string.IsNullOrWhiteSpace(stanica.Region)
+                                    ? stanica.Naziv
+                                    : $"{stanica.Naziv} ({stanica.Region})";
+                                <option value="@optionLabel" data-id="@stanica.Id"></option>
+                            }
+                        </datalist>
+                    </div>
+                    <div class="col-md-3 d-grid">
+                        <button type="button" id="dodajStanicuULinijuBtn" class="btn btn-sz-outline btn-match-input">Dodaj stanicu</button>
+                    </div>
+                </div>
+                <ul id="linijaSelectedStaniceList" class="list-group mt-2"></ul>
+                <div id="linijaSelectedStaniceHidden"></div>
+            </div>
+        </form>
+
+        <table class="table sz-table mb-0">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Naziv</th>
+                    <th class="linija-cena-col">Cena po minutu</th>
+                    <th>Ruta</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="linijeTableBody">
+                @if (!linije.Any())
+                {
+                    <tr class="js-linija-empty">
+                        <td class="text-muted" colspan="5">Nema linija.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var dto in linije)
+                    {
+                        var linija = dto?.linija;
+                        if (linija == null)
+                        {
+                            continue;
+                        }
+                        var linijaStanice = dto.stanice ?? new List<Stanica>();
+                        <tr data-role="Linija" data-id="@linija.Id">
+                            <td class="text-muted">@linija.Id</td>
+                            <td>
+                                <strong class="cell-view">@linija.Naziv</strong>
+                                <input name="naziv" class="form-control form-control-sm cell-edit d-none" value="@linija.Naziv">
+                            </td>
+                            <td class="text-muted linija-cena-col">
+                                <span class="cell-view">@linija.Cena_po_minutu</span>
+                                <input name="cena_po_minutu" type="number" min="0" step="1" class="form-control form-control-sm cell-edit d-none" value="@linija.Cena_po_minutu">
+                            </td>
+                            <td>
+                                @if (!linijaStanice.Any())
+                                {
+                                    <span class="text-muted">Nema povezanih stanica.</span>
+                                }
+                                else
+                                {
+                                    <ul class="sz-route">
+                                        @foreach (var stanicaNaLiniji in linijaStanice)
+                                        {
+                                            <li>@stanicaNaLiniji.Naziv</li>
+                                        }
+                                    </ul>
+                                }
+                            </td>
+                            <td class="cell-actions">
+                                <button type="button" class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                <button type="button" class="btn btn-sz-danger ms-2 js-delete-local">Ukloni</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    (() => {
+        const form = document.querySelector('#dodajLinijaForm');
+        if (!form || form.dataset.linijaStaniceInit === '1') return;
+        form.dataset.linijaStaniceInit = '1';
+
+        const input = form.querySelector('#linijaStanicaInput');
+        const datalist = form.querySelector('#linijaStaniceList');
+        const addBtn = form.querySelector('#dodajStanicuULinijuBtn');
+        const selectedList = form.querySelector('#linijaSelectedStaniceList');
+        const hiddenWrap = form.querySelector('#linijaSelectedStaniceHidden');
+
+        if (!input || !datalist || !addBtn || !selectedList || !hiddenWrap) return;
+
+        const selected = [];
+
+        const syncHiddenInputs = () => {
+            hiddenWrap.innerHTML = '';
+            selected.forEach((item, index) => {
+                const stationIdInput = document.createElement('input');
+                stationIdInput.type = 'hidden';
+                stationIdInput.name = 'stanicaIds';
+                stationIdInput.value = item.id.toString();
+                hiddenWrap.appendChild(stationIdInput);
+
+                const orderInput = document.createElement('input');
+                orderInput.type = 'hidden';
+                orderInput.name = 'redosled';
+                orderInput.value = (index + 1).toString();
+                hiddenWrap.appendChild(orderInput);
+
+                const timeOffsetInput = document.createElement('input');
+                timeOffsetInput.type = 'hidden';
+                timeOffsetInput.name = 'vreme_od_polaska';
+                timeOffsetInput.value = item.vremeOdPolaska.toString();
+                hiddenWrap.appendChild(timeOffsetInput);
+            });
+        };
+
+        const render = () => {
+            selectedList.innerHTML = '';
+
+            selected.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                li.innerHTML = `
+                    <span>${index + 1}. ${item.label}</span>
+                    <div class="d-flex align-items-center gap-2">
+                        <input type="number" min="0" step="1" class="form-control form-control-sm js-vreme-od-polaska" data-station-id="${item.id}" value="${item.vremeOdPolaska}" style="max-width:120px;">
+                        <button type="button" class="btn btn-sm btn-sz-outline" data-up-id="${item.id}" title="Pomeri gore">Gore</button>
+                        <button type="button" class="btn btn-sm btn-sz-outline" data-down-id="${item.id}" title="Pomeri dole">Dole</button>
+                        <button type="button" class="btn btn-sm btn-sz-danger" data-remove-id="${item.id}">Ukloni</button>
+                    </div>
+                `;
+                selectedList.appendChild(li);
+            });
+
+            syncHiddenInputs();
+        };
+
+        const addCurrentStation = () => {
+            const typedValue = (input.value || '').trim();
+            if (!typedValue) return;
+
+            const option = Array.from(datalist.options).find(opt =>
+                (opt.value || '').trim().toLowerCase() === typedValue.toLowerCase()
+            );
+            if (!option) return;
+
+            const id = Number(option.dataset.id);
+            if (!Number.isFinite(id)) return;
+            if (selected.some(s => s.id === id)) {
+                input.value = '';
+                return;
+            }
+
+            selected.push({ id, label: option.value, vremeOdPolaska: 0 });
+            input.value = '';
+            render();
+        };
+
+        addBtn.addEventListener('click', addCurrentStation);
+        input.addEventListener('keydown', (event) => {
+            if (event.key !== 'Enter') return;
+            event.preventDefault();
+            addCurrentStation();
+        });
+
+        selectedList.addEventListener('click', (event) => {
+            const removeBtn = event.target.closest('[data-remove-id]');
+            const upBtn = event.target.closest('[data-up-id]');
+            const downBtn = event.target.closest('[data-down-id]');
+
+            if (removeBtn) {
+                const id = Number(removeBtn.getAttribute('data-remove-id'));
+                const index = selected.findIndex(s => s.id === id);
+                if (index < 0) return;
+
+                selected.splice(index, 1);
+                render();
+                return;
+            }
+
+            if (upBtn) {
+                const id = Number(upBtn.getAttribute('data-up-id'));
+                const index = selected.findIndex(s => s.id === id);
+                if (index <= 0) return;
+
+                [selected[index - 1], selected[index]] = [selected[index], selected[index - 1]];
+                render();
+                return;
+            }
+
+            if (downBtn) {
+                const id = Number(downBtn.getAttribute('data-down-id'));
+                const index = selected.findIndex(s => s.id === id);
+                if (index < 0 || index >= selected.length - 1) return;
+
+                [selected[index + 1], selected[index]] = [selected[index], selected[index + 1]];
+                render();
+            }
+        });
+
+        selectedList.addEventListener('input', (event) => {
+            const timeInput = event.target.closest('.js-vreme-od-polaska');
+            if (!timeInput) return;
+
+            const id = Number(timeInput.getAttribute('data-station-id'));
+            const item = selected.find(s => s.id === id);
+            if (!item) return;
+
+            const parsed = Number(timeInput.value);
+            item.vremeOdPolaska = Number.isFinite(parsed) && parsed >= 0 ? Math.floor(parsed) : 0;
+            syncHiddenInputs();
+        });
+    })();
+</script>
+
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="card-header-label">Stanice</span>
+        </div>
+
+        <form id="dodajStanicaForm" asp-controller="Admin" asp-action="DodajStanicu" method="post" class="row g-3 mb-4">
+            <div class="col-md-5">
+                <label class="form-label sz-label">Naziv stanice</label>
+                <input type="text" name="naziv" class="form-control sz-input" placeholder="npr. Beograd Centar" required>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label sz-label">Region</label>
+                <input type="text" name="region" class="form-control sz-input" list="regionList" placeholder="npr. Vojvodina" required>
+            </div>
+            <div class="col-md-2 d-grid align-content-end">
+                <button type="submit" class="btn btn-sz-primary btn-match-input">Dodaj stanicu</button>
+            </div>
+        </form>
+
+        <form id="filtrirajStaniceForm" class="row g-3 align-items-end mb-3">
+            <div class="col-md-8">
+                <label class="form-label sz-label">Filtriraj po regionu</label>
+                <input type="text" name="region" class="form-control sz-input" list="regionList" placeholder="Svi regioni">
+                <datalist id="regionList">
+                    @foreach (var region in regioni)
+                    {
+                        <option value="@region"></option>
+                    }
+                </datalist>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-sz-outline w-100 btn-match-input">Prikazi stanice</button>
+            </div>
+        </form>
+
+        <table class="table sz-table mb-0">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Naziv</th>
+                    <th>Region</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="staniceTableBody">
+                @if (!stanice.Any())
+                {
+                    <tr class="js-stanica-empty">
+                        <td class="text-muted" colspan="4">Nema stanica.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var stanica in stanice)
+                    {
+                        <tr data-role="Stanica" data-id="@stanica.Id">
+                            <td class="text-muted">@stanica.Id</td>
+                            <td>
+                                <strong class="cell-view">@stanica.Naziv</strong>
+                                <input name="naziv" class="form-control form-control-sm cell-edit d-none" value="@stanica.Naziv">
+                            </td>
+                            <td class="text-muted">
+                                <span class="cell-view">@stanica.Region</span>
+                                <input name="region" class="form-control form-control-sm cell-edit d-none" value="@stanica.Region">
+                            </td>
+                            <td class="cell-actions">
+                                <button type="button" class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                <button type="button" class="btn btn-sz-danger ms-2 js-delete-local">Ukloni</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
