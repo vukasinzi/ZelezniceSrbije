@@ -23,7 +23,7 @@
             if (string.IsNullOrWhiteSpace(Naziv) || Naziv.Length > 100)
                 return false;
 
-            if (Opis != null && (string.IsNullOrWhiteSpace(Opis) || Opis.Length > 500))
+            if (string.IsNullOrWhiteSpace(Opis) || Opis.Length > 500) 
                 return false;
 
             return true;

@@ -51,7 +51,7 @@ namespace ZelezniceSrbije.Services
             if (pronadji == null)
                 return false;
 
-            if (uloga == "Kondukter" && string.IsNullOrEmpty(broj_legitimacije))
+            if (uloga == "Kondukter" && (broj_legitimacije == null ||  string.IsNullOrWhiteSpace(broj_legitimacije.Trim())))
                 return false;
 
             if (uloga == "Administrator" && datum == null)
@@ -65,7 +65,7 @@ namespace ZelezniceSrbije.Services
         public async Task<bool> IzmeniAdministratora(int id, string ime, string prezime, string email, DateTime? datum)
         {
          
-            Administrator admin = new(ime, prezime, email, "dummypolje", datum.Value);
+            Administrator admin = new(ime, prezime, email, "dummypolje", datum);
             if (!admin.JeValidan())
                 return false;
             await repo.IzmeniAdministratora(admin, id);

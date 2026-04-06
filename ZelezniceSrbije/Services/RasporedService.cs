@@ -13,7 +13,7 @@ namespace ZelezniceSrbije.Services
         }
        public async Task<List<RasporedDTO>> PretraziAsync(string polaziste, string odrediste, DateTime datum){
             List<RasporedDTO> lista = new();
-            if (polaziste?.Length == 0 || odrediste?.Length == 0 || polaziste == null || odrediste == null)
+            if ( polaziste == null || odrediste == null || polaziste?.Length == 0 || odrediste?.Length == 0 )
                 return null;
             if (polaziste == odrediste)
                 return null;

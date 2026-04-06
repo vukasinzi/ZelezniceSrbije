@@ -38,9 +38,6 @@ namespace ZelezniceSrbije.Repositories
         public async Task UkloniTipVoza(int id)
         {
             var tip = await db.TipVoza.FindAsync(id);
-            if (tip == null)
-                return;
-
             db.TipVoza.Remove(tip);
             await db.SaveChangesAsync();
         }
@@ -48,9 +45,6 @@ namespace ZelezniceSrbije.Repositories
         public async Task UkloniVoz(int id)
         {
             var voz = await db.Voz.FindAsync(id);
-            if (voz == null)
-                return;
-
             db.Voz.Remove(voz);
             await db.SaveChangesAsync();
         }
@@ -58,9 +52,6 @@ namespace ZelezniceSrbije.Repositories
         public async Task IzmeniTipVoza(TipVoza tipVoza)
         {
             var tip = await db.TipVoza.FindAsync(tipVoza.Id);
-            if (tip == null)
-                return;
-
             tip.Naziv = tipVoza.Naziv;
             tip.Opis = tipVoza.Opis;
             await db.SaveChangesAsync();
@@ -69,16 +60,27 @@ namespace ZelezniceSrbije.Repositories
         public async Task IzmeniVoz(Voz voz)
         {
             var postojeceVozilo = await db.Voz.FindAsync(voz.Id);
-            var tip = await db.TipVoza.FindAsync(voz.Tip_voza_id);
-            if (postojeceVozilo == null || tip == null)
-                return;
-
             postojeceVozilo.Naziv = voz.Naziv;
             postojeceVozilo.Aktivan = voz.Aktivan;
             postojeceVozilo.Serijski_broj = voz.Serijski_broj;
             postojeceVozilo.Tip_voza_id = voz.Tip_voza_id;
-
             await db.SaveChangesAsync();
+        }
+
+        public async Task<bool> PostojiTipVoza(int id)
+        {
+            var tip_voza = await db.TipVoza.FindAsync(id);
+            if (tip_voza != null)
+                return true;
+            return false;
+        }
+
+        public async Task<bool> PostojiVoz(int id)
+        {
+            var voz = await db.Voz.FindAsync(id);
+            if (voz != null)
+                return true;
+            return false;
         }
     }
 }

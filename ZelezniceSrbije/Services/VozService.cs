@@ -27,6 +27,10 @@ namespace ZelezniceSrbije.Services
             Voz voz = new(naziv, serijski_broj, aktivan, tip_voza_id);
             if (!voz.JeValidan())
                 return false;
+            var postoji = await repo.PostojiTipVoza(tip_voza_id);
+
+            if (!postoji)
+                return false;
 
             await repo.DodajVoz(voz);
             return true;
@@ -46,7 +50,10 @@ namespace ZelezniceSrbije.Services
         {
             if (id <= 0)
                 return false;
+            var postoji = await repo.PostojiTipVoza(id);
 
+            if (!postoji)
+                return false;
             await repo.UkloniTipVoza(id);
             return true;
         }
@@ -55,7 +62,9 @@ namespace ZelezniceSrbije.Services
         {
             if (id <= 0)
                 return false;
-
+            var postoji = await repo.PostojiVoz(id);
+            if (!postoji)
+                return false;
             await repo.UkloniVoz(id);
             return true;
         }
@@ -65,7 +74,10 @@ namespace ZelezniceSrbije.Services
             Voz voz = new(id, naziv, serijski_broj, aktivan, tip_voza_id);
             if (!voz.JeValidan())
                 return false;
-
+            var postoji = await repo.PostojiVoz(id);
+            var postoji2 = await repo.PostojiTipVoza(tip_voza_id);
+            if (!postoji || !postoji2)
+                return false;
             await repo.IzmeniVoz(voz);
             return true;
         }
@@ -75,7 +87,9 @@ namespace ZelezniceSrbije.Services
             TipVoza tipVoza = new(id, naziv, opis);
             if (!tipVoza.JeValidan())
                 return false;
-
+            var postoji = await repo.PostojiTipVoza(id);
+            if (!postoji)
+                return false;
             await repo.IzmeniTipVoza(tipVoza);
             return true;
         }

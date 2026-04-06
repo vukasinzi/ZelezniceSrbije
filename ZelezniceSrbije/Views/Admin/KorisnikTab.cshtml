@@ -46,8 +46,8 @@
                                 <input name="email" type="email" class="form-control form-control-sm cell-edit d-none" value="@a.Email">
                             </td>
             <td>
-                <span class="cell-view">@a.Datum_zaposlenja.ToString("dd.MM.yyyy.")</span>
-                <input name="datum_zaposlenja" type="date" class="form-control form-control-sm cell-edit d-none" value="@a.Datum_zaposlenja.ToString("yyyy-MM-dd")" data-raw="@a.Datum_zaposlenja.ToString("yyyy-MM-dd")">
+                <span class="cell-view">@a.Datum_zaposlenja.Value.ToString("dd.MM.yyyy.")</span>
+                <input name="datum_zaposlenja" type="date" class="form-control form-control-sm cell-edit d-none" value="@a.Datum_zaposlenja.Value.ToString("yyyy-MM-dd")" data-raw="@a.Datum_zaposlenja.Value.ToString("yyyy-MM-dd")">
             </td>
             <td class="cell-actions">
                 <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
