@@ -213,5 +213,42 @@ namespace ZelezniceSrbije.Controllers
 
             return Ok("Uspesno dodata linija.");
         }
+        [HttpDelete]
+        public async Task<IActionResult> UkloniLiniju(int id)
+        {
+            var ok = await linijeServis.UkloniLiniju(id);
+            if (!ok)
+                return BadRequest("Neuspesno uklanjanje!");
+
+            return Ok("Uspesno uklonjena linija.");
+        }
+        [HttpDelete]
+        public async Task<IActionResult> UkloniStanicu(int id)
+        {
+            var ok = await linijeServis.UkloniStanicu(id);
+            if (!ok)
+                return BadRequest("Neuspesno uklanjanje!");
+
+            return Ok("Uspesno uklonjena stanica.");
+        }
+        [HttpPut]
+        public async Task<IActionResult> IzmeniLiniju(int id,string naziv,int cena_po_minutu, List<int> stanicaIds, List<int> redosled,List<int> vreme_od_polaska)
+        {
+            var ok = await linijeServis.IzmeniLiniju(id, naziv, cena_po_minutu, stanicaIds, redosled, vreme_od_polaska);
+            if (!ok)
+                return BadRequest("Neuspesna izmena!");
+
+            return Ok("Uspesno izmenjena linija.");
+        }
+        [HttpPut]
+        public async Task<IActionResult> IzmeniStanicu(int id,string naziv, string region)
+        {
+            var ok = await linijeServis.IzmeniStanicu(id,naziv,region);
+            if (!ok)
+                return BadRequest("Neuspesna izmena!");
+
+            return Ok("Uspesno izmenjena linija.");
+        }
+
     }
 }

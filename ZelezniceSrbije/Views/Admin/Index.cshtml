@@ -2,198 +2,76 @@
     ViewData["Title"] = "Admin Panel";
 }
 <style>
-        :root {
-            --sz-red: #CC0000;
-            --sz-blue: #003B8E;
-        }
+    :root {
+        --sz-red: #CC0000;
+        --sz-blue: #003B8E;
+    }
 
-        body {
-            background-color: #f4f6f9;
-        }
+    body { background-color: #f4f6f9; }
 
-        .sz-hero {
-            background: var(--sz-blue);
-            padding: 3rem 2rem 2.5rem;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 2rem;
-        }
-        .sz-hero::before {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; right: 0; height: 6px;
-            background: repeating-linear-gradient(
-                90deg,
-                var(--sz-red) 0px, var(--sz-red) 40px,
-                #fff 40px, #fff 44px
-            );
-        }
-        .sz-hero h1 {
-            font-family: 'Oswald', sans-serif;
-            font-size: 42px;
-            color: white;
-            font-weight: 600;
-            margin: 0 0 8px;
-        }
-        .sz-hero h1 span { color: var(--sz-red); }
-        .sz-hero p {
-            color: rgba(255,255,255,0.8);
-            font-size: 16px;
-            margin: 0;
-        }
+    .sz-hero {
+        background: var(--sz-blue);
+        padding: 3rem 2rem 2.5rem;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+    .sz-hero::before {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0; right: 0; height: 6px;
+        background: repeating-linear-gradient(90deg, var(--sz-red) 0px, var(--sz-red) 40px, #fff 40px, #fff 44px);
+    }
+    .sz-hero h1 { font-family: 'Oswald', sans-serif; font-size: 42px; color: white; font-weight: 600; margin: 0 0 8px; }
+    .sz-hero h1 span { color: var(--sz-red); }
+    .sz-hero p { color: rgba(255,255,255,0.8); font-size: 16px; margin: 0; }
 
-        .nav-tabs .nav-link {
-            font-family: 'Oswald', sans-serif;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #6c757d;
-            border: none;
-            border-bottom: 3px solid transparent;
-            padding: 10px 20px;
-            background: none;
-        }
-        .nav-tabs .nav-link:hover { color: var(--sz-blue); border-bottom-color: var(--sz-blue); }
-        .nav-tabs .nav-link.active {
-            color: var(--sz-blue);
-            border-bottom: 3px solid var(--sz-blue);
-            font-weight: 600;
-            background: none;
-        }
-        .nav-tabs { border-bottom: 2px solid #dee2e6; margin-bottom: 1.5rem; }
-.card { border: none; border-radius: 4px; }
-        .card-header-label {
-            font-family: 'Oswald', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-size: 13px;
-            color: var(--sz-blue);
-        }
+    .nav-tabs .nav-link {
+        font-family: 'Oswald', sans-serif; font-size: 1rem; text-transform: uppercase;
+        letter-spacing: 0.5px; color: #6c757d; border: none;
+        border-bottom: 3px solid transparent; padding: 10px 20px; background: none;
+    }
+    .nav-tabs .nav-link:hover { color: var(--sz-blue); border-bottom-color: var(--sz-blue); }
+    .nav-tabs .nav-link.active { color: var(--sz-blue); border-bottom: 3px solid var(--sz-blue); font-weight: 600; background: none; }
+    .nav-tabs { border-bottom: 2px solid #dee2e6; margin-bottom: 1.5rem; }
 
-        .sz-table thead th {
-            font-family: 'Oswald', sans-serif;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #6c757d;
-            border-bottom: 2px solid var(--sz-blue);
-            padding: 10px 12px;
-        }
-        .sz-table tbody td {
-            padding: 14px 12px;
-            font-size: 0.95rem;
-            vertical-align: middle;
-            border-color: #f0f0f0;
-        }
-        .sz-table tbody tr:last-child td { border-bottom: none; }
-        .sz-table thead th:last-child { text-align: center; }
-        .sz-table th:last-child,
-        .sz-table td:last-child { width: 160px; }
-        .linija-cena-col { width: 105px; }
+    .card { border: none; border-radius: 4px; }
+    .card-header-label { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 1.5px; font-size: 13px; color: var(--sz-blue); }
 
-        .sz-badge {
-            font-size: 0.72rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 3px 9px;
-            border-radius: 2px;
-        }
-        .badge-admin     { background: #e6f0ff; color: var(--sz-blue); }
-        .badge-kondukter { background: #ffe6e6; color: var(--sz-red);  }
-        .badge-putnik    { background: #f0f0f0; color: #6c757d;        }
-        .badge-aktivan   { background: #e8f5e9; color: #198754;        }
-        .badge-neaktivan { background: #fdecea; color: #b71c1c;        }
+    .sz-table thead th { font-family: 'Oswald', sans-serif; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #6c757d; border-bottom: 2px solid var(--sz-blue); padding: 10px 12px; }
+    .sz-table tbody td { padding: 14px 12px; font-size: 0.95rem; vertical-align: middle; border-color: #f0f0f0; }
+    .sz-table tbody tr:last-child td { border-bottom: none; }
+    .sz-table thead th:last-child { text-align: center; }
+    .sz-table th:last-child, .sz-table td:last-child { width: 160px; }
+    .linija-cena-col { width: 105px; }
 
-        .btn-sz-primary {
-            background: var(--sz-red); color: white; border: none;
-            font-weight: 600; font-size: 0.875rem; border-radius: 2px; padding: 8px 18px;
-        }
-        .btn-sz-primary:hover { background: #aa0000; color: white; }
+    .sz-badge { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 3px 9px; border-radius: 2px; }
+    .badge-admin     { background: #e6f0ff; color: var(--sz-blue); }
+    .badge-kondukter { background: #ffe6e6; color: var(--sz-red); }
+    .badge-putnik    { background: #f0f0f0; color: #6c757d; }
+    .badge-aktivan   { background: #e8f5e9; color: #198754; }
+    .badge-neaktivan { background: #fdecea; color: #b71c1c; }
 
-        .btn-sz-outline {
-            border: 1px solid var(--sz-blue); color: var(--sz-blue);
-            background: transparent; font-size: 0.8rem; font-weight: 600;
-            border-radius: 2px; padding: 4px 12px;
-        }
-        .btn-sz-outline:hover { background: var(--sz-blue); color: white; }
+    .btn-sz-primary { background: var(--sz-red); color: white; border: none; font-weight: 600; font-size: 0.875rem; border-radius: 2px; padding: 8px 18px; }
+    .btn-sz-primary:hover { background: #aa0000; color: white; }
+    .btn-sz-outline { border: 1px solid var(--sz-blue); color: var(--sz-blue); background: transparent; font-size: 0.8rem; font-weight: 600; border-radius: 2px; padding: 4px 12px; }
+    .btn-sz-outline:hover { background: var(--sz-blue); color: white; }
+    .btn-sz-danger { border: 1px solid #b71c1c; color: #b71c1c; background: #fff5f5; font-size: 0.8rem; font-weight: 600; border-radius: 2px; padding: 4px 12px; }
+    .btn-sz-danger:hover { background: #b71c1c; color: white; }
 
-        .sz-route {
-            display: flex; flex-wrap: wrap; gap: 4px;
-            list-style: none; padding: 0; margin: 0;
-            font-size: 0.85rem; color: #444;
-        }
-        .sz-route li + li::before {
-            content: '›'; color: var(--sz-red); margin-right: 4px; font-weight: 700;
-        }
-        .sz-route .vreme {
-            font-size: 0.72rem; color: #aaa; display: block;
-        }
+    .sz-route { display: flex; flex-wrap: wrap; gap: 4px; list-style: none; padding: 0; margin: 0; font-size: 0.85rem; color: #444; }
+    .sz-route li + li::before { content: '›'; color: var(--sz-red); margin-right: 4px; font-weight: 700; }
 
-        .field-label {
-            font-size: 0.7rem; text-transform: uppercase;
-            letter-spacing: 0.5px; color: #aaa; display: block; margin-bottom: 1px;
-        }
+    .field-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; color: #aaa; display: block; margin-bottom: 1px; }
+    .sz-subtle { font-size: 0.7rem; letter-spacing: 0.6px; text-transform: uppercase; color: #9aa4b2; }
+    .sz-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.6px; color: #7a8796; margin-bottom: 0.35rem; }
+    .sz-input { border-radius: 2px; border-color: #dee2e6; font-size: 0.95rem; }
+    .sz-input:focus { border-color: var(--sz-blue); box-shadow: 0 0 0 0.15rem rgba(0,59,142,0.15); }
+    .sz-divider { height: 1px; background: #eef1f4; margin: 1.25rem 0; }
+    .cell-actions { white-space: nowrap; display: flex; justify-content: center; gap: 8px; align-items: center; }
+    .btn-match-input { height: 38px; padding-top: 0; padding-bottom: 0; }
+</style>
 
-        .sz-subtle {
-            font-size: 0.7rem;
-            letter-spacing: 0.6px;
-            text-transform: uppercase;
-            color: #9aa4b2;
-        }
-        .sz-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            color: #7a8796;
-            margin-bottom: 0.35rem;
-        }
-        .sz-input {
-            border-radius: 2px;
-            border-color: #dee2e6;
-            font-size: 0.95rem;
-        }
-        .sz-input:focus {
-            border-color: var(--sz-blue);
-            box-shadow: 0 0 0 0.15rem rgba(0, 59, 142, 0.15);
-        }
-        .sz-divider {
-            height: 1px;
-            background: #eef1f4;
-            margin: 1.25rem 0;
-        }
-        .sz-help {
-            font-size: 0.85rem;
-            color: #6c757d;
-        }
-        .sz-note {
-            margin: 0;
-            font-size: 0.9rem;
-            color: #4f5b6b;
-        }
-        .btn-sz-danger {
-            border: 1px solid #b71c1c;
-            color: #b71c1c;
-            background: #fff5f5;
-            font-size: 0.8rem;
-            font-weight: 600;
-            border-radius: 2px;
-            padding: 4px 12px;
-        }
-        .btn-sz-danger:hover { background: #b71c1c; color: white; }
-        .cell-actions {
-            white-space: nowrap;
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            align-items: center;
-        }
-        .btn-match-input {
-            height: 38px;
-            padding-top: 0;
-            padding-bottom: 0;
-        }
-    </style>
 <div class="sz-hero">
     <div class="container">
         <h1>Admin <span>Panel</span></h1>
@@ -205,22 +83,13 @@
     <div id="topNotice" class="alert text-center d-none" role="alert"></div>
 
     <ul class="nav nav-tabs" id="adminTabs">
-        <li class="nav-item">
-            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-korisnici">Korisnici</button>
-        </li>
-        <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-vozovi">Vozovi i Tipovi</button>
-        </li>
-        <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-linije">Linije i Stanice</button>
-        </li>
-        <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-rasporedi">Rasporedi</button>
-        </li>
+        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-korisnici">Korisnici</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-vozovi">Vozovi i Tipovi</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-linije">Linije i Stanice</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-rasporedi">Rasporedi</button></li>
     </ul>
 
     <div class="tab-content">
-
 
         <div class="tab-pane fade show active" id="tab-korisnici">
             <div class="row g-4">
@@ -231,12 +100,14 @@
                                 <span class="card-header-label">Promocija korisnika</span>
                                 <span class="sz-subtle">Pretraga po emailu</span>
                             </div>
-                            <form id="promocijaForm" asp-controller="Admin" asp-action="PromovisiUlogu" method="post">
+                            <form id="promocijaForm"
+                                  asp-controller="Admin" asp-action="PromovisiUlogu" method="post"
+                                  data-reload-target="#korisniciTabContent"
+                                  data-reload-url="/Admin/UcitajKorisnike">
                                 <div class="mb-3">
                                     <label class="form-label sz-label">Email korisnika</label>
                                     <input type="email" name="email" class="form-control sz-input" placeholder="ime.prezime@email.com">
                                 </div>
-
                                 <div class="row g-3 align-items-end">
                                     <div class="col-md-6">
                                         <label class="form-label sz-label">Uloga</label>
@@ -249,9 +120,7 @@
                                         <button type="submit" class="btn btn-sz-primary w-100">Promoviši</button>
                                     </div>
                                 </div>
-
                                 <div class="sz-divider"></div>
-
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label sz-label">Datum zaposlenja (admin)</label>
@@ -263,63 +132,13 @@
                                     </div>
                                 </div>
                             </form>
-
                         </div>
                     </div>
-
                 </div>
 
                 <div class="col-lg-7">
                     <div id="korisniciTabContent">
-                        <div class="card shadow-sm mb-4">
-                            <div class="card-body p-4">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <span class="card-header-label">Administratori</span>
-                                </div>
-                                <table class="table sz-table mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>Id</th>
-                                            <th>Ime</th>
-                                            <th>Prezime</th>
-                                            <th>Email</th>
-                                            <th>Datum zaposlenja</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="text-muted" colspan="6">Učitavanje...</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="card shadow-sm">
-                            <div class="card-body p-4">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <span class="card-header-label">Kondukteri</span>
-                                </div>
-                                <table class="table sz-table mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>Id</th>
-                                            <th>Ime</th>
-                                            <th>Prezime</th>
-                                            <th>Email</th>
-                                            <th>Broj legitimacije</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="text-muted" colspan="6">Učitavanje...</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                        <div class="card shadow-sm"><div class="card-body p-4"><span class="text-muted">Učitavanje...</span></div></div>
                     </div>
                 </div>
             </div>
@@ -327,22 +146,13 @@
 
         <div class="tab-pane fade" id="tab-vozovi">
             <div id="vozTabContent">
-                <div class="card shadow-sm">
-                    <div class="card-body p-4">
-                        <span class="text-muted">Učitavanje...</span>
-                    </div>
-                </div>
+                <div class="card shadow-sm"><div class="card-body p-4"><span class="text-muted">Učitavanje...</span></div></div>
             </div>
         </div>
 
-
         <div class="tab-pane fade" id="tab-linije">
             <div id="linijeStaniceTabContent">
-                <div class="card shadow-sm">
-                    <div class="card-body p-4">
-                        <span class="text-muted">Učitavanje...</span>
-                    </div>
-                </div>
+                <div class="card shadow-sm"><div class="card-body p-4"><span class="text-muted">Učitavanje...</span></div></div>
             </div>
         </div>
 
@@ -356,22 +166,14 @@
                     <table class="table sz-table mb-0">
                         <thead>
                             <tr>
-                                <th>Id</th>
-                                <th>Linija</th>
-                                <th>Voz</th>
-                                <th>Polazak</th>
-                                <th>Dolazak</th>
-                                <th></th>
+                                <th>Id</th><th>Linija</th><th>Voz</th><th>Polazak</th><th>Dolazak</th><th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td class="text-muted">1</td>
                                 <td><strong>Beograd – Novi Sad</strong></td>
-                                <td>
-                                    Soko
-                                    <span class="field-label">SOK-410-001 · InterCity</span>
-                                </td>
+                                <td>Soko<span class="field-label">SOK-410-001 · InterCity</span></td>
                                 <td>
                                     <span class="cell-view">07:00, 01.04.2026.</span>
                                     <input class="form-control form-control-sm cell-edit d-none" value="07:00, 01.04.2026.">
@@ -382,16 +184,13 @@
                                 </td>
                                 <td class="cell-actions">
                                     <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
-                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                    <button class="btn btn-sz-danger ms-2 js-delete">Ukloni</button>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="text-muted">2</td>
                                 <td><strong>Beograd – Novi Sad</strong></td>
-                                <td>
-                                    Regio Express
-                                    <span class="field-label">RE-210-007 · Regio</span>
-                                </td>
+                                <td>Regio Express<span class="field-label">RE-210-007 · Regio</span></td>
                                 <td>
                                     <span class="cell-view">09:30, 01.04.2026.</span>
                                     <input class="form-control form-control-sm cell-edit d-none" value="09:30, 01.04.2026.">
@@ -402,16 +201,13 @@
                                 </td>
                                 <td class="cell-actions">
                                     <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
-                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                    <button class="btn btn-sz-danger ms-2 js-delete">Ukloni</button>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="text-muted">3</td>
                                 <td><strong>Novi Sad – Subotica</strong></td>
-                                <td>
-                                    Regio Express
-                                    <span class="field-label">RE-210-007 · Regio</span>
-                                </td>
+                                <td>Regio Express<span class="field-label">RE-210-007 · Regio</span></td>
                                 <td>
                                     <span class="cell-view">11:00, 01.04.2026.</span>
                                     <input class="form-control form-control-sm cell-edit d-none" value="11:00, 01.04.2026.">
@@ -422,7 +218,7 @@
                                 </td>
                                 <td class="cell-actions">
                                     <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
-                                    <button class="btn btn-sz-danger ms-2">Ukloni</button>
+                                    <button class="btn btn-sz-danger ms-2 js-delete">Ukloni</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -434,610 +230,184 @@
     </div>
 </div>
 
-
 @section Scripts {
     <script>
+        // ── Helpers ───────────────────────────────────────────────────────────────
+        const showNotice = (text, ok) => {
+            const el = document.querySelector('#topNotice');
+            if (!el) return;
+            el.textContent = text;
+            el.className = `alert text-center ${ok ? 'alert-success' : 'alert-danger'}`;
+        };
+
+        // ── Tab lazy-loading ──────────────────────────────────────────────────────
+        const initTab = (target, sel, url) => {
+            const btn = document.querySelector(`[data-bs-target="${target}"]`);
+            if (!btn) return () => {};
+            let done = false;
+            const load = (force = false, region = '') => {
+                if (done && !force && !region) return;
+                done = true;
+                const q = new URLSearchParams({ ts: Date.now() });
+                if (region) q.set('region', region);
+                $(sel).load(`${url}?${q}`, (_, status) => {
+                    if (status === 'error') { done = false; document.querySelector(sel).innerHTML = '<div class="alert alert-danger">Greška pri učitavanju.</div>'; }
+                });
+            };
+            btn.addEventListener('shown.bs.tab', () => load());
+            if (btn.classList.contains('active')) load();
+            return load;
+        };
+
         document.addEventListener('DOMContentLoaded', () => {
-            const korisniciTabBtn = document.querySelector('[data-bs-target="#tab-korisnici"]');
-            const korisniciTabContent = document.querySelector('#korisniciTabContent');
-            if (korisniciTabBtn && korisniciTabContent) {
-                let loaded = false;
-                const loadLists = () => {
-                    if (loaded) return;
-                    loaded = true;
-                    $('#korisniciTabContent').load('/Admin/UcitajKorisnike?ts=' + Date.now());
-                };
-
-                korisniciTabBtn.addEventListener('shown.bs.tab', loadLists);
-
-                if (korisniciTabBtn.classList.contains('active')) {
-                    loadLists();
-                }
-            }
-
-            const vozTabBtn = document.querySelector('[data-bs-target="#tab-vozovi"]');
-            const vozTabContent = document.querySelector('#vozTabContent');
-            if (vozTabBtn && vozTabContent) {
-                let vozLoaded = false;
-                const loadVozTab = () => {
-                    if (vozLoaded) return;
-                    vozLoaded = true;
-
-                    if (!window.$) {
-                        vozLoaded = false;
-                        vozTabContent.innerHTML = '<div class="alert alert-danger">Nedostaje jQuery za učitavanje taba.</div>';
-                        return;
-                    }
-
-                    $('#vozTabContent').load('/Admin/UcitajSveVozove?ts=' + Date.now(), function (_, status) {
-                        if (status === 'error') {
-                            vozLoaded = false;
-                            vozTabContent.innerHTML = '<div class="alert alert-danger">Greška pri učitavanju vozova i tipova.</div>';
-                        }
-                    });
-                };
-
-                vozTabBtn.addEventListener('shown.bs.tab', loadVozTab);
-
-                if (vozTabBtn.classList.contains('active')) {
-                    loadVozTab();
-                }
-            }
-
-            const linijeTabBtn = document.querySelector('[data-bs-target="#tab-linije"]');
-            const linijeTabContent = document.querySelector('#linijeStaniceTabContent');
-            if (linijeTabBtn && linijeTabContent) {
-                let linijeLoaded = false;
-
-                const loadLinijeTab = (force = false, region = '') => {
-                    const trimmedRegion = (region || '').trim();
-                    if (linijeLoaded && !force && !trimmedRegion) return;
-                    linijeLoaded = true;
-
-                    if (!window.$) {
-                        linijeLoaded = false;
-                        linijeTabContent.innerHTML = '<div class="alert alert-danger">Nedostaje jQuery za učitavanje taba.</div>';
-                        return;
-                    }
-
-                    const params = new URLSearchParams();
-                    params.set('ts', Date.now().toString());
-                    if (trimmedRegion) {
-                        params.set('region', trimmedRegion);
-                    }
-
-                    $('#linijeStaniceTabContent').load('/Admin/UcitajLinijeStanice?' + params.toString(), function (_, status) {
-                        if (status === 'error') {
-                            if (!force && !trimmedRegion) {
-                                linijeLoaded = false;
-                            }
-                            linijeTabContent.innerHTML = '<div class="alert alert-danger">Greška pri učitavanju linija i stanica.</div>';
-                        }
-                    });
-                };
-
-                window.reloadLinijeStaniceTab = (region = '') => loadLinijeTab(true, region);
-                linijeTabBtn.addEventListener('shown.bs.tab', () => loadLinijeTab());
-
-                if (linijeTabBtn.classList.contains('active')) {
-                    loadLinijeTab();
-                }
-            }
+            initTab('#tab-korisnici', '#korisniciTabContent',      '/Admin/UcitajKorisnike');
+            initTab('#tab-vozovi',    '#vozTabContent',             '/Admin/UcitajSveVozove');
+            window.reloadLinijeStaniceTab =
+                initTab('#tab-linije', '#linijeStaniceTabContent', '/Admin/UcitajLinijeStanice');
         });
 
-        document.addEventListener('click', async (e) => {
+        // ── Inline edit ───────────────────────────────────────────────────────────
+        document.addEventListener('click', async e => {
             const btn = e.target.closest('.js-edit-toggle');
             if (!btn) return;
-
             const row = btn.closest('tr');
-            if (!row) return;
 
-            const isEditing = row.dataset.editing === '1';
-            const role = row.dataset.role;
-            const isUserRow = role === 'Administrator' || role === 'Kondukter';
-            const isVozRow = role === 'Voz';
-            const isTipVozaRow = role === 'TipVoza';
-            const isLinijaRow = role === 'Linija';
-            const isStanicaRow = role === 'Stanica';
-
-            const showNotice = (message, ok) => {
-                const notice = document.querySelector('#topNotice');
-                if (!notice) return;
-                notice.textContent = message;
-                notice.classList.remove('d-none', 'alert-success', 'alert-danger');
-                notice.classList.add(ok ? 'alert-success' : 'alert-danger');
-            };
-
-            const enterEditMode = () => {
+            if (row.dataset.editing !== '1') {
                 row.dataset.editing = '1';
                 row.querySelectorAll('.cell-view').forEach(el => el.classList.add('d-none'));
                 row.querySelectorAll('.cell-edit').forEach(el => {
-                    const cell = el.closest('td');
-                    const view = cell ? cell.querySelector('.cell-view') : null;
-                    if (view) {
-                        if (el.type === 'date') {
-                            const raw = el.getAttribute('data-raw');
-                            el.value = raw ? raw : view.textContent.trim();
-                        } else if (el.tagName.toLowerCase() === 'select') {
-                            const raw = el.getAttribute('data-raw');
-                            if (raw) {
-                                el.value = raw;
-                            } else if (!view.classList.contains('badge-aktivan') && !view.classList.contains('badge-neaktivan')) {
-                                const viewText = view.textContent.trim().toLowerCase();
-                                const matched = Array.from(el.options).find(opt => (opt.textContent || '').trim().toLowerCase() === viewText);
-                                if (matched) {
-                                    el.value = matched.value;
-                                }
-                            } else {
-                                el.value = view.textContent.trim();
-                            }
-                        } else {
-                            el.value = view.textContent.trim();
-                        }
-                    }
+                    const view = el.closest('td')?.querySelector('.cell-view');
+                    if (view) el.value = el.dataset.raw ?? view.textContent.trim();
                     el.classList.remove('d-none');
                 });
+                window.szLinijaRoute?.toggle(row, true);
                 btn.textContent = 'Sačuvaj';
-                btn.classList.remove('btn-sz-outline');
-                btn.classList.add('btn-sz-primary');
-            };
+                btn.classList.replace('btn-sz-outline', 'btn-sz-primary');
+                return;
+            }
 
             const applyEdits = () => {
                 row.querySelectorAll('.cell-edit').forEach(el => {
-                    const cell = el.closest('td');
-                    const view = cell ? cell.querySelector('.cell-view') : null;
-                    if (view) {
-                        const newValue = el.value;
-                        if (el.type === 'date') {
-                            if (newValue && newValue.includes('-')) {
-                                const parts = newValue.split('-');
-                                view.textContent = `${parts[2]}.${parts[1]}.${parts[0]}.`;
-                            } else {
-                                view.textContent = '';
-                            }
-                            el.setAttribute('data-raw', newValue);
-                        } else if (el.tagName.toLowerCase() === 'select') {
-                            const selectedOption = el.options[el.selectedIndex];
-                            const selectedText = selectedOption ? (selectedOption.textContent || '') : newValue;
-                            const selectedValue = selectedOption ? selectedOption.value : newValue;
-                            el.setAttribute('data-raw', selectedValue);
-                            view.textContent = selectedText;
-
-                            if (view.classList.contains('badge-aktivan') || view.classList.contains('badge-neaktivan')) {
-                                const yes = selectedText.trim().toLowerCase().startsWith('d');
-                                if (yes) {
-                                    view.classList.add('badge-aktivan');
-                                    view.classList.remove('badge-neaktivan');
-                                } else {
-                                    view.classList.add('badge-neaktivan');
-                                    view.classList.remove('badge-aktivan');
-                                }
-                            }
-                        } else {
-                            view.textContent = newValue;
+                    const view = el.closest('td')?.querySelector('.cell-view');
+                    if (!view) return;
+                    if (el.type === 'date') {
+                        const [y, m, d] = el.value.split('-');
+                        view.textContent = `${d}.${m}.${y}.`;
+                    } else if (el.tagName === 'SELECT') {
+                        const opt = el.options[el.selectedIndex];
+                        view.textContent = opt?.textContent ?? el.value;
+                        const yes = view.textContent.trim().toLowerCase().startsWith('d');
+                        if (view.classList.contains('badge-aktivan') || view.classList.contains('badge-neaktivan')) {
+                            view.classList.toggle('badge-aktivan', yes);
+                            view.classList.toggle('badge-neaktivan', !yes);
                         }
+                    } else {
+                        view.textContent = el.value;
                     }
+                    el.dataset.raw = el.value;
                     el.classList.add('d-none');
                 });
+                window.szLinijaRoute?.syncView?.(row);
+                window.szLinijaRoute?.toggle(row, false);
                 row.querySelectorAll('.cell-view').forEach(el => el.classList.remove('d-none'));
                 row.dataset.editing = '0';
                 btn.textContent = 'Izmeni';
-                btn.classList.add('btn-sz-outline');
-                btn.classList.remove('btn-sz-primary');
+                btn.classList.replace('btn-sz-primary', 'btn-sz-outline');
                 btn.disabled = false;
             };
 
-            if (!isEditing) {
-                enterEditMode();
-                return;
-            }
+            const { saveUrl, id } = row.dataset;
+            if (!saveUrl || !id || id === '-') { applyEdits(); return; }
 
-            if (!isUserRow && !isVozRow && !isTipVozaRow && !isLinijaRow && !isStanicaRow) {
-                applyEdits();
-                return;
-            }
-
-            const id = row.dataset.id;
-            if (!id || (id === '-' && (isVozRow || isTipVozaRow || isLinijaRow || isStanicaRow))) {
-                applyEdits();
-                showNotice('Lokalna izmena (red još nije snimljen na serveru).', true);
-                return;
-            }
-
-            if (!id) {
-                showNotice('Nedostaje ID za čuvanje.', false);
-                return;
-            }
-
-            const url = role === 'Administrator'
-                ? '/Admin/IzmeniAdministratora'
-                : role === 'Kondukter'
-                    ? '/Admin/IzmeniKonduktera'
-                    : role === 'Voz'
-                        ? '/Admin/IzmeniVoz'
-                        : role === 'TipVoza'
-                            ? '/Admin/IzmeniTipVoza'
-                            : role === 'Linija'
-                                ? '/Admin/IzmeniLiniju'
-                                : role === 'Stanica'
-                                    ? '/Admin/IzmeniStanicu'
-                                    : null;
-
-            if (!url) {
-                applyEdits();
-                showNotice('Nepoznat tip reda za čuvanje.', false);
-                return;
-            }
-
-            const form = new FormData();
-            form.append('id', id);
-            row.querySelectorAll('.cell-edit').forEach(el => {
-                if (el.name) {
-                    if (isVozRow && el.name === 'aktivan') {
-                        const boolValue = el.value.trim().toLowerCase().startsWith('d') ? 'true' : 'false';
-                        form.append(el.name, boolValue);
-                    } else {
-                        form.append(el.name, el.value);
-                    }
-                }
+            btn.disabled = true; btn.textContent = 'Čuvam...';
+            const body = new FormData();
+            body.append('id', id);
+            row.querySelectorAll('.cell-edit[name], .linija-route-hidden input[name]').forEach(el => {
+                const val = (el.name === 'aktivan')
+                    ? (el.value.trim().toLowerCase().startsWith('d') ? 'true' : 'false')
+                    : el.value;
+                body.append(el.name, val);
             });
 
-            btn.disabled = true;
-            const originalText = btn.textContent;
-            btn.textContent = 'Čuvam...';
-
             try {
-                const res = await fetch(url, {
-                    method: 'PUT',
-                    body: form
-                });
+                const res  = await fetch(saveUrl, { method: 'PUT', body });
                 const text = await res.text();
-                if (!res.ok) {
-                    showNotice(text || 'Greška pri čuvanju.', false);
-                    btn.disabled = false;
-                    btn.textContent = originalText;
-                    return;
-                }
-                showNotice(text || 'Uspešno sačuvano.', true);
-                applyEdits();
-            } catch (err) {
+                showNotice(text || (res.ok ? 'Uspešno sačuvano.' : 'Greška.'), res.ok);
+                if (res.ok) applyEdits();
+                else { btn.disabled = false; btn.textContent = 'Sačuvaj'; }
+            } catch {
                 showNotice('Greška u komunikaciji sa serverom.', false);
-                btn.disabled = false;
-                btn.textContent = originalText;
+                btn.disabled = false; btn.textContent = 'Sačuvaj';
             }
         });
 
-        document.addEventListener('click', async (e) => {
-            const btn = e.target.closest('.js-delete-user');
-            if (!btn) return;
-
+        // ── Brisanje ──────────────────────────────────────────────────────────────
+        document.addEventListener('click', async e => {
+            const btn = e.target.closest('.js-delete');
+            if (!btn || !confirm('Da li ste sigurni da želite da obrišete ovu stavku?')) return;
             const row = btn.closest('tr');
-            if (!row) return;
-
-            const role = row.dataset.role;
-            if (role !== 'Administrator' && role !== 'Kondukter') return;
-
-            const id = row.dataset.id;
-            const showNotice = (message, ok) => {
-                const notice = document.querySelector('#topNotice');
-                if (!notice) return;
-                notice.textContent = message;
-                notice.classList.remove('d-none', 'alert-success', 'alert-danger');
-                notice.classList.add(ok ? 'alert-success' : 'alert-danger');
-            };
-
-            if (!id) {
-                showNotice('Nedostaje ID za brisanje.', false);
-                return;
-            }
-
-            const potvrda = confirm('Da li ste sigurni da želite da obrišete ovog korisnika?');
-            if (!potvrda) return;
-
-            const url = role === 'Administrator'
-                ? '/Admin/UkloniAdministratora'
-                : '/Admin/UkloniKonduktera';
-
-            btn.disabled = true;
-            const originalText = btn.textContent;
-            btn.textContent = 'Brišem...';
-
-            try {
-                const res = await fetch(url + '?id=' + encodeURIComponent(id), {
-                    method: 'DELETE'
-                });
-                const text = await res.text();
-                if (!res.ok) {
-                    showNotice(text || 'Greška pri čuvanju.', false);
-                    btn.disabled = false;
-                    btn.textContent = originalText;
-                    return;
-                }
-                showNotice(text || 'Uspešno obrisano.', true);
-                if (window.$ && $('#korisniciTabContent').length) {
-                    $('#korisniciTabContent').load('/Admin/UcitajKorisnike?ts=' + Date.now());
-                }
-            } catch (err) {
-                showNotice('Greška u komunikaciji sa serverom.', false);
-                btn.disabled = false;
-                btn.textContent = originalText;
-            }
-        });
-
-        document.addEventListener('click', async (e) => {
-            const btn = e.target.closest('.js-delete-local');
-            if (!btn) return;
-
-            const row = btn.closest('tr');
-            if (!row) return;
-
             const tbody = row.closest('tbody');
-            const role = row.dataset.role;
-            const id = row.dataset.id;
-            const isVozRow = role === 'Voz';
-            const isTipVozaRow = role === 'TipVoza';
-            const isLinijaRow = role === 'Linija';
-            const isStanicaRow = role === 'Stanica';
-            const shouldDeleteOnServer = (isVozRow || isTipVozaRow || isLinijaRow || isStanicaRow) && id && id !== '-';
+            const { deleteUrl, id, role } = row.dataset;
 
-            const notice = document.querySelector('#topNotice');
-            const showNotice = (message, ok) => {
-                if (!notice) return;
-                notice.textContent = message;
-                notice.classList.remove('d-none', 'alert-success', 'alert-danger');
-                notice.classList.add(ok ? 'alert-success' : 'alert-danger');
-            };
-
-            const applyLocalDelete = () => {
+            const removeRow = () => {
                 row.remove();
                 if (tbody && !tbody.querySelector('tr')) {
-                    const emptyRow = document.createElement('tr');
-                    if (tbody.id === 'vozoviTableBody') {
-                        emptyRow.className = 'js-voz-empty';
-                        emptyRow.innerHTML = '<td class="text-muted" colspan="6">Nema vozova.</td>';
-                    } else if (tbody.id === 'tipoviTableBody') {
-                        emptyRow.className = 'js-tip-empty';
-                        emptyRow.innerHTML = '<td class="text-muted" colspan="4">Nema tipova vozova.</td>';
-                    } else if (tbody.id === 'linijeTableBody') {
-                        emptyRow.className = 'js-linija-empty';
-                        emptyRow.innerHTML = '<td class="text-muted" colspan="5">Nema linija.</td>';
-                    } else if (tbody.id === 'staniceTableBody') {
-                        emptyRow.className = 'js-stanica-empty';
-                        emptyRow.innerHTML = '<td class="text-muted" colspan="4">Nema stanica.</td>';
-                    }
-                    tbody.appendChild(emptyRow);
+                    tbody.innerHTML = `<tr><td class="text-muted" colspan="9">${tbody.dataset.emptyMsg || 'Nema stavki.'}</td></tr>`;
+                }
+                if ((role === 'Administrator' || role === 'Kondukter') && window.$ && $('#korisniciTabContent').length) {
+                    $('#korisniciTabContent').load('/Admin/UcitajKorisnike?ts=' + Date.now());
                 }
             };
 
-            const potvrda = confirm('Da li ste sigurni da želite da obrišete ovu stavku?');
-            if (!potvrda) return;
+            if (!deleteUrl || !id || id === '-') { removeRow(); return; }
 
-            if (!shouldDeleteOnServer) {
-                applyLocalDelete();
-                showNotice('Stavka je obrisana lokalno (frontend).', true);
-                return;
-            }
-
-            const url = isVozRow
-                ? '/Admin/UkloniVoz'
-                : isTipVozaRow
-                    ? '/Admin/UkloniTipVoza'
-                    : isLinijaRow
-                        ? '/Admin/UkloniLiniju'
-                        : '/Admin/UkloniStanicu';
-            const originalText = btn.textContent;
             btn.disabled = true;
-            btn.textContent = 'Brišem...';
-
             try {
-                const res = await fetch(url + '?id=' + encodeURIComponent(id), {
-                    method: 'DELETE'
-                });
+                const res  = await fetch(`${deleteUrl}?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
                 const text = await res.text();
-                if (!res.ok) {
-                    showNotice(text || 'Greška pri brisanju.', false);
-                    btn.disabled = false;
-                    btn.textContent = originalText;
-                    return;
-                }
-
-                if (isTipVozaRow) {
-                    const tipName = row.querySelector('td:nth-child(2) .cell-view')?.textContent?.trim();
-                    const tipSelect = document.querySelector('#vozTipSelect');
-                    if (tipSelect && tipName) {
-                        const optionToRemove = Array.from(tipSelect.options)
-                            .find(opt => opt.textContent.trim().toLowerCase() === tipName.toLowerCase());
-                        if (optionToRemove) {
-                            optionToRemove.remove();
-                        }
-                        tipSelect.disabled = tipSelect.options.length <= 1;
-                        const vozBtn = document.querySelector('#dodajVozBtn');
-                        if (vozBtn) {
-                            vozBtn.disabled = tipSelect.disabled;
-                        }
-                    }
-                }
-
-                applyLocalDelete();
-                showNotice(text || 'Uspešno obrisano.', true);
-            } catch (err) {
+                showNotice(text || (res.ok ? 'Obrisano.' : 'Greška.'), res.ok);
+                if (res.ok) removeRow();
+                else btn.disabled = false;
+            } catch {
                 showNotice('Greška u komunikaciji sa serverom.', false);
                 btn.disabled = false;
-                btn.textContent = originalText;
             }
         });
 
-        document.addEventListener('submit', async (e) => {
+        // ── Form submit (dodavanje + promocija) ───────────────────────────────────
+        document.addEventListener('submit', async e => {
             const form = e.target;
             if (!(form instanceof HTMLFormElement)) return;
 
-            const isDodajVoz = form.id === 'dodajVozForm';
-            const isDodajTip = form.id === 'dodajTipVozaForm';
-            const isDodajLinija = form.id === 'dodajLinijaForm';
-            const isDodajStanica = form.id === 'dodajStanicaForm';
-            if (!isDodajVoz && !isDodajTip && !isDodajLinija && !isDodajStanica) return;
-
-            e.preventDefault();
-
-            const notice = document.querySelector('#topNotice');
-            const showNotice = (message, ok) => {
-                if (!notice) return;
-                notice.textContent = message;
-                notice.classList.remove('d-none', 'alert-success', 'alert-danger');
-                notice.classList.add(ok ? 'alert-success' : 'alert-danger');
-            };
-
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn ? submitBtn.textContent : '';
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Čuvam...';
+            if (form.id === 'filtrirajStaniceForm') {
+                e.preventDefault();
+                const region = new FormData(form).get('region')?.toString().trim() ?? '';
+                window.reloadLinijeStaniceTab?.(true, region);
+                return;
             }
 
-            const createEditableCell = (value, inputName, strong, cssClass, editValue = null) => {
-                const cell = document.createElement('td');
-                if (cssClass) {
-                    cell.className = cssClass;
-                }
+            const { reloadTarget, reloadUrl } = form.dataset;
+            if (!reloadTarget) return;
+            e.preventDefault();
 
-                const viewEl = document.createElement(strong ? 'strong' : 'span');
-                viewEl.className = 'cell-view';
-                viewEl.textContent = value;
-
-                const editEl = document.createElement('input');
-                editEl.name = inputName;
-                editEl.className = 'form-control form-control-sm cell-edit d-none';
-                editEl.value = editValue ?? value;
-
-                cell.appendChild(viewEl);
-                cell.appendChild(editEl);
-                return cell;
-            };
-
-            const createActionsCell = () => {
-                const cell = document.createElement('td');
-                cell.className = 'cell-actions';
-
-                const editBtn = document.createElement('button');
-                editBtn.className = 'btn btn-sz-outline js-edit-toggle';
-                editBtn.textContent = 'Izmeni';
-
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'btn btn-sz-danger ms-2 js-delete-local';
-                deleteBtn.textContent = 'Ukloni';
-
-                cell.appendChild(editBtn);
-                cell.appendChild(deleteBtn);
-                return cell;
-            };
+            const submitBtn = form.querySelector('[type="submit"]');
+            const origText = submitBtn?.textContent;
+            if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Čuvam...'; }
 
             try {
-                const res = await fetch(form.action, {
-                    method: 'POST',
-                    body: new FormData(form)
-                });
+                const res  = await fetch(form.action, { method: 'POST', body: new FormData(form) });
                 const text = await res.text();
-
-                if (!res.ok) {
-                    showNotice(text || 'Greška pri čuvanju.', false);
-                    return;
+                showNotice(text || (res.ok ? 'Uspešno sačuvano.' : 'Greška.'), res.ok);
+                if (res.ok) {
+                    form.reset();
+                    if (window.$ && reloadTarget && reloadUrl)
+                        $(reloadTarget).load(`${reloadUrl}?ts=${Date.now()}`);
                 }
-
-                if (isDodajTip) {
-                    if (window.$ && $('#vozTabContent').length) {
-                        $('#vozTabContent').load('/Admin/UcitajSveVozove?ts=' + Date.now());
-                    }
-                }
-
-                if (isDodajVoz) {
-                    if (window.$ && $('#vozTabContent').length) {
-                        $('#vozTabContent').load('/Admin/UcitajSveVozove?ts=' + Date.now());
-                    }
-                }
-
-                if (isDodajLinija || isDodajStanica) {
-                    if (typeof window.reloadLinijeStaniceTab === 'function') {
-                        window.reloadLinijeStaniceTab();
-                    } else if (window.$ && $('#linijeStaniceTabContent').length) {
-                        $('#linijeStaniceTabContent').load('/Admin/UcitajLinijeStanice?ts=' + Date.now());
-                    }
-                }
-
-                showNotice(text || 'Uspešno sačuvano.', true);
-                form.reset();
-            } catch (err) {
+            } catch {
                 showNotice('Greška u komunikaciji sa serverom.', false);
             } finally {
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = originalText;
-                }
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = origText; }
             }
-        });
-
-        document.addEventListener('submit', (e) => {
-            const form = e.target;
-            if (!(form instanceof HTMLFormElement) || form.id !== 'filtrirajStaniceForm') return;
-
-            e.preventDefault();
-            const region = ((new FormData(form).get('region') || '').toString()).trim();
-            if (typeof window.reloadLinijeStaniceTab === 'function') {
-                window.reloadLinijeStaniceTab(region);
-            } else if (window.$ && $('#linijeStaniceTabContent').length) {
-                const query = new URLSearchParams({ ts: Date.now().toString() });
-                if (region) {
-                    query.set('region', region);
-                }
-                $('#linijeStaniceTabContent').load('/Admin/UcitajLinijeStanice?' + query.toString());
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const tipSelect = document.querySelector('#vozTipSelect');
-            const vozBtn = document.querySelector('#dodajVozBtn');
-            if (!tipSelect || !vozBtn) return;
-
-            vozBtn.disabled = tipSelect.options.length <= 1;
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const form = document.querySelector('#promocijaForm');
-            const notice = document.querySelector('#topNotice');
-            if (!form || !notice) return;
-
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                notice.classList.add('d-none');
-                notice.classList.remove('alert-success', 'alert-danger');
-
-                try {
-                    const res = await fetch(form.action, {
-                        method: 'POST',
-                        body: new FormData(form)
-                    });
-                    const text = await res.text();
-                    notice.textContent = text || (res.ok ? 'Uspešno sačuvano.' : 'Greška pri čuvanju.');
-                    notice.classList.add(res.ok ? 'alert-success' : 'alert-danger');
-                    notice.classList.remove('d-none');
-
-                    if (res.ok && window.$ && $('#korisniciTabContent').length) {
-                        $('#korisniciTabContent').load('/Admin/UcitajKorisnike?ts=' + Date.now());
-                    }
-                } catch (err) {
-                    notice.textContent = 'Greška u komunikaciji sa serverom.';
-                    notice.classList.add('alert-danger');
-                    notice.classList.remove('d-none');
-                }
-            });
         });
     </script>
 }
-
-
-
-
-
-
-
-
-

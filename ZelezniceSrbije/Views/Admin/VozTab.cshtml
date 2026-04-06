@@ -8,11 +8,13 @@
 
 <div class="card shadow-sm mb-4">
     <div class="card-body p-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <span class="card-header-label">Vozovi</span>
-        </div>
+        <span class="card-header-label d-block mb-3">Vozovi</span>
 
-        <form id="dodajVozForm" asp-controller="Admin" asp-action="DodajVoz" method="post" class="row g-3 mb-4">
+        <form id="dodajVozForm"
+              asp-controller="Admin" asp-action="DodajVoz" method="post"
+              data-reload-target="#vozTabContent"
+              data-reload-url="/Admin/UcitajSveVozove"
+              class="row g-3 mb-4">
             <div class="col-md-3">
                 <label class="form-label sz-label">Naziv voza</label>
                 <input type="text" name="naziv" class="form-control sz-input" placeholder="npr. Soko" required>
@@ -23,7 +25,7 @@
             </div>
             <div class="col-md-3">
                 <label class="form-label sz-label">Tip voza</label>
-                <select id="vozTipSelect" name="tip_voza_id" class="form-select sz-input" required @(tipovi.Any() ? null : "disabled")>
+                <select id="vozTipSelect" name="tip_voza_id" class="form-select sz-input" required @(!tipovi.Any() ? "disabled" : null)>
                     <option value="">Izaberi tip...</option>
                     @foreach (var tip in tipovi)
                     {
@@ -39,34 +41,32 @@
                 </select>
             </div>
             <div class="col-md-2 d-grid align-content-end">
-                <button id="dodajVozBtn" type="submit" class="btn btn-sz-primary btn-match-input" @(tipovi.Any() ? null : "disabled")>Dodaj novi voz</button>
+                <button id="dodajVozBtn" type="submit" class="btn btn-sz-primary btn-match-input" @(!tipovi.Any() ? "disabled" : null)>
+                    Dodaj novi voz
+                </button>
             </div>
         </form>
 
         <table class="table sz-table mb-0">
             <thead>
                 <tr>
-                    <th>Id</th>
-                    <th>Naziv</th>
-                    <th>Serijski broj</th>
-                    <th>Tip voza</th>
-                    <th>Aktivan</th>
-                    <th></th>
+                    <th>Id</th><th>Naziv</th><th>Serijski broj</th><th>Tip voza</th><th>Aktivan</th><th></th>
                 </tr>
             </thead>
-            <tbody id="vozoviTableBody">
+            <tbody id="vozoviTableBody" data-empty-msg="Nema vozova.">
                 @if (!vozovi.Any())
                 {
-                    <tr class="js-voz-empty">
-                        <td class="text-muted" colspan="6">Nema vozova.</td>
-                    </tr>
+                    <tr><td class="text-muted" colspan="6">Nema vozova.</td></tr>
                 }
                 else
                 {
                     foreach (var voz in vozovi)
                     {
                         var tipNaziv = tipovi.FirstOrDefault(t => t.Id == voz.Tip_voza_id)?.Naziv ?? "-";
-                        <tr data-role="Voz" data-id="@voz.Id">
+                        <tr data-role="Voz"
+                            data-id="@voz.Id"
+                            data-save-url="/Admin/IzmeniVoz"
+                            data-delete-url="/Admin/UkloniVoz">
                             <td class="text-muted">@voz.Id</td>
                             <td>
                                 <strong class="cell-view">@voz.Naziv</strong>
@@ -81,35 +81,22 @@
                                 <select name="tip_voza_id" class="form-select form-select-sm cell-edit d-none">
                                     @foreach (var tip in tipovi)
                                     {
-                                        if (tip.Id == voz.Tip_voza_id)
-                                        {
-                                            <option value="@tip.Id" selected>@tip.Naziv</option>
-                                        }
-                                        else
-                                        {
-                                            <option value="@tip.Id">@tip.Naziv</option>
-                                        }
+                                        <option value="@tip.Id" selected="@(tip.Id == voz.Tip_voza_id)">@tip.Naziv</option>
                                     }
                                 </select>
                             </td>
                             <td>
-                                <span class="sz-badge @(voz.Aktivan ? "badge-aktivan" : "badge-neaktivan") cell-view">@(voz.Aktivan ? "Da" : "Ne")</span>
+                                <span class="sz-badge @(voz.Aktivan ? "badge-aktivan" : "badge-neaktivan") cell-view">
+                                    @(voz.Aktivan ? "Da" : "Ne")
+                                </span>
                                 <select name="aktivan" class="form-select form-select-sm cell-edit d-none">
-                                    @if (voz.Aktivan)
-                                    {
-                                        <option selected>Da</option>
-                                        <option>Ne</option>
-                                    }
-                                    else
-                                    {
-                                        <option>Da</option>
-                                        <option selected>Ne</option>
-                                    }
+                                    <option @@(voz.Aktivan  ? "selected" : null)>Da</option>
+                                    <option @@(!voz.Aktivan ? "selected" : null)>Ne</option>
                                 </select>
                             </td>
                             <td class="cell-actions">
                                 <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
-                                <button class="btn btn-sz-danger ms-2 js-delete-local">Ukloni</button>
+                                <button class="btn btn-sz-danger ms-2 js-delete">Ukloni</button>
                             </td>
                         </tr>
                     }
@@ -121,11 +108,13 @@
 
 <div class="card shadow-sm">
     <div class="card-body p-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <span class="card-header-label">Tipovi Voza</span>
-        </div>
+        <span class="card-header-label d-block mb-3">Tipovi Voza</span>
 
-        <form id="dodajTipVozaForm" asp-controller="Admin" asp-action="DodajTipVoza" method="post" class="row g-3 mb-4">
+        <form id="dodajTipVozaForm"
+              asp-controller="Admin" asp-action="DodajTipVoza" method="post"
+              data-reload-target="#vozTabContent"
+              data-reload-url="/Admin/UcitajSveVozove"
+              class="row g-3 mb-4">
             <div class="col-md-4">
                 <label class="form-label sz-label">Naziv tipa</label>
                 <input type="text" name="naziv" class="form-control sz-input" placeholder="npr. InterCity" required>
@@ -141,25 +130,21 @@
 
         <table class="table sz-table mb-0">
             <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Naziv</th>
-                    <th>Opis</th>
-                    <th></th>
-                </tr>
+                <tr><th>Id</th><th>Naziv</th><th>Opis</th><th></th></tr>
             </thead>
-            <tbody id="tipoviTableBody">
+            <tbody id="tipoviTableBody" data-empty-msg="Nema tipova vozova.">
                 @if (!tipovi.Any())
                 {
-                    <tr class="js-tip-empty">
-                        <td class="text-muted" colspan="4">Nema tipova vozova.</td>
-                    </tr>
+                    <tr><td class="text-muted" colspan="4">Nema tipova vozova.</td></tr>
                 }
                 else
                 {
                     foreach (var tip in tipovi)
                     {
-                        <tr data-role="TipVoza" data-id="@tip.Id">
+                        <tr data-role="TipVoza"
+                            data-id="@tip.Id"
+                            data-save-url="/Admin/IzmeniTipVoza"
+                            data-delete-url="/Admin/UkloniTipVoza">
                             <td class="text-muted">@tip.Id</td>
                             <td>
                                 <strong class="cell-view">@tip.Naziv</strong>
@@ -171,7 +156,7 @@
                             </td>
                             <td class="cell-actions">
                                 <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
-                                <button class="btn btn-sz-danger ms-2 js-delete-local">Ukloni</button>
+                                <button class="btn btn-sz-danger ms-2 js-delete">Ukloni</button>
                             </td>
                         </tr>
                     }

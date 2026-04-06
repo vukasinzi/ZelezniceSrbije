@@ -33,11 +33,30 @@ namespace ZelezniceSrbije.Repositories
 
         }
 
+        public async Task UkloniLiniju(int id)
+        {
+            var linija = await db.Linija.FindAsync(id);
+            _ = db.Linija.Remove(linija);
+            await db.SaveChangesAsync();
+        }
+        public async Task UkloniStanicu(int id)
+        {
+            var stanica = await db.Stanica.FindAsync(id);
+            _ = db.Stanica.Remove(stanica);
+            await db.SaveChangesAsync();
+        }
         public async Task<object> ProveriLiniju(string naziv)
         {
             return await db.Linija.FirstOrDefaultAsync(x => x.Naziv == naziv);
         }
-
+        public async Task<object> ProveriLiniju(int id)
+        {
+            return await db.Linija.FindAsync(id);
+        }
+        public async Task<object> ProveriStanicu(int id)
+        {
+            return await db.Stanica.FirstOrDefaultAsync(x => x.Id == id);
+        }
         public async Task<object> ProveriStanicu(string naziv)
         {
             return await db.Stanica.FirstOrDefaultAsync(x => x.Naziv == naziv);
@@ -69,6 +88,24 @@ namespace ZelezniceSrbije.Repositories
               return db.Stanica.OrderBy(x=> x.Naziv).ToListAsync();
 
             return db.Stanica.Where(x => x.Region == region).ToListAsync();
+        }
+
+        public async Task IzmeniLiniju(Linija l, List<StanicaLinija> stajalista)
+        {
+           var linija =  await db.Linija.FindAsync(l.Id);
+            linija.Naziv = l.Naziv;
+            linija.Cena_po_minutu = l.Cena_po_minutu;
+            await db.StanicaLinija.Where(x => x.Linija_id == l.Id).ExecuteDeleteAsync();
+            await db.StanicaLinija.AddRangeAsync(stajalista);
+            await db.SaveChangesAsync();
+        }
+
+        public async Task IzmeniStanicu(Stanica s)
+        {
+            var stanica = await db.Stanica.FindAsync(s.Id);
+            stanica.Naziv = s.Naziv;
+            stanica.Region = s.Region;
+            await db.SaveChangesAsync();
         }
     }
 }

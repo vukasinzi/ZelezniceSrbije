@@ -8,6 +8,13 @@
             Cena_po_minutu = cena_po_minutu;
         }
 
+        public Linija(int id, string naziv, int cena_po_minutu)
+        {
+            Id = id;
+            Naziv = naziv;
+            Cena_po_minutu = cena_po_minutu;
+        }
+
         public int Id { get; set; }
         public string Naziv { get; set; }
         public int Cena_po_minutu { get; set; }
