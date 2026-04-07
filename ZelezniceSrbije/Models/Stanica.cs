@@ -15,7 +15,7 @@
         }
         public bool JeValidan()
         {
-            if (string.IsNullOrWhiteSpace(Naziv.Trim()) || string.IsNullOrWhiteSpace(Region.Trim()))
+            if (string.IsNullOrWhiteSpace(Naziv) || string.IsNullOrWhiteSpace(Region))
                 return false;
 
             return true;

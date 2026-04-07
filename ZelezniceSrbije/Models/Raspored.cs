@@ -19,6 +19,14 @@ public class Raspored
         Voz_id = voz_id;
     }
 
+    public Raspored(int id, DateTime vreme_polaska, int linija_id, int voz_id)
+    {
+        Id = id;
+        Vreme_polaska = vreme_polaska;
+        Linija_id = linija_id;
+        Voz_id = voz_id;
+    }
+
     public bool JeValidan()
     {
         if (Vreme_polaska == default)

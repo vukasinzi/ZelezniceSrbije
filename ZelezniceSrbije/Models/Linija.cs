@@ -11,7 +11,7 @@
         public Linija(int id, string naziv, int cena_po_minutu)
         {
             Id = id;
-            Naziv = naziv;
+            Naziv = naziv?.Trim();
             Cena_po_minutu = cena_po_minutu;
         }
 

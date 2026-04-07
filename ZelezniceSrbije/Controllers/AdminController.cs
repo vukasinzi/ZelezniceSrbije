@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -6,17 +7,20 @@ using ZelezniceSrbije.Services;
 
 namespace ZelezniceSrbije.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class AdminController : Controller
     {
         private readonly IKorisnikService korisnikServis;
         private readonly IVozService vozServis;
         private readonly ILinijeServis linijeServis;
+        private readonly IRasporedService rasporedServis;
 
-        public AdminController(IKorisnikService korisnikServis, IVozService vozServis, ILinijeServis linijeServis)
+        public AdminController(IKorisnikService korisnikServis, IVozService vozServis, ILinijeServis linijeServis,IRasporedService rasporedServis)
         {
             this.korisnikServis = korisnikServis;
             this.vozServis = vozServis;
             this.linijeServis = linijeServis;
+            this.rasporedServis = rasporedServis;
         }
 
         public IActionResult Index()
@@ -45,7 +49,7 @@ namespace ZelezniceSrbije.Controllers
             if (!ok)
                 return BadRequest("Promocija nije uspela.");
 
-            return Ok("Uloga je uspešno promenjena.");
+            return Ok("Uloga je uspeï¿½no promenjena.");
         }
 
         [HttpPut]
@@ -249,6 +253,39 @@ namespace ZelezniceSrbije.Controllers
 
             return Ok("Uspesno izmenjena linija.");
         }
+        //raspored
+        [HttpGet]
+        public async Task<IActionResult> UcitajRasporede(DateTime? datum)
+        {
+            RasporediVM vm = new();
+            vm.rasporedi = await rasporedServis.UcitajRasporede(datum);
+            return PartialView("RasporediTab", vm);
+            
+        }
+        [HttpDelete]
+        public async Task<IActionResult> UkloniRaspored(int id)
+        {
+            var ok = await rasporedServis.UkloniRaspored(id);
+            if (!ok)
+                return BadRequest("Neuspesno uklanjanje!");
 
+            return Ok("Uspesno uklonjen raspored.");
+        }
+        [HttpPost]
+        public async Task<IActionResult> DodajRaspored(int linija_id,int voz_id,DateTime vreme_polaska)
+        {
+            var ok = await rasporedServis.DodajRaspored(linija_id, voz_id, vreme_polaska);
+            if (!ok)
+                return BadRequest("Neuspesno dodavanje.");
+            return Ok("Uspesno dodat raspored");
+        }
+        [HttpPut]
+        public async Task<IActionResult> IzmeniRaspored(int id,int linija_id,int voz_id,DateTime vreme_polaska)
+        {
+            var ok = await rasporedServis.IzmeniRaspored(id,linija_id, voz_id, vreme_polaska);
+            if (!ok)
+                return BadRequest("Neuspesna izmena.");
+            return Ok("Uspesno izmenjen raspored.");
+        }
     }
 }

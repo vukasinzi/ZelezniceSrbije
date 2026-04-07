@@ -37,14 +37,28 @@ namespace ZelezniceSrbije.Data
                 entity.HasOne(x => x.Stanica)
                     .WithMany()
                     .HasForeignKey(x => x.Stanica_id)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasOne(x => x.Linija)
                     .WithMany()
                     .HasForeignKey(x => x.Linija_id)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Cascade);
             });
-            modelBuilder.Entity<Raspored>().ToTable("Raspored");
+            modelBuilder.Entity<Raspored>(entity =>
+            {
+                entity.ToTable("Raspored");
+                entity.Property(x => x.Linija_id).HasColumnName("Linija_id");
+                entity.Property(x => x.Voz_id).HasColumnName("Voz_id");
+
+                entity.HasOne(x => x.Linija)
+        .WithMany()
+        .HasForeignKey(x => x.Linija_id);
+
+                entity.HasOne(x => x.Voz)
+                    .WithMany()
+                    .HasForeignKey(x => x.Voz_id);
+            });
+
             modelBuilder.Entity<Voz>().ToTable("Voz");
             modelBuilder.Entity<Stanica>().ToTable("Stanica");
             modelBuilder.Entity<Linija>().ToTable("Linija");

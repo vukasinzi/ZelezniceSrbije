@@ -110,7 +110,7 @@ namespace ZelezniceSrbije.Services
                 return false;
             for (int i = 0; i < redosled.Count; i++)
             {
-                if (stanicaIds[i] <= 0 || redosled[i] <= 0 || vreme_od_polaska[i] <= 0)
+                if (stanicaIds[i] <= 0 || redosled[i] <= 0 || vreme_od_polaska[i] < 0)
                     return false;
                 StanicaLinija sl = new(vreme_od_polaska[i], redosled[i], stanicaIds[i], id);
                 stajalista.Add(sl);
