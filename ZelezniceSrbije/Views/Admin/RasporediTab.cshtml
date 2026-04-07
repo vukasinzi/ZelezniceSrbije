@@ -1,0 +1,103 @@
+@using System.Linq
+@model ZelezniceSrbije.Models.ViewModels.RasporediVM
+@{
+    Layout = null;
+    var rasporedi = Model?.rasporedi ?? Enumerable.Empty<Raspored>();
+}
+
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        <span class="card-header-label d-block mb-3">Rasporedi voznje</span>
+
+        <form id="dodajRasporedForm"
+              asp-controller="Admin" asp-action="DodajRaspored" method="post"
+              data-reload-target="#rasporediTabContent"
+              data-reload-url="/Admin/UcitajRasporede"
+              class="row g-3 mb-4">
+            <div class="col-md-4">
+                <label class="form-label sz-label">Linija</label>
+                <input id="rasporedLinijaInput" type="text" class="form-control sz-input"
+                       list="rasporedLinijeList" placeholder="Izaberi liniju..." autocomplete="off" required>
+                <input id="rasporedLinijaId" type="hidden" name="linija_id">
+                <datalist id="rasporedLinijeList"></datalist>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label sz-label">Voz</label>
+                <input id="rasporedVozInput" type="text" class="form-control sz-input"
+                       list="rasporedVozoviList" placeholder="Izaberi voz..." autocomplete="off" required>
+                <input id="rasporedVozId" type="hidden" name="voz_id">
+                <datalist id="rasporedVozoviList"></datalist>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label sz-label">Vreme polaska</label>
+                <input type="datetime-local" name="vreme_polaska" class="form-control sz-input" required>
+            </div>
+
+            <div class="col-md-2 d-grid align-content-end">
+                <button id="dodajRasporedBtn" type="submit" class="btn btn-sz-primary btn-match-input">
+                    Dodaj raspored
+                </button>
+            </div>
+        </form>
+
+        <table class="table sz-table mb-0">
+            <thead>
+                <tr>
+                    <th>Id</th><th>Linija</th><th>Voz</th><th>Vreme polaska</th><th></th>
+                </tr>
+            </thead>
+            <tbody id="rasporediTableBody" data-empty-msg="Nema rasporeda.">
+                @if (!rasporedi.Any())
+                {
+                    <tr><td class="text-muted" colspan="5">Nema rasporeda.</td></tr>
+                }
+                else
+                {
+                    foreach (var r in rasporedi)
+                    {
+                        var linijaLabel = r.Linija?.Naziv;
+                        var vozLabel = r.Voz?.Naziv;
+                        <tr data-role="Raspored"
+                            data-id="@r.Id"
+                            data-save-url="/Admin/IzmeniRaspored"
+                            data-delete-url="/Admin/UkloniRaspored">
+                            <td class="text-muted">@r.Id</td>
+                            <td>
+                                <span class="cell-view">@linijaLabel</span>
+                                <input type="text" class="form-control form-control-sm cell-edit d-none js-raspored-linija-input" value="@linijaLabel">
+                                <input type="hidden" name="linija_id" class="js-extra-save js-raspored-linija-id" value="@r.Linija_id">
+                            </td>
+                            <td>
+                                <span class="cell-view">@vozLabel</span>
+                                <input type="text" class="form-control form-control-sm cell-edit d-none js-raspored-voz-input" value="@vozLabel">
+                                <input type="hidden" name="voz_id" class="js-extra-save js-raspored-voz-id" value="@r.Voz_id">
+                            </td>
+                            <td>
+                                <span class="cell-view">@r.Vreme_polaska.ToString("dd.MM.yyyy. HH:mm")</span>
+                                <input name="vreme_polaska"
+                                       type="datetime-local"
+                                       class="form-control form-control-sm cell-edit d-none"
+                                       value="@r.Vreme_polaska.ToString("yyyy-MM-ddTHH:mm")"
+                                       data-raw="@r.Vreme_polaska.ToString("yyyy-MM-ddTHH:mm")">
+                            </td>
+                            <td class="cell-actions">
+                                <button type="button" class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                <button type="button" class="btn btn-sz-danger ms-2 js-delete">Ukloni</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    (() => {
+        if (typeof window.initRasporediFrontend === 'function') {
+            window.initRasporediFrontend();
+        }
+    })();
+</script>

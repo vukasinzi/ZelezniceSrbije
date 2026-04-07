@@ -59,11 +59,55 @@ namespace ZelezniceSrbije.Repositories
             return await Task.FromResult(rezultat);
             
         }
-        
+      
+        public async Task<Raspored> ProveriRaspored(int id)
+        {
+            return await db.Raspored.FindAsync(id);
+        }
+
+        public async Task<List<Raspored>> UcitajRasporede(DateTime? datum)
+        {
+            var dan = datum.Value.Date;
+            var sutra = dan.AddDays(1);
+
+            return await db.Raspored
+                .AsNoTracking()
+                .Where(r => r.Vreme_polaska >= dan && r.Vreme_polaska < sutra)
+                .OrderByDescending(r => r.Vreme_polaska)
+                .Include(r => r.Linija)
+                .Include(r => r.Voz)
+                .ToListAsync();
+        }
+
         public async Task<List<Stanica>> UcitajStaniceAsync()
         {
             List<Stanica> stanice = await db.Stanica.AsNoTracking().ToListAsync();
             return await Task.FromResult(stanice);
+        }
+
+        public async Task UkloniRaspored(int id)
+        {
+            var raspored = await db.Raspored.FindAsync(id);
+            if (raspored == null) return;
+
+            db.Raspored.Remove(raspored);
+            await db.SaveChangesAsync();
+        }
+        public async Task DodajRaspored(Raspored r)
+        {
+            await db.Raspored.AddAsync(r);
+            await db.SaveChangesAsync();
+        }
+
+        public async Task IzmeniRaspored(Raspored r)
+        {
+            var nas_raspored = await db.Raspored.FindAsync(r.Id);
+            if (nas_raspored == null)
+                return;
+            nas_raspored.Voz_id = r.Voz_id;
+            nas_raspored.Linija_id = r.Linija_id;
+            nas_raspored.Vreme_polaska = r.Vreme_polaska;
+            await db.SaveChangesAsync();
         }
     }
 }

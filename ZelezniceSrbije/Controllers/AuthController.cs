@@ -30,8 +30,8 @@ namespace ZelezniceSrbije.Controllers
             var korisnik = await servis.LogInAsync(email, lozinka);
             if (korisnik == null)
             {
-                ModelState.AddModelError("", "Pogresna lozinka ili mejl");
-                return View();
+
+                return BadRequest("Pogresna lozinka ili mejl");
             }
             var rola = korisnik.GetType().Name;
             Debug.WriteLine(rola);
@@ -43,7 +43,7 @@ namespace ZelezniceSrbije.Controllers
                 new Claim(ClaimTypes.Role, rola) 
              };
 
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, ClaimTypes.Role);
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal,new AuthenticationProperties { IsPersistent = true});
 
@@ -64,17 +64,18 @@ namespace ZelezniceSrbije.Controllers
             var korisnik = await servis.RegistrujAsync(p);
             if(korisnik == null)
             {
-                ModelState.AddModelError("", "Već postoji korisnik sa tim mejlom.");
-                return View();
+                return BadRequest("Mejl je zauzet");
+
             }
             var rola = korisnik.GetType().Name;
+            Debug.WriteLine(rola);
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, korisnik.Id.ToString()),
                 new Claim(ClaimTypes.Name, korisnik.Ime),
                 new Claim(ClaimTypes.Role, rola)
             };
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, ClaimTypes.Role);
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, new AuthenticationProperties { IsPersistent = true });
 

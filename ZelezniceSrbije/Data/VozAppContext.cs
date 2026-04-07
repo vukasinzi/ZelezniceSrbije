@@ -25,8 +25,40 @@ namespace ZelezniceSrbije.Data
             modelBuilder.Entity<Kondukter>().ToTable("Kondukter");
             modelBuilder.Entity<Administrator>().ToTable("Administrator");
             modelBuilder.Entity<Korisnik>().ToTable("Korisnik");
-             modelBuilder.Entity<StanicaLinija>().ToTable("StanicaLinija");
-            modelBuilder.Entity<Raspored>().ToTable("Raspored");
+            modelBuilder.Entity<StanicaLinija>(entity =>
+            {
+                entity.ToTable("StanicaLinija");
+
+                entity.Property(x => x.Stanica_id).HasColumnName("Stanica_id");
+                entity.Property(x => x.Linija_id).HasColumnName("Linija_id");
+                entity.Property(x => x.Vreme_od_polaska).HasColumnName("Vreme_od_polaska");
+                entity.Property(x => x.Redosled).HasColumnName("Redosled");
+
+                entity.HasOne(x => x.Stanica)
+                    .WithMany()
+                    .HasForeignKey(x => x.Stanica_id)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(x => x.Linija)
+                    .WithMany()
+                    .HasForeignKey(x => x.Linija_id)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+            modelBuilder.Entity<Raspored>(entity =>
+            {
+                entity.ToTable("Raspored");
+                entity.Property(x => x.Linija_id).HasColumnName("Linija_id");
+                entity.Property(x => x.Voz_id).HasColumnName("Voz_id");
+
+                entity.HasOne(x => x.Linija)
+        .WithMany()
+        .HasForeignKey(x => x.Linija_id);
+
+                entity.HasOne(x => x.Voz)
+                    .WithMany()
+                    .HasForeignKey(x => x.Voz_id);
+            });
+
             modelBuilder.Entity<Voz>().ToTable("Voz");
             modelBuilder.Entity<Stanica>().ToTable("Stanica");
             modelBuilder.Entity<Linija>().ToTable("Linija");

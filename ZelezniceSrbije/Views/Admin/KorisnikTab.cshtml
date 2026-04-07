@@ -1,0 +1,120 @@
+﻿@using System.Linq
+@model ZelezniceSrbije.Models.ViewModels.KorisniciVM
+@{
+    Layout = null;
+}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body p-4">
+        <span class="card-header-label d-block mb-3">Administratori</span>
+        <table class="table sz-table mb-0">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Ime</th>
+                    <th>Prezime</th>
+                    <th>Email</th>
+                    <th>Datum zaposlenja</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody data-empty-msg="Nema administratora.">
+                @if (Model?.Admini == null || !Model.Admini.Any())
+                {
+                    <tr><td class="text-muted" colspan="6">Nema administratora.</td></tr>
+                }
+                else
+                {
+                    foreach (var a in Model.Admini)
+                    {
+                        <tr data-role="Administrator"
+                            data-id="@a.Id"
+                            data-save-url="/Admin/IzmeniAdministratora"
+                            data-delete-url="/Admin/UkloniAdministratora">
+                            <td class="text-muted">@a.Id</td>
+                            <td>
+                                <strong class="cell-view">@a.Ime</strong>
+                                <input name="ime" class="form-control form-control-sm cell-edit d-none" value="@a.Ime">
+                            </td>
+                            <td>
+                                <strong class="cell-view">@a.Prezime</strong>
+                                <input name="prezime" class="form-control form-control-sm cell-edit d-none" value="@a.Prezime">
+                            </td>
+                            <td class="text-muted">
+                                <span class="cell-view">@a.Email</span>
+                                <input name="email" type="email" class="form-control form-control-sm cell-edit d-none" value="@a.Email">
+                            </td>
+                            <td>
+                                <span class="cell-view">@a.Datum_zaposlenja.Value.ToString("dd.MM.yyyy.")</span>
+                                <input name="datum_zaposlenja" type="date"
+                                       class="form-control form-control-sm cell-edit d-none"
+                                       value="@a.Datum_zaposlenja.Value.ToString("yyyy-MM-dd")"
+                                       data-raw="@a.Datum_zaposlenja.Value.ToString("yyyy-MM-dd")">
+                            </td>
+                            <td class="cell-actions">
+                                <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                <button class="btn btn-sz-danger ms-2 js-delete">Ukloni</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        <span class="card-header-label d-block mb-3">Kondukteri</span>
+        <table class="table sz-table mb-0">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Ime</th>
+                    <th>Prezime</th>
+                    <th>Email</th>
+                    <th>Broj legitimacije</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody data-empty-msg="Nema konduktera.">
+                @if (Model?.Kondukteri == null || !Model.Kondukteri.Any())
+                {
+                    <tr><td class="text-muted" colspan="6">Nema konduktera.</td></tr>
+                }
+                else
+                {
+                    foreach (var k in Model.Kondukteri)
+                    {
+                        <tr data-role="Kondukter"
+                            data-id="@k.Id"
+                            data-save-url="/Admin/IzmeniKonduktera"
+                            data-delete-url="/Admin/UkloniKonduktera">
+                            <td class="text-muted">@k.Id</td>
+                            <td>
+                                <strong class="cell-view">@k.Ime</strong>
+                                <input name="ime" class="form-control form-control-sm cell-edit d-none" value="@k.Ime">
+                            </td>
+                            <td>
+                                <strong class="cell-view">@k.Prezime</strong>
+                                <input name="prezime" class="form-control form-control-sm cell-edit d-none" value="@k.Prezime">
+                            </td>
+                            <td class="text-muted">
+                                <span class="cell-view">@k.Email</span>
+                                <input name="email" type="email" class="form-control form-control-sm cell-edit d-none" value="@k.Email">
+                            </td>
+                            <td>
+                                <span class="cell-view">@k.Broj_legitimacije</span>
+                                <input name="broj_legitimacije" class="form-control form-control-sm cell-edit d-none" value="@k.Broj_legitimacije">
+                            </td>
+                            <td class="cell-actions">
+                                <button class="btn btn-sz-outline js-edit-toggle">Izmeni</button>
+                                <button class="btn btn-sz-danger ms-2 js-delete">Ukloni</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

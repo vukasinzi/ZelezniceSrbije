@@ -1,12 +1,10 @@
-﻿using System;
-
-namespace ZelezniceSrbije.Models
+﻿namespace ZelezniceSrbije.Models
 {
     public class Administrator : Korisnik
     {
-        public DateTime Datum_zaposlenja { get; set; }
+        public DateTime? Datum_zaposlenja { get; set; }
 
-        public Administrator(string ime, string prezime, string email, string lozinka, DateTime datum_zaposlenja)
+        public Administrator(string ime, string prezime, string email, string lozinka, DateTime? datum_zaposlenja)
             : base(ime, prezime, email, lozinka)
         {
             Datum_zaposlenja = datum_zaposlenja;
@@ -17,7 +15,7 @@ namespace ZelezniceSrbije.Models
             if (!base.JeValidan())
                 return false;
 
-            if (Datum_zaposlenja.Date > DateTime.Today)
+            if (Datum_zaposlenja == null || Datum_zaposlenja.Value.Date > DateTime.Today)
                 return false;
 
             return true;

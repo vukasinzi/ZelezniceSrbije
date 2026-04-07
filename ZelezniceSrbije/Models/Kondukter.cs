@@ -7,7 +7,7 @@
         public Kondukter(string ime, string prezime, string email, string lozinka, string broj_legitimacije)
             : base(ime, prezime, email, lozinka)
         {
-            Broj_legitimacije = broj_legitimacije;
+            Broj_legitimacije = broj_legitimacije?.Trim();
         }
 
         public override bool JeValidan()
@@ -15,7 +15,7 @@
             if (!base.JeValidan())
                 return false;
 
-            if (string.IsNullOrWhiteSpace(Broj_legitimacije))
+            if (string.IsNullOrWhiteSpace(Broj_legitimacije) || Broj_legitimacije.Length > 50)
                 return false;
 
             return true;
