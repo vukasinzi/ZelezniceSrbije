@@ -1,0 +1,1 @@
+public record KartaDTO(int karta_id, decimal cena, string putnik, string polaziste, string odrediste, string linija, string tip_voza, string trajanje, DateTime vreme_polaska, DateTime vreme_dolaska, bool ocitana, DateTime? datum_ocitavanja);

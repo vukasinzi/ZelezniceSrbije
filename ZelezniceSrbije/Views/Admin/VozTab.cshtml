@@ -90,8 +90,8 @@
                                     @(voz.Aktivan ? "Da" : "Ne")
                                 </span>
                                 <select name="aktivan" class="form-select form-select-sm cell-edit d-none">
-                                    <option @@(voz.Aktivan  ? "selected" : null)>Da</option>
-                                    <option @@(!voz.Aktivan ? "selected" : null)>Ne</option>
+                                    <option value="true" selected="@(voz.Aktivan ? "selected" : null)">Da</option>
+                                    <option value="false" selected="@(!voz.Aktivan ? "selected" : null)">Ne</option>
                                 </select>
                             </td>
                             <td class="cell-actions">

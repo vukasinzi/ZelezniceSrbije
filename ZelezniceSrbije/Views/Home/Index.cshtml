@@ -67,7 +67,7 @@
                 <datalist id="stanice">
                     @foreach (var s in vm.Stanice)
                     {
-                        <option value="@s.Naziv"></option>
+                        <option value="@s.Naziv" data-id="@s.Id"></option>
                     }
                 </datalist>
             </form>
@@ -86,7 +86,7 @@
                 <div class="card-body">
                     <h5>Kupovina karata</h5>
                     <p class="text-muted">Rezervišite kartu online bez čekanja na blagajni.</p>
-                    <a asp-controller="Karte" asp-action="Index" class="btn btn-danger">Kupi kartu</a>
+                    <a asp-controller="Karta" asp-action="Kupi" class="btn btn-danger">Kupi kartu</a>
                 </div>
             </div>
         </div>

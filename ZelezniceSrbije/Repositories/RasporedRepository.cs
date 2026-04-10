@@ -49,6 +49,7 @@ namespace ZelezniceSrbije.Repositories
                 && r.Vreme_polaska < sutra
              select new RasporedDTO
              {
+                 Id = r.Id,
                  Linija = l.Naziv,
                  TipVoza = v.TipVoza.Naziv,
                  PolazakSaPol = r.Vreme_polaska.AddMinutes(slPol.Vreme_od_polaska),

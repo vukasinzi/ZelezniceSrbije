@@ -1,9 +1,29 @@
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 @model List<RasporedDTO>
+
+@{
+  DateTime? datumPolaska = ViewData["Datum"] is DateTime d ? d : null;
+  var polaziste = ViewData["Polaziste"] as string;
+  var odrediste = ViewData["Odrediste"] as string;
+  var korisnik = User?.Identity?.IsAuthenticated == true ? User.Identity?.Name : null;
+
+  var hasKupovinaContext =
+    datumPolaska.HasValue &&
+    !string.IsNullOrWhiteSpace(polaziste) &&
+    !string.IsNullOrWhiteSpace(odrediste) &&
+    !string.IsNullOrWhiteSpace(korisnik);
+
+  var datumPolaskaIso = datumPolaska?.ToString("yyyy-MM-dd");
+  var datumPolaskaDisplay = datumPolaska?.ToString("dd.MM.yyyy");
+  var kupiActionUrl = Url.Action("Kupi", "Karta") ?? "/Karta/Kupi";
+  var requestVerificationToken = Antiforgery.GetAndStoreTokens(Context).RequestToken ?? string.Empty;
+}
 
 <style>
   .rr-card { border-radius: 14px; overflow: hidden; border: 1px solid rgba(0,0,0,.08); }
   .rr-head { background: var(--sz-blue, #003B8E); color: #fff; }
   .rr-chip { font-size: 12px; border-radius: 999px; padding: 4px 10px; background: #f1f3f5; color: #333; }
+  .rr-buy-btn { min-width: 120px; }
   .rr-time { font-weight: 700; font-size: 18px; letter-spacing: .5px; font-variant-numeric: tabular-nums; }
   .rr-sub { font-size: 12px; color: #6c757d; }
   .rr-station { font-size: 11px; color: #6c757d; }
@@ -45,6 +65,9 @@
       justify-self: start;
       text-align: left;
     }
+    .rr-col-chip .d-flex {
+      align-items: flex-start !important;
+    }
   }
 </style>
 
@@ -52,7 +75,10 @@
   <div class="card-header rr-head">
     <div class="d-flex align-items-center justify-content-between">
       <div class="fw-bold">Rezultati pretrage</div>
-      <div class="small opacity-75">@(((DateTime)ViewData["Datum"]).ToString("dd.MM.yyyy"))</div>
+      @if (!string.IsNullOrWhiteSpace(datumPolaskaDisplay))
+      {
+        <div class="small opacity-75">@datumPolaskaDisplay</div>
+      }
     </div>
   </div>
 
@@ -64,11 +90,17 @@
   }
   else
   {
-    var polaziste = ViewData["Polaziste"] as string;
-    var odrediste = ViewData["Odrediste"] as string;
+    if (!hasKupovinaContext)
+    {
+      <div class="alert alert-warning m-3 mb-0">
+        Kupovina karte nije dostupna dok nisu prisutni svi validni podaci pretrage i ulogovan korisnik.
+      </div>
+    }
+
     <div class="list-group list-group-flush">
       @foreach (var r in Model)
       {
+        var trajanje = (r.DolazakNaOdr - r.PolazakSaPol).ToString(@"hh\:mm");
         <div class="list-group-item rr-row">
           <div class="rr-row-grid">
             <div class="rr-col-line d-flex flex-column">
@@ -99,9 +131,29 @@
             </div>
 
             <div class="rr-col-chip">
-              <span class="rr-chip">
-                Trajanje: @((r.DolazakNaOdr - r.PolazakSaPol).ToString(@"hh\:mm"))
-              </span>
+              <div class="d-flex flex-column align-items-end gap-2">
+                <span class="rr-chip">
+                  Trajanje: @trajanje
+                </span>
+                @if (hasKupovinaContext)
+                {
+                  <button type="button"
+                          class="btn btn-danger btn-sm rr-buy-btn js-kupi-kartu"
+                          data-linija="@r.Linija"
+                          data-tip-voza="@r.TipVoza"
+                          data-polazak-vreme="@r.PolazakSaPol.ToString("HH:mm")"
+                          data-dolazak-vreme="@r.DolazakNaOdr.ToString("HH:mm")"
+                          data-polaziste="@polaziste"
+                          data-odrediste="@odrediste"
+                          data-trajanje="@trajanje"
+                          data-datum-iso="@datumPolaskaIso"
+                          data-datum-display="@datumPolaskaDisplay"
+                          data-korisnik="@korisnik"
+                          data-raspored-id="@r.Id">
+                    Kupi kartu
+                  </button>
+                }
+              </div>
             </div>
           </div>
         </div>
@@ -109,3 +161,96 @@
     </div>
   }
 </div>
+
+<script>
+  (() => {
+    const kupiActionUrl = '@kupiActionUrl';
+    const requestVerificationToken = '@requestVerificationToken';
+
+    const readRequired = (value, label) => {
+      const parsed = (value || '').trim();
+      if (!parsed) {
+        throw new Error(`Nedostaje obavezan podatak: ${label}.`);
+      }
+      return parsed;
+    };
+
+    const stanicaIdMap = {};
+    document.querySelectorAll('#stanice option[data-id]').forEach((option) => {
+      const naziv = (option.value || '').trim().toLowerCase();
+      const id = (option.dataset.id || '').trim();
+      if (naziv && id) {
+        stanicaIdMap[naziv] = id;
+      }
+    });
+
+    const resolveStanicaId = (naziv, label) => {
+      const key = readRequired(naziv, label).toLowerCase();
+      const id = readRequired(stanicaIdMap[key], `${label}_id`);
+      if (!/^\d+$/.test(id)) {
+        throw new Error(`Neispravan ${label}_id.`);
+      }
+      return id;
+    };
+
+    const buttons = document.querySelectorAll('.js-kupi-kartu');
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        try {
+          const data = button.dataset;
+
+          const korisnik = readRequired(data.korisnik, 'korisnik');
+          const datumDisplay = readRequired(data.datumDisplay, 'datum polaska (display)');
+          const polazakVreme = readRequired(data.polazakVreme, 'vreme polaska');
+          const polaziste = readRequired(data.polaziste, 'polaziste');
+          const odrediste = readRequired(data.odrediste, 'odrediste');
+          const polazisteId = resolveStanicaId(polaziste, 'polaziste');
+          const odredisteId = resolveStanicaId(odrediste, 'odrediste');
+          const rasporedId = readRequired(data.rasporedId, 'raspored_id');
+          if (!/^\d+$/.test(rasporedId)) {
+            throw new Error('Neispravan raspored_id.');
+          }
+
+          const poruka =
+            `Da li ste sigurni da zelite kupiti kartu za korisnika ${korisnik}, ` +
+            `dana ${datumDisplay}, u ${polazakVreme}, od ${polaziste} do ${odrediste}?`;
+
+          if (!window.confirm(poruka)) {
+            return;
+          }
+
+          const postForm = document.createElement('form');
+          postForm.method = 'post';
+          postForm.action = kupiActionUrl;
+
+          const fields = {
+            raspored_id: rasporedId,
+            polaziste_id: polazisteId,
+            odrediste_id: odredisteId
+          };
+
+          Object.entries(fields).forEach(([name, value]) => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = name;
+            input.value = value;
+            postForm.appendChild(input);
+          });
+
+          if (requestVerificationToken) {
+            const tokenInput = document.createElement('input');
+            tokenInput.type = 'hidden';
+            tokenInput.name = '__RequestVerificationToken';
+            tokenInput.value = requestVerificationToken;
+            postForm.appendChild(tokenInput);
+          }
+
+          document.body.appendChild(postForm);
+          postForm.submit();
+        } catch (error) {
+          window.alert(error instanceof Error ? error.message : 'Kupovina nije moguca.');
+        }
+      });
+    });
+  })();
+</script>
