@@ -109,7 +109,8 @@ public class KartaRepository : IKartaRepository
                 VremePolaska = r.Vreme_polaska.AddMinutes(pol.Vreme_od_polaska),
                 VremeDolaska = r.Vreme_polaska.AddMinutes(odr.Vreme_od_polaska),
                 Ocitana = ka.Ocitana,
-                DatumOcitavanja = ka.Datum_ocitavanja
+                DatumOcitavanja = ka.Datum_ocitavanja,
+                QrToken = ka.QrToken
             }
         ).FirstOrDefaultAsync();
 
@@ -118,7 +119,61 @@ public class KartaRepository : IKartaRepository
             return null;
         KartaDTO karta = new(podaci.KartaId, podaci.CenaKarte, podaci.Korisnik, podaci.Polaziste, podaci.Odrediste,
             podaci.Linija, podaci.TipVoza, podaci.Trajanje.ToString(), podaci.VremePolaska, podaci.VremeDolaska,
-            podaci.Ocitana, podaci.DatumOcitavanja);
+            podaci.Ocitana, podaci.DatumOcitavanja,podaci.QrToken);
         return karta;
+    }
+
+    public async Task<List<KartaDTO>> VratiKarte(int putnik_id)
+    {
+        var podaci = await (
+            from ka in db.Karta
+            join p in db.Putnik on ka.Putnik_id equals p.Id
+            join k in db.Korisnik on p.Id equals k.Id
+            join r in db.Raspored on ka.Raspored_id equals r.Id
+            join l in db.Linija on r.Linija_id equals l.Id
+            join v in db.Voz on r.Voz_id equals v.Id
+            join tv in db.TipVoza on v.Tip_voza_id equals tv.Id
+            join pol in db.StanicaLinija on ka.Polaziste_id equals pol.Id
+            join odr in db.StanicaLinija on ka.Odrediste_id equals odr.Id
+            join sp in db.Stanica on pol.Stanica_id equals sp.Id
+            join so in db.Stanica on odr.Stanica_id equals so.Id
+            where ka.Putnik_id == putnik_id
+                  && pol.Redosled < odr.Redosled
+            orderby r.Vreme_polaska descending, ka.Id descending
+            select new
+            {
+                KartaId = ka.Id,
+                Korisnik = k.Ime + " " + k.Prezime,
+                CenaKarte = ka.Cena,
+                Polaziste = sp.Naziv,
+                Odrediste = so.Naziv,
+                Linija = l.Naziv,
+                TipVoza = tv.Naziv,
+                Trajanje = odr.Vreme_od_polaska - pol.Vreme_od_polaska,
+                VremePolaska = r.Vreme_polaska.AddMinutes(pol.Vreme_od_polaska),
+                VremeDolaska = r.Vreme_polaska.AddMinutes(odr.Vreme_od_polaska),
+                Ocitana = ka.Ocitana,
+                QrToken = ka.QrToken,
+                DatumOcitavanja = ka.Datum_ocitavanja
+            }
+        ).ToListAsync();
+
+        return podaci
+            .Select(x => new KartaDTO(
+                x.KartaId,
+                x.CenaKarte,
+                x.Korisnik,
+                x.Polaziste,
+                x.Odrediste,
+                x.Linija,
+                x.TipVoza,
+                x.Trajanje.ToString(),
+                x.VremePolaska,
+                x.VremeDolaska,
+                x.Ocitana,
+                x.DatumOcitavanja,
+                x.QrToken
+            ))
+            .ToList();
     }
 }

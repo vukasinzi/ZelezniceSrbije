@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using ZelezniceSrbije.Models.ViewModels;
 using ZelezniceSrbije.Services;
 
 namespace ZelezniceSrbije.Controllers;
@@ -22,11 +23,29 @@ public class KartaController : Controller
          return View();
       return RedirectToAction("Home", "Index");
    }
+
+   [HttpGet]
+   public async Task<IActionResult> MojeKarte()
+   {
+      int putnik_id = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+      if (putnik_id <= 0)
+         return BadRequest("Morate biti prijavljeni");
+      var karteDto = await servis.VratiPodatke(putnik_id);
+      List<KarteVM> karteViewModel = new();
+      foreach (KartaDTO kd in karteDto)
+      {
+         var url = Url.Action("Ocitaj", "Kondukter", new { t = kd.qr_token }, Request.Scheme);
+         var qr = qr_servis.GenerisiQrKod(url);
+         KarteVM k = new(kd, $"data:image/png;base64,{Convert.ToBase64String(qr)}");
+         karteViewModel.Add(k);
+      }
+      return View("Index", karteViewModel);
+   }
    [HttpPost]
    public async Task<IActionResult> Kupi(int raspored_id,int polaziste_id,int odrediste_id)
    {
       int putnik_id = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-      if(putnik_id == 0)
+      if(putnik_id <= 0)
          return RedirectToAction("Home", "Index");
 
       var Karta = await servis.Kupi(putnik_id,raspored_id,polaziste_id,odrediste_id);
@@ -41,7 +60,6 @@ public class KartaController : Controller
       var url = Url.Action("Ocitaj", "Kondukter", new { t = Karta.QrToken },Request.Scheme)!;
       var qr = qr_servis.GenerisiQrKod(url);
       ViewData["QrImageData"] = $"data:image/png;base64,{Convert.ToBase64String(qr)}";
-      ViewData["QrPayload"] = url;
       
       return View("Print", Karta_DTO);
 

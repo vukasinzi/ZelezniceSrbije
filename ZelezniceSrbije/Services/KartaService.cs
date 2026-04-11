@@ -27,4 +27,10 @@ public class KartaService : IKartaService
         return await repo.VratiKartu(karta_id,putnik_id);
 
     }
+
+    public async Task<List<KartaDTO>> VratiPodatke(int putnik_id)
+    {
+        return await repo.VratiKarte(putnik_id);
+    
+    }
 }
