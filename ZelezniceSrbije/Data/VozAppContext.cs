@@ -35,7 +35,7 @@ namespace ZelezniceSrbije.Data
                 entity.Property(x => x.Raspored_id).HasColumnName("Raspored_id");
                 entity.Property(x => x.Polaziste_id).HasColumnName("Polaziste_id");
                 entity.Property(x => x.Odrediste_id).HasColumnName("Odrediste_id");
-                entity.Property(x => x.QrToken).HasColumnName("qr_token");
+                entity.Property(x => x.QrToken).HasColumnName("Qr_token");
 
             });
             modelBuilder.Entity<StanicaLinija>(entity =>

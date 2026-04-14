@@ -31,15 +31,15 @@ public class KartaController : Controller
       if (putnik_id <= 0)
          return BadRequest("Morate biti prijavljeni");
       var karteDto = await servis.VratiPodatke(putnik_id);
-      List<KarteVM> karteViewModel = new();
+      List<KarteVM> lista = new();
       foreach (KartaDTO kd in karteDto)
       {
          var url = Url.Action("Ocitaj", "Kondukter", new { t = kd.qr_token }, Request.Scheme);
          var qr = qr_servis.GenerisiQrKod(url);
          KarteVM k = new(kd, $"data:image/png;base64,{Convert.ToBase64String(qr)}");
-         karteViewModel.Add(k);
+         lista.Add(k);
       }
-      return View("Index", karteViewModel);
+      return View("Index", lista);
    }
    [HttpPost]
    public async Task<IActionResult> Kupi(int raspored_id,int polaziste_id,int odrediste_id)

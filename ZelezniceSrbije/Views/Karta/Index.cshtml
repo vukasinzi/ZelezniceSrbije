@@ -9,15 +9,23 @@
     {
         foreach (var karta in Model)
         {
-            karte.Add(karta);
+            if (karta?.Karta != null)
+            {
+                karte.Add(karta);
+            }
         }
     }
 }
 
 <style>
     .ticket-wrap {
-        max-width: 920px;
+        max-width: 900px;
         margin: 1.5rem auto;
+    }
+
+    .ticket-list {
+        display: grid;
+        gap: 16px;
     }
 
     .ticket-card {
@@ -30,131 +38,48 @@
     .ticket-head {
         background: #003B8E;
         color: #fff;
-        padding: 14px 18px;
+        padding: 16px 20px;
     }
 
     .ticket-body {
-        padding: 16px;
-    }
-
-    .ticket-list {
-        display: grid;
-        gap: 10px;
-    }
-
-    .ticket-item {
-        border: 1px solid #e9ecef;
-        border-radius: 12px;
-        padding: 12px;
-        background: #fcfdff;
-    }
-
-    .ticket-top {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 10px;
-        border-bottom: 1px dashed #d7deea;
-        padding-bottom: 8px;
-    }
-
-    .ticket-id {
-        font-weight: 700;
-        color: #003B8E;
-        font-size: 15px;
-    }
-
-    .ticket-line {
-        font-size: 13px;
-        color: #6c757d;
-    }
-
-    .ticket-status {
-        font-size: 12px;
-        padding: 4px 8px;
-        border-radius: 999px;
-        border: 1px solid #d2d7df;
-        color: #495057;
-        background: #fff;
-        white-space: nowrap;
-    }
-
-    .ticket-status.ticket-status-ok {
-        color: #0f5132;
-        border-color: #badbcc;
-        background: #d1e7dd;
-    }
-
-    .ticket-status.ticket-status-warn {
-        color: #664d03;
-        border-color: #ffecb5;
-        background: #fff3cd;
+        padding: 20px;
     }
 
     .ticket-grid {
         display: grid;
-        grid-template-columns: 1.15fr 1fr;
-        gap: 10px 14px;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 20px;
     }
 
-    .ticket-side {
+    .ticket-meta-grid {
         display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 12px;
-        align-items: start;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px 16px;
     }
 
     .ticket-label {
-        font-size: 11px;
+        font-size: 12px;
         color: #6c757d;
         text-transform: uppercase;
         letter-spacing: .5px;
     }
 
     .ticket-value {
-        font-size: 14px;
+        font-size: 16px;
         font-weight: 600;
     }
 
-    .ticket-route {
-        font-size: 16px;
-        font-weight: 700;
-        color: #0f172a;
-        line-height: 1.2;
-    }
-
-    .ticket-meta {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px 12px;
-    }
-
-    .ticket-qr {
-        border: 1px solid #dbe4f0;
+    .ticket-qr-box {
+        border: 1px solid #e9ecef;
         border-radius: 10px;
-        padding: 6px;
-        background: #fff;
-        width: 94px;
+        padding: 12px;
         text-align: center;
     }
 
-    .ticket-qr img {
-        width: 80px;
-        height: 80px;
-        object-fit: contain;
-    }
-
-    .ticket-qr-empty {
-        width: 80px;
-        height: 80px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 10px;
-        color: #6c757d;
-        line-height: 1.2;
-        padding: 4px;
+    .ticket-qr-box img {
+        max-width: 220px;
+        width: 100%;
+        height: auto;
     }
 
     .ticket-actions {
@@ -164,126 +89,101 @@
         flex-wrap: wrap;
     }
 
-    @@media (max-width: 992px) {
+    @@media (max-width: 768px) {
         .ticket-grid {
             grid-template-columns: 1fr;
-        }
-
-        .ticket-side {
-            grid-template-columns: 1fr;
-        }
-
-        .ticket-qr {
-            width: 100px;
-        }
-    }
-
-    @@media (max-width: 576px) {
-        .ticket-top {
-            align-items: flex-start;
-            flex-direction: column;
-        }
-
-        .ticket-meta {
-            grid-template-columns: 1fr;
-        }
-
-        .ticket-qr {
-            width: 94px;
         }
     }
 </style>
 
 <div class="ticket-wrap">
-    <div class="ticket-card shadow-sm">
-        <div class="ticket-head d-flex justify-content-between align-items-center">
-            <div>
-                <div class="fw-bold">Železnice Srbije - Moje karte</div>
-                <div class="small opacity-75">Pregled svih kupljenih karata</div>
-            </div>
-            <div class="small">Ukupno karata: @karte.Count</div>
+    @if (karte.Count == 0)
+    {
+        <div class="alert alert-light border mb-0">
+            Trenutno nema učitanih karata za ovog korisnika.
         </div>
+    }
+    else
+    {
+        <div class="ticket-list">
+            @foreach (var stavka in karte)
+            {
+                var karta = stavka.Karta;
+                <div class="ticket-card shadow-sm">
+                    <div class="ticket-head d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="fw-bold">Železnice Srbije - Elektronska karta</div>
+                            <div class="small opacity-75">ID karte: @karta.karta_id</div>
+                        </div>
+                        <div class="small">
+                            Status:
+                            <strong>@(karta.ocitana ? "Očitana" : "Neočitana")</strong>
+                        </div>
+                    </div>
 
-        <div class="ticket-body">
-            @if (karte.Count == 0)
-            {
-                <div class="alert alert-light border mb-0">
-                    Trenutno nema učitanih karata za ovog korisnika.
-                </div>
-            }
-            else
-            {
-                <div class="ticket-list">
-                    @foreach (var stavka in karte)
-                    {
-                        if (stavka.Karta == null)
-                        {
-                            continue;
-                        }
-                        var karta = stavka.Karta;
-                        <div class="ticket-item">
-                            <div class="ticket-top">
+                    <div class="ticket-body">
+                        <div class="ticket-grid">
+                            <div class="ticket-meta-grid">
                                 <div>
-                                    <div class="ticket-id">Karta #@karta.karta_id</div>
-                                    <div class="ticket-line">@karta.linija (@karta.tip_voza)</div>
+                                    <div class="ticket-label">Putnik</div>
+                                    <div class="ticket-value">@karta.putnik</div>
                                 </div>
-                                <div class="ticket-status @(karta.ocitana ? "ticket-status-ok" : "ticket-status-warn")">
-                                    @(karta.ocitana ? "Očitana" : "Neočitana")
+                                <div>
+                                    <div class="ticket-label">Linija</div>
+                                    <div class="ticket-value">@karta.linija (@karta.tip_voza)</div>
                                 </div>
+                                <div>
+                                    <div class="ticket-label">Polazište</div>
+                                    <div class="ticket-value">@karta.polaziste</div>
+                                </div>
+                                <div>
+                                    <div class="ticket-label">Odredište</div>
+                                    <div class="ticket-value">@karta.odrediste</div>
+                                </div>
+                                <div>
+                                    <div class="ticket-label">Polazak</div>
+                                    <div class="ticket-value">@karta.vreme_polaska.ToString("dd.MM.yyyy HH:mm")</div>
+                                </div>
+                                <div>
+                                    <div class="ticket-label">Dolazak</div>
+                                    <div class="ticket-value">@karta.vreme_dolaska.ToString("dd.MM.yyyy HH:mm")</div>
+                                </div>
+                                <div>
+                                    <div class="ticket-label">Trajanje</div>
+                                    <div class="ticket-value">@karta.trajanje</div>
+                                </div>
+                                <div>
+                                    <div class="ticket-label">Cena</div>
+                                    <div class="ticket-value">@karta.cena.ToString("0.00") RSD</div>
+                                </div>
+                                @if (karta.datum_ocitavanja.HasValue)
+                                {
+                                    <div>
+                                        <div class="ticket-label">Datum očitavanja</div>
+                                        <div class="ticket-value">@karta.datum_ocitavanja.Value.ToString("dd.MM.yyyy HH:mm")</div>
+                                    </div>
+                                }
                             </div>
 
-                            <div class="ticket-grid">
-                                <div>
-                                    <div class="ticket-label">Relacija</div>
-                                    <div class="ticket-route">@karta.polaziste -> @karta.odrediste</div>
-                                </div>
-                                <div class="ticket-side">
-                                    <div class="ticket-meta">
-                                        <div>
-                                            <div class="ticket-label">Polazak</div>
-                                            <div class="ticket-value">@karta.vreme_polaska.ToString("dd.MM.yyyy HH:mm")</div>
-                                        </div>
-                                        <div>
-                                            <div class="ticket-label">Dolazak</div>
-                                            <div class="ticket-value">@karta.vreme_dolaska.ToString("dd.MM.yyyy HH:mm")</div>
-                                        </div>
-                                        <div>
-                                            <div class="ticket-label">Trajanje</div>
-                                            <div class="ticket-value">@karta.trajanje</div>
-                                        </div>
-                                        <div>
-                                            <div class="ticket-label">Cena</div>
-                                            <div class="ticket-value">@karta.cena.ToString("0.00") RSD</div>
-                                        </div>
-                                        <div>
-                                            <div class="ticket-label">Putnik</div>
-                                            <div class="ticket-value">@karta.putnik</div>
-                                        </div>
-                                        <div>
-                                            <div class="ticket-label">Datum očitavanja</div>
-                                            <div class="ticket-value">@(karta.datum_ocitavanja?.ToString("dd.MM.yyyy HH:mm") ?? "-")</div>
-                                        </div>
-                                    </div>
-                                    <div class="ticket-qr">
-                                        @if (!string.IsNullOrWhiteSpace(stavka.QrImageData))
-                                        {
-                                            <img src="@stavka.QrImageData" alt="QR kod karte #@karta.karta_id" />
-                                        }
-                                        else
-                                        {
-                                            <div class="ticket-qr-empty">QR nije dostupan</div>
-                                        }
-                                    </div>
-                                </div>
+                            <div class="ticket-qr-box">
+                                <div class="ticket-label mb-2">QR kod karte</div>
+                                @if (!string.IsNullOrWhiteSpace(stavka.QrImageData))
+                                {
+                                    <img src="@stavka.QrImageData" alt="QR kod karte #@karta.karta_id" />
+                                }
+                                else
+                                {
+                                    <div class="text-muted small">QR nije dostupan.</div>
+                                }
                             </div>
                         </div>
-                    }
+                    </div>
                 </div>
             }
-
-            <div class="ticket-actions">
-                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Nazad na početnu</a>
-            </div>
         </div>
+    }
+
+    <div class="ticket-actions">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Nazad na početnu</a>
     </div>
 </div>

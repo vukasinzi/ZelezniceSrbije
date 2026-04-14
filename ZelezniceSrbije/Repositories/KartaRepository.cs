@@ -39,8 +39,9 @@ public class KartaRepository : IKartaRepository
                 PolazisteId = pol.Id,
                 OdredisteId= odr.Id
             }
-        ).FirstAsync();
-
+        ).FirstOrDefaultAsync();
+        if (podaci == null)
+            return null;
         Karta x = new(
             podaci.CenaKarte,
             putnik_id,
@@ -114,7 +115,6 @@ public class KartaRepository : IKartaRepository
             }
         ).FirstOrDefaultAsync();
 
-
         if (podaci == null)
             return null;
         KartaDTO karta = new(podaci.KartaId, podaci.CenaKarte, podaci.Korisnik, podaci.Polaziste, podaci.Odrediste,
@@ -157,7 +157,10 @@ public class KartaRepository : IKartaRepository
                 DatumOcitavanja = ka.Datum_ocitavanja
             }
         ).ToListAsync();
-
+        if (podaci.Count == 0)
+        {
+            return null;
+        }
         return podaci
             .Select(x => new KartaDTO(
                 x.KartaId,
