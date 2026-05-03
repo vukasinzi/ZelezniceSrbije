@@ -78,7 +78,7 @@
                             </td>
                             <td>
                                 <span class="cell-view">@tipNaziv</span>
-                                <select name="tip_voza_id" class="form-select form-select-sm cell-edit d-none">
+                                <select name="tip_voza_id" class="form-select form-select-sm cell-edit d-none" data-raw="@voz.Tip_voza_id">
                                     @foreach (var tip in tipovi)
                                     {
                                         <option value="@tip.Id" selected="@(tip.Id == voz.Tip_voza_id)">@tip.Naziv</option>
@@ -89,7 +89,7 @@
                                 <span class="sz-badge @(voz.Aktivan ? "badge-aktivan" : "badge-neaktivan") cell-view">
                                     @(voz.Aktivan ? "Da" : "Ne")
                                 </span>
-                                <select name="aktivan" class="form-select form-select-sm cell-edit d-none">
+                                <select name="aktivan" class="form-select form-select-sm cell-edit d-none" data-raw="@voz.Aktivan.ToString().ToLowerInvariant()">
                                     <option value="true" selected="@(voz.Aktivan ? "selected" : null)">Da</option>
                                     <option value="false" selected="@(!voz.Aktivan ? "selected" : null)">Ne</option>
                                 </select>

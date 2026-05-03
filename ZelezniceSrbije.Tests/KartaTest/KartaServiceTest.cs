@@ -1,5 +1,6 @@
 using Microsoft.Data.Sqlite;
 using ZelezniceSrbije.Data;
+using ZelezniceSrbije.Models;
 using ZelezniceSrbije.Repositories;
 using ZelezniceSrbije.Services;
 
@@ -18,8 +19,8 @@ public class KartaServiceTest : IDisposable
         connection = db.connection;
         var repo = new KartaRepository(context);
         servis = new KartaService(repo);
-
     }
+
     public void Dispose()
     {
         connection.Dispose();
@@ -40,7 +41,6 @@ public class KartaServiceTest : IDisposable
     [InlineData(102, 6, 4, 5, false)] // pada zbog pogresnog smera na duzoj liniji
     [InlineData(101, 1, 1, 3, false)] // pada jer stanica nije na tom rasporedu
     [InlineData(101, 13, 1, 2, false)] // pada jer stanice pripadaju drugoj liniji    
-    
     public async Task KupiKartu_Test(int putnik_id, int raspored_id, int polaziste_id, int odrediste_id,bool trebaDaUspe)
     {
         await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
@@ -57,6 +57,7 @@ public class KartaServiceTest : IDisposable
             Assert.Equal(0, context.Karta.Count());
         }
     }
+
     [Theory]
     [InlineData(1, 101, true)] // uspesno vraca postojecu kartu za ispravnog putnika
     [InlineData(999, 101, false)] // vraca null jer trazena karta ne postoji u bazi
@@ -66,7 +67,12 @@ public class KartaServiceTest : IDisposable
         await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
         
         Guid testToken = Guid.NewGuid();
-        context.Karta.Add(new Karta(450m, 101, 1, 1, 2, testToken) { Id = 1 });
+        context.Karta.Add(new Karta(
+            450m, 101, 1, 
+            "Beograd", "Novi Sad", "BG-NS", "Soko", 
+            DateTime.Now, DateTime.Now.AddMinutes(36), 36, 
+            null, testToken) { Id = 1 });
+            
         await context.SaveChangesAsync();
 
         var rezultat = await servis.VratiPodatke(karta_id, putnik_id);
@@ -92,8 +98,8 @@ public class KartaServiceTest : IDisposable
         await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
         
         context.Karta.AddRange(
-            new Karta(450m, 101, 1, 1, 2, Guid.NewGuid()) { Id = 1 },
-            new Karta(1200m, 101, 6, 1, 4, Guid.NewGuid()) { Id = 2 }
+            new Karta(450m, 101, 1, "Beograd", "Novi Sad", "BG-NS", "Soko", DateTime.Now, DateTime.Now.AddMinutes(36), 36, null, Guid.NewGuid()) { Id = 1 },
+            new Karta(1200m, 101, 6, "Beograd", "Niš", "BG-NI", "Regio", DateTime.Now, DateTime.Now.AddMinutes(120), 120, null, Guid.NewGuid()) { Id = 2 }
         );
         await context.SaveChangesAsync();
 
