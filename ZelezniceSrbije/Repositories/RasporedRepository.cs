@@ -30,34 +30,36 @@ namespace ZelezniceSrbije.Repositories
             and sl_pol.redosled < sl_odr.redosled
             order by r.vreme_polaska asc
             kod testiran u ssmsu, sve top.
-            
+
             //fali samo deo za datume al to je dodato ovde . r.vremepolaska >= dan  i r. vremepolaska< sutra
-             
+
              */
             var dan = datum.Date;
             var sutra = dan.AddDays(1);
+            var odKad = dan == DateTime.Now.Date ? DateTime.Now : dan;
+
             List<RasporedDTO> rezultat = await (
-             from r in db.Raspored
-             join l in db.Linija on r.Linija_id equals l.Id
-             join v in db.Voz on r.Voz_id equals v.Id
-             join slPol in db.StanicaLinija on l.Id equals slPol.Linija_id
-             join slOdr in db.StanicaLinija on l.Id equals slOdr.Linija_id
-             where slPol.Stanica_id == pol.Id
-                && slOdr.Stanica_id == odr.Id
-                && slPol.Redosled < slOdr.Redosled &&
-                r.Vreme_polaska >= dan
-                && r.Vreme_polaska < sutra
-             select new RasporedDTO
-             {
-                 Linija = l.Naziv,
-                 TipVoza = v.TipVoza.Naziv,
-                 PolazakSaPol = r.Vreme_polaska.AddMinutes(slPol.Vreme_od_polaska),
-                 DolazakNaOdr = r.Vreme_polaska.AddMinutes(slOdr.Vreme_od_polaska)
-             }
-             ).ToListAsync();
+                from r in db.Raspored
+                join l in db.Linija on r.Linija_id equals l.Id
+                join v in db.Voz on r.Voz_id equals v.Id
+                join slPol in db.StanicaLinija on l.Id equals slPol.Linija_id
+                join slOdr in db.StanicaLinija on l.Id equals slOdr.Linija_id
+                where slPol.Stanica_id == pol.Id
+                      && slOdr.Stanica_id == odr.Id
+                      && slPol.Redosled < slOdr.Redosled
+                      && r.Vreme_polaska >= odKad
+                      && r.Vreme_polaska < sutra
+                select new RasporedDTO
+                {
+                    Id = r.Id,
+                    Linija = l.Naziv,
+                    TipVoza = v.TipVoza.Naziv,
+                    PolazakSaPol = r.Vreme_polaska.AddMinutes(slPol.Vreme_od_polaska),
+                    DolazakNaOdr = r.Vreme_polaska.AddMinutes(slOdr.Vreme_od_polaska)
+                }
+            ).ToListAsync();
 
             return await Task.FromResult(rezultat);
-            
         }
       
         public async Task<Raspored> ProveriRaspored(int id)

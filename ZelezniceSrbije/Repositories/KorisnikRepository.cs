@@ -46,11 +46,9 @@ namespace ZelezniceSrbije.Repositories
             if (postoji != null)
                 return null;
 
-            Korisnik k = new Korisnik(p.Ime, p.Prezime, p.Email, p.Lozinka);
-
             await db.Putnik.AddAsync(p);
             await db.SaveChangesAsync();
-            return k;
+            return p;
         }
 
         public async Task<List<Administrator>> UcitajSveAdmine()

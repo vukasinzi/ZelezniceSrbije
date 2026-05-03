@@ -47,7 +47,11 @@
                                     👤 @User.Identity.Name
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" asp-controller="Auth" asp-action="Profil">Moj profil</a></li>
+                                    <li>
+                                        <form method="get" asp-controller="Karta" asp-action="MojeKarte">
+                                            <button type="submit" class="dropdown-item">Moje karte</button>
+                                        </form>
+                                    </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form method="get" asp-controller="Auth" asp-action="logout">
