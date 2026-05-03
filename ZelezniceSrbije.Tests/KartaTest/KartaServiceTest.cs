@@ -40,8 +40,8 @@ public class KartaServiceTest : IDisposable
     [InlineData(101, 1, 2, 1, false)] // pada zbog pogresnog smera
     [InlineData(102, 6, 4, 5, false)] // pada zbog pogresnog smera na duzoj liniji
     [InlineData(101, 1, 1, 3, false)] // pada jer stanica nije na tom rasporedu
-    [InlineData(101, 13, 1, 2, false)] // pada jer stanice pripadaju drugoj liniji    
-    public async Task KupiKartu_Test(int putnik_id, int raspored_id, int polaziste_id, int odrediste_id,bool trebaDaUspe)
+    [InlineData(101, 13, 1, 2, false)] // pada jer stanice pripadaju drugoj liniji
+    public async Task KupiKartu_Test(int putnik_id, int raspored_id, int polaziste_id, int odrediste_id, bool trebaDaUspe)
     {
         await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
         var rezultat = await servis.Kupi(putnik_id, raspored_id, polaziste_id, odrediste_id);
@@ -65,14 +65,14 @@ public class KartaServiceTest : IDisposable
     public async Task VratiPodatke_JednaKarta_Test(int karta_id, int putnik_id, bool trebaDaUspe)
     {
         await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
-        
+
         Guid testToken = Guid.NewGuid();
         context.Karta.Add(new Karta(
-            450m, 101, 1, 
-            "Beograd", "Novi Sad", "BG-NS", "Soko", 
-            DateTime.Now, DateTime.Now.AddMinutes(36), 36, 
+            450m, 101, 1,
+            "Beograd", "Novi Sad", "BG-NS", "Soko",
+            DateTime.Now, DateTime.Now.AddMinutes(36), 36,
             null, testToken) { Id = 1 });
-            
+
         await context.SaveChangesAsync();
 
         var rezultat = await servis.VratiPodatke(karta_id, putnik_id);
@@ -96,7 +96,7 @@ public class KartaServiceTest : IDisposable
     public async Task VratiPodatke_SveKarte_Test(int putnik_id, bool trebaDaUspe)
     {
         await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
-        
+
         context.Karta.AddRange(
             new Karta(450m, 101, 1, "Beograd", "Novi Sad", "BG-NS", "Soko", DateTime.Now, DateTime.Now.AddMinutes(36), 36, null, Guid.NewGuid()) { Id = 1 },
             new Karta(1200m, 101, 6, "Beograd", "Niš", "BG-NI", "Regio", DateTime.Now, DateTime.Now.AddMinutes(120), 120, null, Guid.NewGuid()) { Id = 2 }

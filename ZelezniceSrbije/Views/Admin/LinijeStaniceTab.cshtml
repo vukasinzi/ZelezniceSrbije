@@ -260,8 +260,8 @@
             const up   = e.target.closest('[data-up]');
             const down = e.target.closest('[data-down]');
             if (rm)   { const i = selected.findIndex(s => s.id === Number(rm.dataset.rm));   if (i >= 0) { selected.splice(i, 1); render(); } }
-            if (up)   { const i = selected.findIndex(s => s.id === Number(up.dataset.up));   if (i > 0)  { [selected[i-1], selected[i]] = [selected[i], selected[i-1]]; render(); } }
-            if (down) { const i = selected.findIndex(s => s.id === Number(down.dataset.down)); if (i >= 0 && i < selected.length - 1) { [selected[i+1], selected[i]] = [selected[i], selected[i+1]]; render(); } }
+            if (up)   { const i = selected.findIndex(s => s.id === Number(up.dataset.up));   if (i > 0)  { [selected[i-1], selected[i]] = [selected[i], selected[i-1]]; const t = selected[i-1].vremeOdPolaska; selected[i-1].vremeOdPolaska = selected[i].vremeOdPolaska; selected[i].vremeOdPolaska = t; render(); } }
+            if (down) { const i = selected.findIndex(s => s.id === Number(down.dataset.down)); if (i >= 0 && i < selected.length - 1) { [selected[i+1], selected[i]] = [selected[i], selected[i+1]]; const t = selected[i+1].vremeOdPolaska; selected[i+1].vremeOdPolaska = selected[i].vremeOdPolaska; selected[i].vremeOdPolaska = t; render(); } }
         });
 
         selectedList.addEventListener('input', e => {
@@ -472,6 +472,7 @@
                 const idx = Number(up.dataset.up);
                 if (Number.isInteger(idx) && idx > 0 && idx < selected.length) {
                     [selected[idx - 1], selected[idx]] = [selected[idx], selected[idx - 1]];
+                    const t = selected[idx - 1].vremeOdPolaska; selected[idx - 1].vremeOdPolaska = selected[idx].vremeOdPolaska; selected[idx].vremeOdPolaska = t;
                     renderSelected();
                 }
             }
@@ -479,6 +480,7 @@
                 const idx = Number(down.dataset.down);
                 if (Number.isInteger(idx) && idx >= 0 && idx < selected.length - 1) {
                     [selected[idx + 1], selected[idx]] = [selected[idx], selected[idx + 1]];
+                    const t = selected[idx + 1].vremeOdPolaska; selected[idx + 1].vremeOdPolaska = selected[idx].vremeOdPolaska; selected[idx].vremeOdPolaska = t;
                     renderSelected();
                 }
             }

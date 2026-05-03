@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ZelezniceSrbije.Data;
 using ZelezniceSrbije.Models;
+using ZelezniceSrbije.Models.ViewModels;
 
 namespace ZelezniceSrbije.Repositories;
 
@@ -113,10 +114,10 @@ public class KartaRepository : IKartaRepository
                 Polaziste = ka.Polaziste,
                 Odrediste = ka.Odrediste,
                 Linija = ka.Linija,
-                TipVoza = ka.TipVoza,
-                Trajanje = ka.TrajanjeMin,
-                VremePolaska = ka.VremePolaska,
-                VremeDolaska = ka.VremeDolaska,
+                TipVoza = ka.Tip_voza,
+                Trajanje = ka.Trajanje_min,
+                VremePolaska = ka.Vreme_polaska,
+                VremeDolaska = ka.Vreme_dolaska,
                 Ocitana = ka.Ocitana,
                 DatumOcitavanja = ka.Datum_ocitavanja,
                 QrToken = ka.Qr_token
@@ -151,7 +152,7 @@ public class KartaRepository : IKartaRepository
             join p in db.Putnik on ka.Putnik_id equals p.Id
             join k in db.Korisnik on p.Id equals k.Id
             where ka.Putnik_id == putnik_id
-            orderby ka.VremePolaska descending, ka.Id descending
+            orderby ka.Vreme_polaska descending, ka.Id descending
             select new
             {
                 KartaId = ka.Id,
@@ -160,10 +161,10 @@ public class KartaRepository : IKartaRepository
                 Polaziste = ka.Polaziste,
                 Odrediste = ka.Odrediste,
                 Linija = ka.Linija,
-                TipVoza = ka.TipVoza,
-                Trajanje = ka.TrajanjeMin,
-                VremePolaska = ka.VremePolaska,
-                VremeDolaska = ka.VremeDolaska,
+                TipVoza = ka.Tip_voza,
+                Trajanje = ka.Trajanje_min,
+                VremePolaska = ka.Vreme_polaska,
+                VremeDolaska = ka.Vreme_dolaska,
                 Ocitana = ka.Ocitana,
                 DatumOcitavanja = ka.Datum_ocitavanja,
                 QrToken = ka.Qr_token

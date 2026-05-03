@@ -1,4 +1,5 @@
 using ZelezniceSrbije.Models;
+using ZelezniceSrbije.Models.ViewModels;
 using ZelezniceSrbije.Repositories;
 
 namespace ZelezniceSrbije.Services;
@@ -11,29 +12,26 @@ public class KartaService : IKartaService
     {
         this.repo = repo;
     }
-    
-    public async Task<Karta> Kupi(int putnik_id,int raspored_id, int polaziste_id, int odrediste_id)
+
+    public async Task<Karta> Kupi(int putnik_id, int raspored_id, int polaziste_id, int odrediste_id)
     {
         if (putnik_id <= 0 || raspored_id <= 0 || odrediste_id <= 0)
             return null;
+
         var podaci = await repo.ProveriKartu(putnik_id, raspored_id, polaziste_id, odrediste_id);
         if (!podaci)
             return null;
-        return await repo.KupiKartu(putnik_id,raspored_id, polaziste_id,odrediste_id);
-    
+
+        return await repo.KupiKartu(putnik_id, raspored_id, polaziste_id, odrediste_id);
     }
 
-    public async Task<KartaDTO> VratiPodatke(int karta_id,int putnik_id)
+    public async Task<KartaDTO> VratiPodatke(int karta_id, int putnik_id)
     {
-        
-        return await repo.VratiKartu(karta_id,putnik_id);
-       
-
+        return await repo.VratiKartu(karta_id, putnik_id);
     }
 
     public async Task<List<KartaDTO>> VratiPodatke(int putnik_id)
     {
         return await repo.VratiKarte(putnik_id);
-    
     }
 }
