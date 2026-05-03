@@ -21,6 +21,9 @@ builder.Services.AddScoped<IRasporedService, RasporedService>();
 builder.Services.AddScoped<IQrService, QrService>();
 builder.Services.AddScoped<IKartaService, KartaService>();
 builder.Services.AddScoped<IKartaRepository, KartaRepository>();
+builder.Services.AddScoped<IKondukterService,KondukterService>();
+builder.Services.AddScoped<IKondukterRepository,KondukterRepository>();
+
 
 builder.Services.AddAuthentication("Cookies")
     .AddCookie("Cookies", options =>

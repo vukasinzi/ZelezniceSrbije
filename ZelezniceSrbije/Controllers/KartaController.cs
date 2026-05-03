@@ -65,7 +65,7 @@ public class KartaController : Controller
          return BadRequest("Neuspesna kupovina");
       }
 
-      var url = Url.Action("Ocitaj", "Kondukter", new { t = Karta.Qr_token }, Request.Scheme)!;
+      var url = Url.Action("Ocitaj", "Kondukter", new { token = Karta.Qr_token }, Request.Scheme)!;
       var qr = qr_servis.GenerisiQrKod(url);
       ViewData["QrImageData"] = $"data:image/png;base64,{Convert.ToBase64String(qr)}";
 
