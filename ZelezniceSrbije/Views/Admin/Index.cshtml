@@ -185,6 +185,11 @@
             el.className = `alert text-center ${ok ? 'alert-success' : 'alert-danger'}`;
         };
 
+        const getCsrfHeaders = () => {
+            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')?.trim();
+            return token ? { 'X-CSRF-TOKEN': token } : {};
+        };
+
         const toBoolString = value => {
             const normalized = (value ?? '').toString().trim().toLowerCase();
             return ['true', '1', 'da'].includes(normalized) ? 'true' : 'false';
@@ -533,7 +538,7 @@
             });
 
             try {
-                const res  = await fetch(saveUrl, { method: 'PUT', body });
+                const res  = await fetch(saveUrl, { method: 'PUT', headers: getCsrfHeaders(), body });
                 const text = await res.text();
                 showNotice(text || (res.ok ? 'Uspešno sačuvano.' : 'Greška.'), res.ok);
                 if (res.ok) applyEdits();
@@ -565,7 +570,7 @@
 
             btn.disabled = true;
             try {
-                const res  = await fetch(`${deleteUrl}?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+                const res  = await fetch(`${deleteUrl}?id=${encodeURIComponent(id)}`, { method: 'DELETE', headers: getCsrfHeaders() });
                 const text = await res.text();
                 showNotice(text || (res.ok ? 'Obrisano.' : 'Greška.'), res.ok);
                 if (res.ok) removeRow();
@@ -601,7 +606,7 @@
             if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Čuvam...'; }
 
             try {
-                const res  = await fetch(form.action, { method: 'POST', body: new FormData(form) });
+                const res  = await fetch(form.action, { method: 'POST', headers: getCsrfHeaders(), body: new FormData(form) });
                 const text = await res.text();
                 showNotice(text || (res.ok ? 'Uspešno sačuvano.' : 'Greška.'), res.ok);
                 if (res.ok) {

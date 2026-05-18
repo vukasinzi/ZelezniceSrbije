@@ -40,7 +40,7 @@
       <p>Brzo, <s>sigurno</s> i udobno do odredišta širom Srbije.</p>
     </div>
 </div>
-<div class="container my-4">
+<div class="container my-4" id="pretraga-vozova">
     <div class="card shadow-sm">
         <div class="card-body p-4">
             <h5 class="text-uppercase fw-bold mb-3" style="color: var(--sz-blue); letter-spacing: 1.5px; font-size: 13px;">Pretraga vozova</h5>
@@ -76,37 +76,6 @@
             {
                 @await Html.PartialAsync("Rasporedi", Model.Rasporedi)
             }
-        </div>
-    </div>
-</div>
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card border-top border-danger border-3">
-                <div class="card-body">
-                    <h5>Kupovina karata</h5>
-                    <p class="text-muted">Rezervišite kartu online bez čekanja na blagajni.</p>
-                    <a asp-controller="Karta" asp-action="Kupi" class="btn btn-danger">Kupi kartu</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-top border-primary border-3">
-                <div class="card-body">
-                    <h5>Red vožnje</h5>
-                    <p class="text-muted">Aktuelni polasci i dolasci za sve stanice.</p>
-                    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Pogledaj</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-top border-secondary border-3">
-                <div class="card-body">
-                    <h5>Informacije</h5>
-                    <p class="text-muted">Cenovnik, popusti i pravila prevoza.</p>
-                    <a asp-controller="Info" asp-action="Index" class="btn btn-secondary">Saznaj više</a>
-                </div>
-            </div>
         </div>
     </div>
 </div>

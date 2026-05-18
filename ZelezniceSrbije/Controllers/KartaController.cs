@@ -39,7 +39,7 @@ public class KartaController : Controller
       List<KarteVM> lista = new();
       foreach (KartaDTO kd in karteDto)
       {
-         var url = Url.Action("Ocitaj", "Kondukter", new { t = kd.qr_token }, Request.Scheme);
+         var url = Url.Action("Ocitaj", "Kondukter", new { token = kd.qr_token }, Request.Scheme);
          var qr = qr_servis.GenerisiQrKod(url);
          KarteVM k = new(kd, $"data:image/png;base64,{Convert.ToBase64String(qr)}");
          lista.Add(k);
@@ -52,7 +52,7 @@ public class KartaController : Controller
    {
       int putnik_id = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
       if (putnik_id <= 0)
-         return RedirectToAction("Home", "Index");
+         return RedirectToAction("Index", "Home");
 
       var Karta = await servis.Kupi(putnik_id, raspored_id, polaziste_id, odrediste_id);
       if (Karta == null)

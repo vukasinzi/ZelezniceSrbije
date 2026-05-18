@@ -126,17 +126,29 @@ namespace ZelezniceSrbije.Tests.PretragaTest
         }
 
         [Theory]
-        [InlineData("Beograd Centar", "Novi Sad", 2)]
+        [InlineData("Beograd Centar", "Novi Sad", 1)]
         [InlineData("Novi Sad", "Subotica", 1)]
         [InlineData("Beograd Centar", "Subotica", 0)]
         public async Task PretraziAsync_BrojPolazakaTest(string pol, string odr, int ocekivanBroj)
         {
             await PopuniBazu();
 
-            var rezultat = await servis.PretraziAsync(pol, odr, DateTime.Today);
+            var rezultat = await servis.PretraziAsync(pol, odr, DateTime.Today.AddDays(1));
 
             Assert.NotNull(rezultat);
             Assert.Equal(ocekivanBroj, rezultat.Count);
+        }
+
+        [Fact]
+        public async Task Pretraga_Danas_VracaSamoBuducePolaske()
+        {
+            await PopuniBazu();
+
+            var now = DateTime.Now;
+            var rezultat = await servis.PretraziAsync("Beograd Centar", "Novi Sad", DateTime.Today);
+
+            Assert.NotNull(rezultat);
+            Assert.All(rezultat, r => Assert.True(r.PolazakSaPol >= now));
         }
 
         [Fact]

@@ -3,19 +3,185 @@
     ViewData["Title"] = "Kondukter Panel";
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4">Kondukter Panel</h2>
+<style>
+    :root {
+        --sz-red: #CC0000;
+        --sz-blue: #003B8E;
+    }
 
-    @if (Model.aktivna_voznja != null && Model.aktivna_voznja_detalji != null)
+    .kond-wrap {
+        max-width: 1080px;
+        margin: 1.5rem auto;
+    }
+
+    .kond-hero {
+        background: var(--sz-blue);
+        color: #fff;
+        padding: 2.6rem 2rem 2.2rem;
+        margin-bottom: 1rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .kond-hero::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 6px;
+        background: repeating-linear-gradient(90deg, var(--sz-red) 0px, var(--sz-red) 40px, #fff 40px, #fff 44px, var(--sz-red) 44px);
+    }
+
+    .kond-headline h1 {
+        font-family: "Oswald", sans-serif;
+        font-size: 42px;
+        line-height: 1.05;
+        font-weight: 600;
+        margin: 0 0 .55rem;
+    }
+
+    .kond-headline h1 span {
+        color: var(--sz-red);
+    }
+
+    .kond-headline p {
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 1.1rem;
+        margin: 0;
+    }
+
+    .kond-card {
+        border: 1px solid #dbe4f0;
+        border-radius: 14px;
+        overflow: hidden;
+    }
+
+    .kond-card-head {
+        background: #f7faff;
+        border-bottom: 1px solid #dbe4f0;
+        padding: .9rem 1.1rem;
+    }
+
+    .kond-card-head h4 {
+        margin: 0;
+        color: var(--sz-blue);
+        font-family: "Oswald", sans-serif;
+        letter-spacing: .4px;
+    }
+
+    .kond-card-body {
+        padding: 1.1rem;
+    }
+
+    .sz-label {
+        font-size: .72rem;
+        text-transform: uppercase;
+        letter-spacing: .6px;
+    }
+
+    .kond-note {
+        font-size: .95rem;
+        color: #637185;
+    }
+
+    .kond-note small {
+        color: #7d8898;
+    }
+
+    .kond-pill {
+        background: #e6f0ff;
+        color: var(--sz-blue);
+        border: 1px solid rgba(0, 59, 142, .15);
+        border-radius: 999px;
+        font-size: .8rem;
+        font-weight: 600;
+        padding: .3rem .7rem;
+    }
+
+    .kond-table thead th {
+        border-bottom: 2px solid var(--sz-blue);
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: .8px;
+        font-size: .78rem;
+        font-family: "Oswald", sans-serif;
+    }
+
+    .kond-table tbody td {
+        border-color: #edf1f6;
+        vertical-align: middle;
+    }
+
+    .btn-sz-primary {
+        background: var(--sz-red);
+        border: 1px solid var(--sz-red);
+        color: #fff;
+        font-weight: 600;
+    }
+
+    .btn-sz-primary:hover {
+        background: #ad0000;
+        border-color: #ad0000;
+        color: #fff;
+    }
+
+    .btn-sz-outline {
+        background: #fff;
+        border: 1px solid var(--sz-blue);
+        color: var(--sz-blue);
+        font-weight: 600;
+    }
+
+    .btn-sz-outline:hover {
+        background: var(--sz-blue);
+        border-color: var(--sz-blue);
+        color: #fff;
+    }
+
+    .btn-sz-danger {
+        background: #fff6f6;
+        border: 1px solid #b71c1c;
+        color: #b71c1c;
+        font-weight: 600;
+    }
+
+    .btn-sz-danger:hover {
+        background: #b71c1c;
+        color: #fff;
+    }
+
+    @@media (max-width: 768px) {
+        .kond-actions {
+            flex-direction: column;
+            align-items: stretch !important;
+            gap: .9rem;
+        }
+
+        .kond-actions form,
+        .kond-actions button {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="kond-wrap">
+    <div class="kond-hero shadow-sm">
+        <div class="kond-headline">
+            <h1>Kondukterski panel,<br><span>naša kontrola.</span></h1>
+            <p>Brza validacija karata i pregled aktivne vožnje u realnom vremenu.</p>
+        </div>
+    </div>
+
+    @if (Model.aktivna_voznja_detalji != null)
     {
         var detalji = Model.aktivna_voznja_detalji;
-        <div class="card shadow-sm mb-4 border-primary">
-            <div class="card-body p-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="card-title text-primary mb-0">Aktivna Vožnja</h4>
-                    <span class="badge bg-success fs-6">U toku</span>
-                </div>
-                
+        <div class="card kond-card shadow-sm mb-3">
+            <div class="kond-card-head d-flex justify-content-between align-items-center">
+                <h4>Aktivna vožnja</h4>
+                <span class="kond-pill">U toku</span>
+            </div>
+            <div class="kond-card-body">
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <p class="mb-1"><span class="text-muted sz-label">Linija:</span> <strong>@detalji.Linija</strong></p>
@@ -27,8 +193,8 @@
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-between align-items-center">
-                    <p class="text-muted mb-0">
+                <div class="kond-actions d-flex justify-content-between align-items-center">
+                    <p class="kond-note mb-0">
                         Skenirajte QR kod na karti putnika pomoću kamere vašeg uređaja.<br>
                         <small>(Ili otvorite link sa QR koda na istom uređaju gde ste prijavljeni.)</small>
                     </p>
@@ -42,20 +208,22 @@
     }
     else
     {
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
-                <h4 class="card-title mb-4">Dostupne vožnje za danas</h4>
+        <div class="card kond-card shadow-sm">
+            <div class="kond-card-head">
+                <h4>Dostupne vožnje za danas</h4>
+            </div>
+            <div class="kond-card-body">
                 
                 @if (Model.dostupni_rasporedi == null || !Model.dostupni_rasporedi.Any())
                 {
-                    <div class="alert alert-info">
+                    <div class="alert alert-light border mb-0">
                         Trenutno nema dostupnih vožnji za današnji dan.
                     </div>
                 }
                 else
                 {
                     <div class="table-responsive">
-                        <table class="table sz-table align-middle">
+                        <table class="table kond-table align-middle">
                             <thead>
                                 <tr>
                                     <th>Linija</th>

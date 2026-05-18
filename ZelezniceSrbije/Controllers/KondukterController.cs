@@ -1,7 +1,5 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ZelezniceSrbije.Models;
 using ZelezniceSrbije.Models.ViewModels;
 using ZelezniceSrbije.Services;
 
@@ -22,7 +20,6 @@ public class KondukterController : Controller
             return RedirectToAction("Index", "Home");
         return RedirectToAction("Panel","Kondukter");
     }
-
     [HttpGet]
     public async Task<IActionResult> Panel()
     {
@@ -30,10 +27,9 @@ public class KondukterController : Controller
     
         if (cookie != null)
         {
-            var aktivna = JsonSerializer.Deserialize<AktivnaVoznja>(cookie);
-            var detalji = await servis.VratiRaspored(aktivna.raspored_id);
+            var raspored_id = int.Parse(cookie);
+            var detalji = await servis.VratiRaspored(raspored_id);
             return View(new KondukterPanelVM { 
-                aktivna_voznja = aktivna,
                 aktivna_voznja_detalji = detalji
             });
         }
@@ -46,7 +42,7 @@ public class KondukterController : Controller
     [HttpPost]
     public IActionResult IzaberiVoznju(int raspored_id)
     {
-        Response.Cookies.Append("aktivna_voznja",JsonSerializer.Serialize(new{raspored_id}), new CookieOptions {HttpOnly = true});
+        Response.Cookies.Append("aktivna_voznja",raspored_id.ToString(), new CookieOptions {HttpOnly = true});
         return RedirectToAction("Panel");
     }
     [HttpPost]
@@ -55,7 +51,6 @@ public class KondukterController : Controller
         Response.Cookies.Delete("aktivna_voznja");
         return RedirectToAction("Panel");
     }
-
     [HttpGet]
     public async Task<IActionResult> Ocitaj(Guid token)
     {
@@ -63,8 +58,8 @@ public class KondukterController : Controller
         if (cookie == null)
             return RedirectToAction("Index");
 
-        var aktivna = JsonSerializer.Deserialize<AktivnaVoznja>(cookie);
-        var rezultat = await servis.OcitajKartu(token, aktivna.raspored_id);
+        var raspored_id = int.Parse(cookie);
+        var rezultat = await servis.OcitajKartu(token, raspored_id);
 
         if (!rezultat)
             return View("Nevalidna karta");

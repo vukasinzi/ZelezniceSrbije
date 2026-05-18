@@ -15,5 +15,6 @@ namespace ZelezniceSrbije.Repositories
         Task<List<Kondukter>> UcitajSveKonduktere();
         Task UkloniAdministratora(int id);
         Task UkloniKonduktera(int id);
+        Task<bool> PromovisiUloguTransakciono(int pronadjiId, string uloga, DateTime? datum, string? trim);
     }
 }

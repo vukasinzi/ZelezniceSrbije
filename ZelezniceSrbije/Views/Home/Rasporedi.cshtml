@@ -211,9 +211,7 @@
             throw new Error('Neispravan raspored_id.');
           }
 
-          const poruka =
-            `Da li ste sigurni da zelite kupiti kartu za korisnika ${korisnik}, ` +
-            `dana ${datumDisplay}, u ${polazakVreme}, od ${polaziste} do ${odrediste}?`;
+          const poruka = 'Da li ste sigurni da zelite da kupite kartu?';
 
           if (!window.confirm(poruka)) {
             return;
