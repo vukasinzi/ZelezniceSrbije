@@ -130,8 +130,8 @@ namespace ZelezniceSrbije.Tests.KorisnikTest
         [InlineData(true, "putnik3@gmail.com", "Kondukter", "", "123456", true)]
         [InlineData(true, "putnik4@gmail.com", "Administrator", "2024-01-01", "", true)]
         [InlineData(false, "nepostoji@gmail.com", "Kondukter", "2024-01-01", "123", false)]
-        [InlineData(true, "putnik4@gmail.com", "Masinovodja", "2024-01-01", "", true)]
-        [InlineData(true, "putnik4@gmail.com", "Stjuart", "2024-01-01", "", true)]
+        [InlineData(true, "putnik4@gmail.com", "Masinovodja", "2024-01-01", "", false)]
+        [InlineData(true, "putnik4@gmail.com", "Stjuart", "2024-01-01", "", false)]
 
         public async Task PromovisiUloguTest(bool korisnikPostoji, string email, string uloga, string datumIso, string brojLegitimacije, bool trebaDaUspe)
         {

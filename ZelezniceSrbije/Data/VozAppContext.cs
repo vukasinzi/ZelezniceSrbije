@@ -5,7 +5,7 @@ namespace ZelezniceSrbije.Data
 {
     public class VozAppContext : DbContext
     {
-        public VozAppContext(DbContextOptions<VozAppContext> opcije):base(opcije)
+        public VozAppContext(DbContextOptions<VozAppContext> opcije) : base(opcije)
         {
         }
         public DbSet<Korisnik> Korisnik { get; set; }
@@ -34,7 +34,7 @@ namespace ZelezniceSrbije.Data
                 entity.Property(x => x.Cena).HasColumnName("Cena");
                 entity.Property(x => x.Ocitana).HasColumnName("Ocitana");
                 entity.Property(x => x.Datum_ocitavanja).HasColumnName("Datum_ocitavanja");
-                
+
                 entity.Property(x => x.Putnik_id).HasColumnName("Putnik_id");
                 entity.Property(x => x.Raspored_id).HasColumnName("Raspored_id");
 
@@ -43,18 +43,18 @@ namespace ZelezniceSrbije.Data
                 entity.Property(x => x.Linija).HasColumnName("Linija");
                 entity.Property(x => x.Tip_voza).HasColumnName("Tip_voza");
                 entity.Property(x => x.Kondukter).HasColumnName("Kondukter");
-                
+
                 entity.Property(x => x.Trajanje_min).HasColumnName("Trajanje_min");
                 entity.Property(x => x.Vreme_polaska).HasColumnName("Vreme_polaska");
                 entity.Property(x => x.Vreme_dolaska).HasColumnName("Vreme_dolaska");
-                
+
                 entity.Property(x => x.Qr_token).HasColumnName("Qr_token");
 
-                // Strani ključ ka Putniku
-                entity.HasOne<Putnik>()
-                    .WithMany()
-                    .HasForeignKey(x => x.Putnik_id)
-                    .OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne<Korisnik>()
+                .WithMany()
+                .HasForeignKey(x => x.Putnik_id)
+                .OnDelete(DeleteBehavior.NoAction);
+
             });
             modelBuilder.Entity<StanicaLinija>(entity =>
             {

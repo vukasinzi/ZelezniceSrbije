@@ -47,24 +47,29 @@ namespace ZelezniceSrbije.Services
 
         public async Task<bool> PromovisiUlogu(string email, string uloga, DateTime? datum, string? broj_legitimacije)
         {
-            var pronadji = await repo.Pronadji(email);
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            var pronadji = await repo.Pronadji(email.Trim().ToLowerInvariant());
             if (pronadji == null)
                 return false;
 
-            if (uloga == "Kondukter" && (broj_legitimacije == null ||  string.IsNullOrWhiteSpace(broj_legitimacije.Trim())))
+            if (uloga != "Administrator" && uloga != "Kondukter")
+                return false;
+
+            if (uloga == "Kondukter" && string.IsNullOrWhiteSpace(broj_legitimacije))
                 return false;
 
             if (uloga == "Administrator" && datum == null)
                 return false;
 
-            await repo.IzbrisiDrugeUloge(pronadji.Id);
-            await repo.Promovisi(pronadji.Id, uloga, datum, broj_legitimacije);
-            return true;
+            return await repo.PromovisiUloguTransakciono(pronadji.Id,uloga, datum, broj_legitimacije?.Trim());
         }
+
 
         public async Task<bool> IzmeniAdministratora(int id, string ime, string prezime, string email, DateTime? datum)
         {
-         
+
             Administrator admin = new(ime, prezime, email, "dummypolje", datum);
             if (!admin.JeValidan())
                 return false;
@@ -74,7 +79,7 @@ namespace ZelezniceSrbije.Services
 
         public async Task<bool> IzmeniKonduktera(int id, string ime, string prezime, string email, string broj_legitimacije)
 
-        { 
+        {
             Kondukter kondukter = new(ime, prezime, email, "dummypolje", broj_legitimacije);
             if (!kondukter.JeValidan())
                 return false;

@@ -75,6 +75,23 @@ namespace ZelezniceSrbije.Repositories
             else if (uloga == "Administrator")
                 await db.Database.ExecuteSqlInterpolatedAsync($"INSERT INTO Administrator (id, datum_zaposlenja) VALUES ({id}, {datum})");
         }
+        public async Task<bool> PromovisiUloguTransakciono(int id, string uloga, DateTime? datum, string? broj_legitimacije)
+        {
+            await using var tran = await db.Database.BeginTransactionAsync();
+            try
+            {
+                await IzbrisiDrugeUloge(id);
+                await Promovisi(id, uloga, datum, broj_legitimacije);
+
+                await tran.CommitAsync();
+                return true;
+            }
+            catch
+            {
+                await tran.RollbackAsync();
+                return false;
+            }
+        }
 
         public async Task<Korisnik> Pronadji(string email)
         {

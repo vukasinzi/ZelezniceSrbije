@@ -295,6 +295,10 @@
             el.textContent = text;
             el.className = `alert text-center ${ok ? 'alert-success' : 'alert-danger'}`;
         };
+        const getCsrfHeaders = () => {
+            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')?.trim();
+            return token ? { 'X-CSRF-TOKEN': token } : {};
+        };
         const findOption = value => {
             const needle = normalize(value);
             if (!needle) return null;
@@ -428,7 +432,7 @@
 
             try {
                 const saveUrl = activeRow.dataset.saveUrl || '/Admin/IzmeniLiniju';
-                const res = await fetch(saveUrl, { method: 'PUT', body });
+                const res = await fetch(saveUrl, { method: 'PUT', headers: getCsrfHeaders(), body });
                 const text = await res.text();
                 setNotice(text || (res.ok ? 'Uspesno izmenjena linija.' : 'Neuspesna izmena!'), res.ok);
 
