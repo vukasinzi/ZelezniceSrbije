@@ -75,7 +75,7 @@ namespace ZelezniceSrbije.Repositories
             return await db.Raspored
                 .AsNoTracking()
                 .Where(r => r.Vreme_polaska >= dan && r.Vreme_polaska < sutra)
-                .OrderByDescending(r => r.Vreme_polaska)
+                .OrderBy(r => r.Vreme_polaska)
                 .Include(r => r.Linija)
                 .Include(r => r.Voz)
                 .ToListAsync();

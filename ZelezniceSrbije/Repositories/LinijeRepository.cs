@@ -69,13 +69,15 @@ namespace ZelezniceSrbije.Repositories
               join l in db.Linija.AsNoTracking() on sl.Linija_id equals l.Id
               join s in db.Stanica.AsNoTracking() on sl.Stanica_id equals s.Id
               orderby l.Id, sl.Redosled
-              select new { Linija = l, Stanica = s }
+              select new { Linija = l, Stanica = s ,StanicaLinija = sl}
              ).ToListAsync();
 
             List<LinijaDTO> linije = redovi.GroupBy(x => x.Linija.Id).Select(g => new LinijaDTO
              {
                  linija = g.First().Linija,
-                 stanice = g.Select(x => x.Stanica).ToList()
+                 stanice = g.Select(x => x.Stanica).ToList(),
+                 vreme_od_polaska = g.Select(x => x.StanicaLinija.Vreme_od_polaska).ToList()
+
              })
              .ToList();
             return linije.OrderBy(x=> x.linija.Naziv).ToList();

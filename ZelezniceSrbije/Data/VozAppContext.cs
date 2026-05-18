@@ -82,8 +82,8 @@ namespace ZelezniceSrbije.Data
                 entity.Property(x => x.Voz_id).HasColumnName("Voz_id");
 
                 entity.HasOne(x => x.Linija)
-        .WithMany()
-        .HasForeignKey(x => x.Linija_id);
+                .WithMany()
+                .HasForeignKey(x => x.Linija_id);
 
                 entity.HasOne(x => x.Voz)
                     .WithMany()

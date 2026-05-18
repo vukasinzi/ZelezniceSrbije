@@ -4,5 +4,6 @@
     {
         public Linija linija { get; set; }
         public List<Stanica> stanice { get; set; }
+        public List<int> vreme_od_polaska { get; set; }
     }
 }

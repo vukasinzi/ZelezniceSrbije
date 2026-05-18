@@ -109,6 +109,7 @@
                         var linija = dto?.linija;
                         if (linija == null) continue;
                         var lStanice = dto.stanice ?? new List<Stanica>();
+                        var lVremena = dto.vreme_od_polaska ?? new List<int>();
                         <tr data-role="Linija"
                             data-id="@linija.Id"
                             data-save-url="/Admin/IzmeniLiniju"
@@ -142,7 +143,8 @@
                                     @for (var i = 0; i < lStanice.Count; i++)
                                     {
                                         var st = lStanice[i];
-                                        <span data-id="@st.Id" data-label="@st.Naziv" data-vreme="@(i + 1)"></span>
+                                        var vreme = (i < lVremena.Count && lVremena[i] >= 0) ? lVremena[i] : 0;
+                                        <span data-id="@st.Id" data-label="@st.Naziv" data-vreme="@vreme"></span>
                                     }
                                 </div>
                             </td>
@@ -305,7 +307,7 @@
             return Array.from(datalist.options).find(o => normalize(o.value) === needle) ?? null;
         };
         const toRouteItem = (node, index) => {
-            const fallbackOrder = index + 1;
+            const fallbackOrder = 0;
             const id = Number(node.dataset.id);
             const label = (node.dataset.label ?? '').trim();
             const vreme = Number(node.dataset.vreme);
@@ -368,7 +370,7 @@
             selected.push({
                 id,
                 label,
-                vremeOdPolaska: selected.length + 1
+                vremeOdPolaska: 0
             });
             stanicaInput.value = '';
             renderSelected();
@@ -391,9 +393,18 @@
             modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
             modalInstance.show();
         };
+        const syncSelectedTimesFromInputs = () => {
+            selectedList.querySelectorAll('.js-linija-vreme').forEach(input => {
+                const idx = Number(input.dataset.index);
+                if (!Number.isInteger(idx) || idx < 0 || idx >= selected.length) return;
+                const value = Number(input.value);
+                selected[idx].vremeOdPolaska = Number.isFinite(value) && value >= 0 ? Math.floor(value) : 0;
+            });
+        };
 
         const saveEditor = async () => {
             if (!activeRow) return;
+            syncSelectedTimesFromInputs();
 
             const id = Number(idInput.value);
             const naziv = nazivInput.value.trim();
@@ -490,14 +501,16 @@
             }
         });
 
-        selectedList.addEventListener('input', e => {
+        const handleTimeChange = e => {
             const timeInput = e.target.closest('.js-linija-vreme');
             if (!timeInput) return;
             const idx = Number(timeInput.dataset.index);
             if (!Number.isInteger(idx) || idx < 0 || idx >= selected.length) return;
             const value = Number(timeInput.value);
             selected[idx].vremeOdPolaska = Number.isFinite(value) && value >= 0 ? Math.floor(value) : 0;
-        });
+        };
+        selectedList.addEventListener('input', handleTimeChange);
+        selectedList.addEventListener('change', handleTimeChange);
 
         document.querySelectorAll('#linijeTableBody .js-open-linija-editor').forEach(btn => {
             btn.addEventListener('click', () => {
