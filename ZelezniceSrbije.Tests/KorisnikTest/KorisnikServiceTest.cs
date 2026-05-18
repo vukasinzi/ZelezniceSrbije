@@ -90,6 +90,27 @@ namespace ZelezniceSrbije.Tests.KorisnikTest
 
             var rez = await servis.LogInAsync("ana@gmail.com", "ana123");
             Assert.NotNull(rez);
+            Assert.Equal("ana@gmail.com", rez.Email);
+        }
+
+        [Fact]
+        public async Task Login_PogresnaLozinka_Test()
+        {
+            var putnik = new Putnik("Ana", "Anic", "ana@gmail.com", "07463063", "ana123");
+            await servis.RegistrujAsync(putnik);
+
+            var rez = await servis.LogInAsync("ana@gmail.com", "pogresnaLozinka");
+            Assert.Null(rez);
+        }
+
+        [Theory]
+        [InlineData("", "ana123")]
+        [InlineData("ana@gmail.com", "")]
+        [InlineData("", "")]
+        public async Task Login_PrazniKredencijali_Test(string email, string lozinka)
+        {
+            var rez = await servis.LogInAsync(email, lozinka);
+            Assert.Null(rez);
         }
 
         [Fact]
@@ -132,7 +153,6 @@ namespace ZelezniceSrbije.Tests.KorisnikTest
         [InlineData(false, "nepostoji@gmail.com", "Kondukter", "2024-01-01", "123", false)]
         [InlineData(true, "putnik4@gmail.com", "Masinovodja", "2024-01-01", "", false)]
         [InlineData(true, "putnik4@gmail.com", "Stjuart", "2024-01-01", "", false)]
-
         public async Task PromovisiUloguTest(bool korisnikPostoji, string email, string uloga, string datumIso, string brojLegitimacije, bool trebaDaUspe)
         {
             if (korisnikPostoji)
@@ -150,6 +170,42 @@ namespace ZelezniceSrbije.Tests.KorisnikTest
             Assert.Equal(trebaDaUspe, rezultat);
         }
 
+        [Fact]
+        public async Task PromovisiUlogu_ProveriUBazi_Test()
+        {
+            var putnik = new Putnik("Pera", "Peric", "pera@gmail.com", "0612345678", "sifra123");
+            context.Putnik.Add(putnik);
+            await context.SaveChangesAsync();
+
+            var rezultat = await servis.PromovisiUlogu("pera@gmail.com", "Kondukter", null, "123456");
+
+            Assert.True(rezultat);
+            context.ChangeTracker.Clear();
+            var kondukter = await context.Kondukter.FirstOrDefaultAsync(k => k.Email == "pera@gmail.com");
+            Assert.NotNull(kondukter);
+            Assert.Equal("123456", kondukter.Broj_legitimacije);
+        }
+
+        [Fact]
+        public async Task PromovisiUlogu_ZamenaUloge_Test()
+        {
+            var putnik = new Putnik("Pera", "Peric", "pera@gmail.com", "0612345678", "sifra123");
+            context.Putnik.Add(putnik);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+            await servis.PromovisiUlogu("pera@gmail.com", "Administrator", new DateTime(2024, 1, 1), null);
+
+            context.ChangeTracker.Clear();
+            var rezultat = await servis.PromovisiUlogu("pera@gmail.com", "Kondukter", null, "999999");
+
+            Assert.True(rezultat);
+            context.ChangeTracker.Clear();
+            var kondukter = await context.Kondukter.FirstOrDefaultAsync(k => k.Email == "pera@gmail.com");
+            Assert.NotNull(kondukter);
+            var admin = await context.Admin.FirstOrDefaultAsync(a => a.Email == "pera@gmail.com");
+            Assert.Null(admin);
+        }
         [Theory]
         [InlineData(1, true)]
         [InlineData(-1, false)]
@@ -171,9 +227,22 @@ namespace ZelezniceSrbije.Tests.KorisnikTest
                 Assert.Equal(2, admini[0].Id);
             }
             else
-            {
                 Assert.Equal(2, admini.Count);
-            }
+            
+        }
+
+        [Fact]
+        public async Task UkloniAdministratora_NepostojeciId_Test()
+        {
+            var admin = new Administrator("Milos", "Milosevic", "milos@gmail.com", "lozinka123", DateTime.Now) { Id = 1 };
+            context.Admin.Add(admin);
+            await context.SaveChangesAsync();
+
+            var ok = await servis.UkloniAdministratora(999);
+
+            Assert.False(ok);
+            var admini = await servis.UcitajSveAdmine();
+            Assert.Single(admini);
         }
 
         [Theory]
@@ -202,6 +271,20 @@ namespace ZelezniceSrbije.Tests.KorisnikTest
             }
         }
 
+        [Fact]
+        public async Task UkloniKonduktera_NepostojeciId_Test()
+        {
+            var kondukter = new Kondukter("Borko", "Borkovic", "borko@gmail.com", "lozinka123", "99999") { Id = 1 };
+            context.Kondukter.Add(kondukter);
+            await context.SaveChangesAsync();
+
+            var ok = await servis.UkloniKonduktera(999);
+
+            Assert.False(ok);
+            var kondukteri = await servis.UcitajSveKonduktere();
+            Assert.Single(kondukteri);
+        }
+
         [Theory]
         [InlineData(1, "Pera", "Peric", "pera@mail.com", "2024-01-01", true)]
         [InlineData(1, "", "Peric", "pera@mail.com", "2024-01-01", false)]
@@ -220,7 +303,7 @@ namespace ZelezniceSrbije.Tests.KorisnikTest
 
             DateTime? datum = null;
             if (!string.IsNullOrWhiteSpace(datumIso))
-                datum = DateTime.ParseExact(datumIso, "yyyy-MM-dd", CultureInfo.InvariantCulture);  
+                datum = DateTime.ParseExact(datumIso, "yyyy-MM-dd", CultureInfo.InvariantCulture);
 
             var ok = await servis.IzmeniAdministratora(id, ime, prezime, email, datum);
             Assert.Equal(trebaDaUspe, ok);
@@ -229,7 +312,27 @@ namespace ZelezniceSrbije.Tests.KorisnikTest
             {
                 var nasAdmin = await context.Admin.FirstAsync(x => x.Id == id);
                 Assert.Equal(ime, nasAdmin.Ime);
+                Assert.Equal(prezime, nasAdmin.Prezime);
+                Assert.Equal(email, nasAdmin.Email);
+                Assert.Equal(datum, nasAdmin.Datum_zaposlenja);
             }
+            else
+            {
+                var nasAdmin = await context.Admin.FirstAsync(x => x.Id == 1);
+                Assert.Equal("Stari", nasAdmin.Ime);
+            }
+        }
+
+        [Fact]
+        public async Task IzmeniAdministratora_NepostojeciId_Test()
+        {
+            var admin = new Administrator("Stari", "Ime", "stari@gmail.com", "lozinka123", new DateTime(2020, 1, 1)) { Id = 1 };
+            context.Admin.Add(admin);
+            await context.SaveChangesAsync();
+
+            var ok = await servis.IzmeniAdministratora(999, "Novi", "Ime", "novi@mail.com", new DateTime(2024, 1, 1));
+
+            Assert.False(ok);
         }
 
         [Theory]
@@ -253,7 +356,27 @@ namespace ZelezniceSrbije.Tests.KorisnikTest
             {
                 var nasKondukter = await context.Kondukter.FirstAsync(x => x.Id == id);
                 Assert.Equal(ime, nasKondukter.Ime);
+                Assert.Equal(prezime, nasKondukter.Prezime);
+                Assert.Equal(email, nasKondukter.Email);
+                Assert.Equal(brojLegitimacije, nasKondukter.Broj_legitimacije);
             }
+            else
+            {
+                var nasKondukter = await context.Kondukter.FirstAsync(x => x.Id == 1);
+                Assert.Equal("Stari", nasKondukter.Ime);
+            }
+        }
+
+        [Fact]
+        public async Task IzmeniKonduktera_NepostojeciId_Test()
+        {
+            var kondukter = new Kondukter("stari", "ime", "stari@gmail.com", "lozinka123", "00000") { Id = 1 };
+            context.Kondukter.Add(kondukter);
+            await context.SaveChangesAsync();
+
+            var ok = await servis.IzmeniKonduktera(999, "Novi", "Ime", "novi@mail.com", "99999");
+
+            Assert.False(ok);
         }
     }
 }
