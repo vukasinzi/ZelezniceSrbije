@@ -1,0 +1,89 @@
+@model ZelezniceSrbije.Models.ViewModels.KondukterPanelVM
+@{
+    ViewData["Title"] = "Kondukter Panel";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Kondukter Panel</h2>
+
+    @if (Model.aktivna_voznja != null && Model.aktivna_voznja_detalji != null)
+    {
+        var detalji = Model.aktivna_voznja_detalji;
+        <div class="card shadow-sm mb-4 border-primary">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="card-title text-primary mb-0">Aktivna Vožnja</h4>
+                    <span class="badge bg-success fs-6">U toku</span>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <p class="mb-1"><span class="text-muted sz-label">Linija:</span> <strong>@detalji.Linija</strong></p>
+                        <p class="mb-1"><span class="text-muted sz-label">Tip voza:</span> @detalji.TipVoza</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <p class="mb-1"><span class="text-muted sz-label">Polazak:</span> @detalji.PolazakSaPol.ToString("dd.MM.yyyy. HH:mm")</p>
+                        <p class="mb-0"><span class="text-muted sz-label">Dolazak:</span> @detalji.DolazakNaOdr.ToString("dd.MM.yyyy. HH:mm")</p>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <p class="text-muted mb-0">
+                        Skenirajte QR kod na karti putnika pomoću kamere vašeg uređaja.<br>
+                        <small>(Ili otvorite link sa QR koda na istom uređaju gde ste prijavljeni.)</small>
+                    </p>
+                    
+                    <form asp-controller="Kondukter" asp-action="ZavrsiVoznju" method="post">
+                        <button type="submit" class="btn btn-sz-danger">Završi vožnju</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h4 class="card-title mb-4">Dostupne vožnje za danas</h4>
+                
+                @if (Model.dostupni_rasporedi == null || !Model.dostupni_rasporedi.Any())
+                {
+                    <div class="alert alert-info">
+                        Trenutno nema dostupnih vožnji za današnji dan.
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table sz-table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Linija</th>
+                                    <th>Tip voza</th>
+                                    <th>Polazak</th>
+                                    <th>Akcija</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var r in Model.dostupni_rasporedi)
+                                {
+                                    <tr>
+                                        <td><strong>@r.Linija</strong></td>
+                                        <td>@r.TipVoza</td>
+                                        <td>@r.PolazakSaPol.ToString("HH:mm")</td>
+                                        <td class="cell-actions">
+                                            <form asp-controller="Kondukter" asp-action="IzaberiVoznju" method="post">
+                                                <input type="hidden" name="raspored_id" value="@r.Id" />
+                                                <button type="submit" class="btn btn-sz-primary btn-sm">Započni vožnju</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>

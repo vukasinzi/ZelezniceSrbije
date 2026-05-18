@@ -185,6 +185,11 @@
             el.className = `alert text-center ${ok ? 'alert-success' : 'alert-danger'}`;
         };
 
+        const toBoolString = value => {
+            const normalized = (value ?? '').toString().trim().toLowerCase();
+            return ['true', '1', 'da'].includes(normalized) ? 'true' : 'false';
+        };
+
         const initTab = (target, sel, url, onLoaded) => {
             const btn = document.querySelector(`[data-bs-target="${target}"]`);
             if (!btn) return () => {};
@@ -459,10 +464,14 @@
                 row.querySelectorAll('.cell-view').forEach(el => el.classList.add('d-none'));
                 row.querySelectorAll('.cell-edit').forEach(el => {
                     const view = el.closest('td')?.querySelector('.cell-view');
-                    if (view) el.value = el.dataset.raw ?? view.textContent.trim();
+                    if (el.tagName === 'SELECT') {
+                        const raw = (el.dataset.raw ?? '').toString();
+                        if (raw) el.value = raw;
+                    } else if (view) {
+                        el.value = el.dataset.raw ?? view.textContent.trim();
+                    }
                     el.classList.remove('d-none');
                 });
-                window.szLinijaRoute?.toggle(row, true);
                 window.szRasporedEditor?.toggle(row, true);
                 btn.textContent = 'Sačuvaj';
                 btn.classList.replace('btn-sz-outline', 'btn-sz-primary');
@@ -498,8 +507,6 @@
                     el.dataset.raw = el.value;
                     el.classList.add('d-none');
                 });
-                window.szLinijaRoute?.syncView?.(row);
-                window.szLinijaRoute?.toggle(row, false);
                 window.szRasporedEditor?.toggle(row, false);
                 row.querySelectorAll('.cell-view').forEach(el => el.classList.remove('d-none'));
                 row.dataset.editing = '0';
@@ -518,9 +525,9 @@
             btn.disabled = true; btn.textContent = 'Čuvam...';
             const body = new FormData();
             body.append('id', id);
-            row.querySelectorAll('.cell-edit[name], .linija-route-hidden input[name], .js-extra-save[name]').forEach(el => {
+            row.querySelectorAll('.cell-edit[name], .js-extra-save[name]').forEach(el => {
                 const val = (el.name === 'aktivan')
-                    ? (el.value.trim().toLowerCase().startsWith('d') ? 'true' : 'false')
+                    ? toBoolString(el.value)
                     : el.value;
                 body.append(el.name, val);
             });
@@ -622,4 +629,3 @@
         });
     </script>
 }
-

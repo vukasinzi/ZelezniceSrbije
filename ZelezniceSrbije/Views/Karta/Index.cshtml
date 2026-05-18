@@ -1,0 +1,189 @@
+@using System.Collections.Generic
+@using ZelezniceSrbije.Models.ViewModels
+@model IEnumerable<KarteVM>?
+
+@{
+    ViewData["Title"] = "Moje karte";
+    var karte = new List<KarteVM>();
+    if (Model != null)
+    {
+        foreach (var karta in Model)
+        {
+            if (karta?.Karta != null)
+            {
+                karte.Add(karta);
+            }
+        }
+    }
+}
+
+<style>
+    .ticket-wrap {
+        max-width: 900px;
+        margin: 1.5rem auto;
+    }
+
+    .ticket-list {
+        display: grid;
+        gap: 16px;
+    }
+
+    .ticket-card {
+        border: 1px solid #dbe4f0;
+        border-radius: 14px;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    .ticket-head {
+        background: #003B8E;
+        color: #fff;
+        padding: 16px 20px;
+    }
+
+    .ticket-body {
+        padding: 20px;
+    }
+
+    .ticket-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 20px;
+    }
+
+    .ticket-meta-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px 16px;
+    }
+
+    .ticket-label {
+        font-size: 12px;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+    }
+
+    .ticket-value {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .ticket-qr-box {
+        border: 1px solid #e9ecef;
+        border-radius: 10px;
+        padding: 12px;
+        text-align: center;
+    }
+
+    .ticket-qr-box img {
+        max-width: 220px;
+        width: 100%;
+        height: auto;
+    }
+
+    .ticket-actions {
+        margin-top: 16px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    @@media (max-width: 768px) {
+        .ticket-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="ticket-wrap">
+    @if (karte.Count == 0)
+    {
+        <div class="alert alert-light border mb-0">
+            Trenutno nema učitanih karata za ovog korisnika.
+        </div>
+    }
+    else
+    {
+        <div class="ticket-list">
+            @foreach (var stavka in karte)
+            {
+                var karta = stavka.Karta;
+                <div class="ticket-card shadow-sm">
+                    <div class="ticket-head d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="fw-bold">Železnice Srbije - Elektronska karta</div>
+                            <div class="small opacity-75">ID karte: @karta.karta_id</div>
+                        </div>
+                        <div class="small">
+                            Status:
+                            <strong>@(karta.ocitana ? "Očitana" : "Neočitana")</strong>
+                        </div>
+                    </div>
+
+                    <div class="ticket-body">
+                        <div class="ticket-grid">
+                            <div class="ticket-meta-grid">
+                                <div>
+                                    <div class="ticket-label">Putnik</div>
+                                    <div class="ticket-value">@karta.putnik</div>
+                                </div>
+                                <div>
+                                    <div class="ticket-label">Linija</div>
+                                    <div class="ticket-value">@karta.linija (@karta.tip_voza)</div>
+                                </div>
+                                <div>
+                                    <div class="ticket-label">Polazište</div>
+                                    <div class="ticket-value">@karta.polaziste</div>
+                                </div>
+                                <div>
+                                    <div class="ticket-label">Odredište</div>
+                                    <div class="ticket-value">@karta.odrediste</div>
+                                </div>
+                                <div>
+                                    <div class="ticket-label">Polazak</div>
+                                    <div class="ticket-value">@karta.vreme_polaska.ToString("dd.MM.yyyy HH:mm")</div>
+                                </div>
+                                <div>
+                                    <div class="ticket-label">Dolazak</div>
+                                    <div class="ticket-value">@karta.vreme_dolaska.ToString("dd.MM.yyyy HH:mm")</div>
+                                </div>
+                                <div>
+                                    <div class="ticket-label">Trajanje</div>
+                                    <div class="ticket-value">@karta.trajanje</div>
+                                </div>
+                                <div>
+                                    <div class="ticket-label">Cena</div>
+                                    <div class="ticket-value">@karta.cena.ToString("0.00") RSD</div>
+                                </div>
+                                @if (karta.datum_ocitavanja.HasValue)
+                                {
+                                    <div>
+                                        <div class="ticket-label">Datum očitavanja</div>
+                                        <div class="ticket-value">@karta.datum_ocitavanja.Value.ToString("dd.MM.yyyy HH:mm")</div>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="ticket-qr-box">
+                                <div class="ticket-label mb-2">QR kod karte</div>
+                                @if (!string.IsNullOrWhiteSpace(stavka.QrImageData))
+                                {
+                                    <img src="@stavka.QrImageData" alt="QR kod karte #@karta.karta_id" />
+                                }
+                                else
+                                {
+                                    <div class="text-muted small">QR nije dostupan.</div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="ticket-actions">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Nazad na početnu</a>
+    </div>
+</div>
