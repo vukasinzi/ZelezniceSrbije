@@ -15,7 +15,7 @@ namespace ZelezniceSrbije.Repositories
         Task<object> ProveriStanicu(int id);
         Task<List<LinijaDTO>> UcitajSveLinije();
         Task<List<Stanica>>UcitajSveStanice(string region);
-        Task IzmeniLiniju(Linija l, List<StanicaLinija> stajalista);
-        Task IzmeniStanicu(Stanica s);
+        Task<bool> IzmeniLiniju(Linija l, List<StanicaLinija> stajalista);
+        Task<bool> IzmeniStanicu(Stanica s);
     }
 }
