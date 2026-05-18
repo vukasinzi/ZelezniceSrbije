@@ -3,12 +3,18 @@
 @{
     ViewData["Title"] = $"Karta #{Model.karta_id}";
     var qrImageData = ViewData["QrImageData"] as string;
+    var statusClass = Model.ocitana ? "ticket-status-read" : "ticket-status-open";
 }
 
 <style>
+    :root {
+        --sz-red: #CC0000;
+        --sz-blue: #003B8E;
+    }
+
     .ticket-wrap {
         max-width: 900px;
-        margin: 1.5rem auto;
+        margin: 1.7rem auto;
     }
 
     .ticket-card {
@@ -19,9 +25,20 @@
     }
 
     .ticket-head {
-        background: #003B8E;
+        background: var(--sz-blue);
         color: #fff;
         padding: 16px 20px;
+        position: relative;
+    }
+
+    .ticket-head::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 4px;
+        background: repeating-linear-gradient(90deg, var(--sz-red) 0px, var(--sz-red) 34px, #fff 34px, #fff 38px, var(--sz-red) 38px);
     }
 
     .ticket-body {
@@ -53,10 +70,11 @@
     }
 
     .ticket-qr-box {
-        border: 1px solid #e9ecef;
+        border: 1px solid #dce7f5;
         border-radius: 10px;
         padding: 12px;
         text-align: center;
+        background: #f8fbff;
     }
 
     .ticket-qr-box img {
@@ -70,6 +88,36 @@
         display: flex;
         gap: 10px;
         flex-wrap: wrap;
+    }
+
+    .ticket-status-pill {
+        display: inline-block;
+        border-radius: 999px;
+        font-weight: 600;
+        padding: .3rem .65rem;
+    }
+
+    .ticket-status-open {
+        background: #fff1f1;
+        color: #b71c1c;
+    }
+
+    .ticket-status-read {
+        background: #e6f0ff;
+        color: var(--sz-blue);
+    }
+
+    .btn-sz-outline {
+        background: #fff;
+        border: 1px solid var(--sz-blue);
+        color: var(--sz-blue);
+        font-weight: 600;
+    }
+
+    .btn-sz-outline:hover {
+        background: var(--sz-blue);
+        border-color: var(--sz-blue);
+        color: #fff;
     }
 
     @@media (max-width: 768px) {
@@ -89,7 +137,7 @@
             </div>
             <div class="small">
                 Status:
-                <strong>@(Model.ocitana ? "Očitana" : "Neočitana")</strong>
+                <span class="ticket-status-pill @statusClass">@(Model.ocitana ? "Očitana" : "Neočitana")</span>
             </div>
         </div>
 
@@ -151,7 +199,7 @@
             </div>
 
             <div class="ticket-actions">
-                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Nazad na početnu</a>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-sz-outline">Nazad na početnu</a>
             </div>
         </div>
     </div>
