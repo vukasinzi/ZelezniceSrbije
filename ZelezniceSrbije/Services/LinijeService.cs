@@ -3,10 +3,10 @@ using ZelezniceSrbije.Repositories;
 
 namespace ZelezniceSrbije.Services
 {
-    public class LinijeServis : ILinijeServis
+    public class LinijeService : ILinijeServis
     {
         ILinijeRepository repo;
-        public LinijeServis(ILinijeRepository repo)
+        public LinijeService(ILinijeRepository repo)
         {
             this.repo = repo;
         }

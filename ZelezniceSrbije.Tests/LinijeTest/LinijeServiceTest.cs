@@ -12,14 +12,14 @@ namespace ZelezniceSrbije.Tests.LinijeTest
     {
         private readonly VozAppContext context;
         private readonly SqliteConnection connection;
-        private readonly LinijeServis servis;
+        private readonly LinijeService _service;
         public LinijeServiceTest()
         {
             var db = TestBazaUMemoriji.KreirajContext();
             context = db.context;
             connection = db.connection;
             LinijeRepository repo = new(context);
-            servis = new LinijeServis(repo);
+            _service = new LinijeService(repo);
 
         }
         public void Dispose()
@@ -32,7 +32,7 @@ namespace ZelezniceSrbije.Tests.LinijeTest
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
             var stanice_id = new List<int> { 6, 1, 2, 3 };
-            var rezultat = await servis.DodajLiniju("Uzice - Subotica", 10, stanice_id, new List<int> { 6, 1, 2, 3 }, new List<int> { 0, 90, 180, 360 });
+            var rezultat = await _service.DodajLiniju("Uzice - Subotica", 10, stanice_id, new List<int> { 6, 1, 2, 3 }, new List<int> { 0, 90, 180, 360 });
             
             Assert.True(rezultat);
             var linija = await context.Linija.FirstOrDefaultAsync(x => x.Naziv == "Uzice - Subotica");
@@ -46,7 +46,7 @@ namespace ZelezniceSrbije.Tests.LinijeTest
         public async Task DodajLiniju_PrazanNaziv_Test()
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
-            var rezultat = await servis.DodajLiniju("", 10, new List<int> { 6, 1, 2, 3 }, new List<int> { 1, 2, 3, 4 }, new List<int> { 0, 90, 180, 360 });
+            var rezultat = await _service.DodajLiniju("", 10, new List<int> { 6, 1, 2, 3 }, new List<int> { 1, 2, 3, 4 }, new List<int> { 0, 90, 180, 360 });
             Assert.False(rezultat);
         }
 
@@ -55,28 +55,28 @@ namespace ZelezniceSrbije.Tests.LinijeTest
         public async Task DodajLiniju_NazivDuzi_Test()
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
-            var rezultat = await servis.DodajLiniju(new string('A', 31), 10, new List<int> { 6, 1, 2, 3 }, new List<int> { 1, 2, 3, 4 }, new List<int> { 0, 90, 180, 360 });
+            var rezultat = await _service.DodajLiniju(new string('A', 31), 10, new List<int> { 6, 1, 2, 3 }, new List<int> { 1, 2, 3, 4 }, new List<int> { 0, 90, 180, 360 });
             Assert.False(rezultat);
         }
         [Fact]
         public async Task DodajLiniju_NulaCena_Test()
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
-            var rezultat = await servis.DodajLiniju("Uzice - Subotica", 0, new List<int> { 6, 1, 2, 3 }, new List<int> { 1, 2, 3, 4 }, new List<int> { 0, 90, 180, 360 });
+            var rezultat = await _service.DodajLiniju("Uzice - Subotica", 0, new List<int> { 6, 1, 2, 3 }, new List<int> { 1, 2, 3, 4 }, new List<int> { 0, 90, 180, 360 });
             Assert.False(rezultat);
         }
         [Fact]
         public async Task DodajLiniju_NegativnaCena_Test()
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
-            var rezultat = await servis.DodajLiniju("Uzice - Subotica", -5, new List<int> { 6, 1, 2, 3 }, new List<int> { 1, 2, 3, 4 }, new List<int> { 0, 90, 180, 360 });
+            var rezultat = await _service.DodajLiniju("Uzice - Subotica", -5, new List<int> { 6, 1, 2, 3 }, new List<int> { 1, 2, 3, 4 }, new List<int> { 0, 90, 180, 360 });
             Assert.False(rezultat);
         }
         [Fact]
         public async Task DodajLiniju_JednaStanica_Test()
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
-            var rezultat = await servis.DodajLiniju("Uzice - Subotica", 10, new List<int> { 6 }, new List<int> { 1 }, new List<int> { 0 });
+            var rezultat = await _service.DodajLiniju("Uzice - Subotica", 10, new List<int> { 6 }, new List<int> { 1 }, new List<int> { 0 });
             Assert.False(rezultat);
         }
 
@@ -84,7 +84,7 @@ namespace ZelezniceSrbije.Tests.LinijeTest
         public async Task DodajLiniju_NullStanice_Test()
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
-            var rezultat = await servis.DodajLiniju("Uzice - Subotica", 10, null, null, null);
+            var rezultat = await _service.DodajLiniju("Uzice - Subotica", 10, null, null, null);
             Assert.False(rezultat);
         }
 
@@ -92,8 +92,8 @@ namespace ZelezniceSrbije.Tests.LinijeTest
         public async Task DodajLiniju_LinijaVecPostoji_Test()
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
-            await servis.DodajLiniju("Uzice - Subotica", 10, new List<int> { 6, 1, 2, 3 }, new List<int> { 1, 2, 3, 4 }, new List<int> { 0, 90, 180, 360 });
-            var rezultat = await servis.DodajLiniju("Uzice - Subotica", 10, new List<int> { 6, 1, 2, 3 }, new List<int> { 1, 2, 3, 4 }, new List<int> { 0, 90, 180, 360 });
+            await _service.DodajLiniju("Uzice - Subotica", 10, new List<int> { 6, 1, 2, 3 }, new List<int> { 1, 2, 3, 4 }, new List<int> { 0, 90, 180, 360 });
+            var rezultat = await _service.DodajLiniju("Uzice - Subotica", 10, new List<int> { 6, 1, 2, 3 }, new List<int> { 1, 2, 3, 4 }, new List<int> { 0, 90, 180, 360 });
             Assert.False(rezultat);
         }
 
@@ -109,10 +109,10 @@ namespace ZelezniceSrbije.Tests.LinijeTest
         public async Task DodajStanicu_Test(string naziv,string region,bool trebaDaUspe)
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
-            var rezultat = await servis.DodajStanicu(naziv,region);
+            var rezultat = await _service.DodajStanicu(naziv,region);
             if (trebaDaUspe)
             {
-                var stanice = await servis.UcitajSveStanice(region);
+                var stanice = await _service.UcitajSveStanice(region);
                 var nasa_stanica = stanice.FirstOrDefault(x => x.Naziv == naziv);
                 Assert.True(rezultat);
                 Assert.NotNull(nasa_stanica);
@@ -132,7 +132,7 @@ namespace ZelezniceSrbije.Tests.LinijeTest
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
 
-            var rezultat = await servis.UkloniLiniju(id);
+            var rezultat = await _service.UkloniLiniju(id);
 
             Assert.Equal(trebaDaUspe, rezultat);
             if (trebaDaUspe)
@@ -151,7 +151,7 @@ namespace ZelezniceSrbije.Tests.LinijeTest
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
 
-            var rezultat = await servis.UkloniStanicu(id);
+            var rezultat = await _service.UkloniStanicu(id);
 
             Assert.Equal(trebaDaUspe, rezultat);
             if (trebaDaUspe)
@@ -170,7 +170,7 @@ namespace ZelezniceSrbije.Tests.LinijeTest
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
 
-            var rezultat = await servis.UcitajSveStanice(region);
+            var rezultat = await _service.UcitajSveStanice(region);
 
             Assert.NotNull(rezultat);
             if (!string.IsNullOrWhiteSpace(region))
@@ -182,7 +182,7 @@ namespace ZelezniceSrbije.Tests.LinijeTest
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
 
-            var rezultat = await servis.UcitajSveLinije();
+            var rezultat = await _service.UcitajSveLinije();
 
             Assert.NotNull(rezultat);
             Assert.NotEmpty(rezultat);
@@ -198,7 +198,7 @@ namespace ZelezniceSrbije.Tests.LinijeTest
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
 
-            var rezultat = await servis.IzmeniLiniju(1, "Novi Naziv", 10, new List<int> { 1, 2, 3 }, new List<int> { 1, 2, 3 }, new List<int> { 0, 90, 180 });
+            var rezultat = await _service.IzmeniLiniju(1, "Novi Naziv", 10, new List<int> { 1, 2, 3 }, new List<int> { 1, 2, 3 }, new List<int> { 0, 90, 180 });
 
             Assert.True(rezultat);
             var linija = await context.Linija.FindAsync(1);
@@ -214,7 +214,7 @@ namespace ZelezniceSrbije.Tests.LinijeTest
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
 
-            var rezultat = await servis.IzmeniLiniju(1, "", 10, new List<int> { 1, 2, 3 }, new List<int> { 1, 2, 3 }, new List<int> { 0, 90, 180 });
+            var rezultat = await _service.IzmeniLiniju(1, "", 10, new List<int> { 1, 2, 3 }, new List<int> { 1, 2, 3 }, new List<int> { 0, 90, 180 });
 
             Assert.False(rezultat);
         }
@@ -224,7 +224,7 @@ namespace ZelezniceSrbije.Tests.LinijeTest
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
 
-            var rezultat = await servis.IzmeniLiniju(1, "Novi Naziv", 0, new List<int> { 1, 2, 3 }, new List<int> { 1, 2, 3 }, new List<int> { 0, 90, 180 });
+            var rezultat = await _service.IzmeniLiniju(1, "Novi Naziv", 0, new List<int> { 1, 2, 3 }, new List<int> { 1, 2, 3 }, new List<int> { 0, 90, 180 });
 
             Assert.False(rezultat);
         }
@@ -234,7 +234,7 @@ namespace ZelezniceSrbije.Tests.LinijeTest
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
 
-            var rezultat = await servis.IzmeniLiniju(1, "Novi Naziv", -5, new List<int> { 1, 2, 3 }, new List<int> { 1, 2, 3 }, new List<int> { 0, 90, 180 });
+            var rezultat = await _service.IzmeniLiniju(1, "Novi Naziv", -5, new List<int> { 1, 2, 3 }, new List<int> { 1, 2, 3 }, new List<int> { 0, 90, 180 });
 
             Assert.False(rezultat);
         }
@@ -243,7 +243,7 @@ namespace ZelezniceSrbije.Tests.LinijeTest
         public async Task IzmeniLiniju_NegativanId_Test()
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
-            var rezultat = await servis.IzmeniLiniju(1, "Novi Naziv", 10, new List<int> { -1, 2, 3 }, new List<int> { 1, 2, 3 }, new List<int> { 0, 90, 180 });
+            var rezultat = await _service.IzmeniLiniju(1, "Novi Naziv", 10, new List<int> { -1, 2, 3 }, new List<int> { 1, 2, 3 }, new List<int> { 0, 90, 180 });
             Assert.False(rezultat);
         }
 
@@ -251,7 +251,7 @@ namespace ZelezniceSrbije.Tests.LinijeTest
         public async Task IzmeniLiniju_NegativanRedosled_Test()
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
-            var rezultat = await servis.IzmeniLiniju(1, "Novi Naziv", 10, new List<int> { 1, 2, 3 }, new List<int> { -1, 2, 3 }, new List<int> { 0, 90, 180 });
+            var rezultat = await _service.IzmeniLiniju(1, "Novi Naziv", 10, new List<int> { 1, 2, 3 }, new List<int> { -1, 2, 3 }, new List<int> { 0, 90, 180 });
             Assert.False(rezultat);
         }
 
@@ -259,7 +259,7 @@ namespace ZelezniceSrbije.Tests.LinijeTest
         public async Task IzmeniLiniju_NazivPredugacak_Test()
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
-            var rezultat = await servis.IzmeniLiniju(1, "123456789101112131415161747127471247", 10, new List<int> { 1, 2, 3 }, new List<int> { 1, 2, 3 }, new List<int> { 0, 90, 180 });
+            var rezultat = await _service.IzmeniLiniju(1, "123456789101112131415161747127471247", 10, new List<int> { 1, 2, 3 }, new List<int> { 1, 2, 3 }, new List<int> { 0, 90, 180 });
             Assert.False(rezultat);
         }
 
