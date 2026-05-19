@@ -52,17 +52,19 @@ namespace ZelezniceSrbije.Tests.PretragaTest
 
         [Theory]
         [InlineData("", "Novi Sad", false)]
+        [InlineData("Beograd Centar", "", false)]
         [InlineData(null, "Novi Sad", false)]
         [InlineData("Novi Sad", null, false)]
         [InlineData("Beograd Centar", "Beograd Centar", false)]
         [InlineData("Beograd Centar", "Novi Sad", true)]
-        public async Task PretragaParametri_Test(string polaziste, string odrediste, bool trebaDaUspe)
+        public async Task PretragaParametri_Test(string? polaziste, string? odrediste, bool trebaDaUspe)
         {
             if (trebaDaUspe)
                 await PopuniBazu();
 
             var sutra = DateTime.Today.AddDays(1);
-            var rezultat = await servis.PretraziAsync(polaziste, odrediste, sutra);
+
+            var rezultat = await servis.PretraziAsync(polaziste!, odrediste!, sutra);
 
             if (trebaDaUspe)
             {
@@ -79,6 +81,7 @@ namespace ZelezniceSrbije.Tests.PretragaTest
         public async Task PretragaDatumi_Test()
         {
             var rezultat = await servis.PretraziAsync("Beograd Centar", "Novi Sad", DateTime.Today.AddDays(-1));
+
             Assert.Null(rezultat);
         }
 
@@ -88,6 +91,16 @@ namespace ZelezniceSrbije.Tests.PretragaTest
             await PopuniBazu();
 
             var rezultat = await servis.PretraziAsync("Nepostojece Polaziste", "Novi Sad", DateTime.Today);
+
+            Assert.Null(rezultat);
+        }
+
+        [Fact]
+        public async Task Pretraga_NepostojeceOdrediste_Test()
+        {
+            await PopuniBazu();
+
+            var rezultat = await servis.PretraziAsync("Beograd Centar", "Nepostojece Odrediste", DateTime.Today);
 
             Assert.Null(rezultat);
         }
@@ -140,11 +153,12 @@ namespace ZelezniceSrbije.Tests.PretragaTest
         }
 
         [Fact]
-        public async Task Pretraga_Danas_VracaSamoBuducePolaske()
+        public async Task Pretraga_VratiSamoBuducePolaskeTest()
         {
             await PopuniBazu();
 
             var now = DateTime.Now;
+
             var rezultat = await servis.PretraziAsync("Beograd Centar", "Novi Sad", DateTime.Today);
 
             Assert.NotNull(rezultat);
@@ -159,6 +173,7 @@ namespace ZelezniceSrbije.Tests.PretragaTest
             Assert.Empty(await servis.UcitajRasporede(null));
             Assert.Empty(await servis.UcitajRasporede(DateTime.Today.AddDays(1000)));
         }
+
         [Fact]
         public async Task UcitajRasporede_Danas_Test()
         {
@@ -168,7 +183,9 @@ namespace ZelezniceSrbije.Tests.PretragaTest
 
             Assert.NotNull(rezultat);
             Assert.Equal(11, rezultat.Count);
+            Assert.All(rezultat, x => Assert.Equal(DateTime.Today, x.Vreme_polaska.Date));
         }
+
         [Theory]
         [InlineData(1, true)]
         [InlineData(0, false)]
@@ -178,42 +195,72 @@ namespace ZelezniceSrbije.Tests.PretragaTest
         {
             await PopuniBazu();
 
+            var brojPre = await context.Raspored.CountAsync();
+
             var rezultat = await servis.UkloniRaspored(id);
+
+            var brojPosle = await context.Raspored.CountAsync();
             var raspored = await context.Raspored.FindAsync(id);
 
             Assert.Equal(trebaDaUspe, rezultat);
+
             if (trebaDaUspe)
+            {
                 Assert.Null(raspored);
+                Assert.Equal(brojPre - 1, brojPosle);
+            }
+            else
+            {
+                Assert.Equal(brojPre, brojPosle);
+            }
         }
+
         [Theory]
         [InlineData(1, 1, false, true)]
         [InlineData(0, 1, false, false)]
         [InlineData(1, 0, false, false)]
         [InlineData(-1, 1, false, false)]
         [InlineData(1, -1, false, false)]
+        [InlineData(9999, 1, false, false)]
+        [InlineData(1, 9999, false, false)]
         [InlineData(1, 1, true, false)]
         public async Task DodajRaspored_Test(int linija_id, int voz_id, bool praznoVreme, bool trebaDaUspe)
         {
             await PopuniBazu();
+
+            var brojPre = await context.Raspored.CountAsync();
 
             var vremePolaska = DateTime.Today.AddDays(2).AddHours(10);
             if (praznoVreme)
                 vremePolaska = default;
 
             var rezultat = await servis.DodajRaspored(linija_id, voz_id, vremePolaska);
+
+            var brojPosle = await context.Raspored.CountAsync();
             var dodatiRaspored = await context.Raspored.FirstOrDefaultAsync(r => r.Linija_id == linija_id && r.Voz_id == voz_id && r.Vreme_polaska == vremePolaska);
 
             Assert.Equal(trebaDaUspe, rezultat);
+
             if (trebaDaUspe)
+            {
+                Assert.Equal(brojPre + 1, brojPosle);
                 Assert.NotNull(dodatiRaspored);
+            }
+            else
+            {
+                Assert.Equal(brojPre, brojPosle);
+            }
         }
+
         [Fact]
         public async Task IzmeniRaspored_Test()
         {
             await PopuniBazu();
 
             var novoVreme = DateTime.Today.AddDays(2).AddHours(18);
+
             var rezultat = await servis.IzmeniRaspored(1, 2, 2, novoVreme);
+
             var raspored = await context.Raspored.FindAsync(1);
 
             Assert.True(rezultat);
@@ -222,23 +269,29 @@ namespace ZelezniceSrbije.Tests.PretragaTest
             Assert.Equal(2, raspored.Voz_id);
             Assert.Equal(novoVreme, raspored.Vreme_polaska);
         }
+
         [Theory]
         [InlineData(1, 0, 2, false)]
         [InlineData(1, 2, 0, false)]
         [InlineData(1, -1, 2, false)]
         [InlineData(1, 2, -1, false)]
+        [InlineData(1, 9999, 2, false)]
+        [InlineData(1, 2, 9999, false)]
         [InlineData(9999, 2, 2, false)]
         public async Task IzmeniRaspored_NepostojeceVrednosti_Test(int id, int linija_id, int voz_id, bool trebaDaUspe)
         {
             await PopuniBazu();
 
             var stari = await context.Raspored.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id);
+
             var rezultat = await servis.IzmeniRaspored(id, linija_id, voz_id, DateTime.Today.AddDays(3).AddHours(9));
 
             Assert.Equal(trebaDaUspe, rezultat);
+
             if (stari != null)
             {
                 var novi = await context.Raspored.AsNoTracking().FirstAsync(r => r.Id == id);
+
                 Assert.Equal(stari.Linija_id, novi.Linija_id);
                 Assert.Equal(stari.Voz_id, novi.Voz_id);
                 Assert.Equal(stari.Vreme_polaska, novi.Vreme_polaska);
@@ -249,7 +302,17 @@ namespace ZelezniceSrbije.Tests.PretragaTest
         public async Task IzmeniRaspored_NevalidnoVreme_Test()
         {
             await PopuniBazu();
-            Assert.False(await servis.IzmeniRaspored(1, 2, 2, default));
+
+            var stari = await context.Raspored.AsNoTracking().FirstAsync(r => r.Id == 1);
+
+            var rezultat = await servis.IzmeniRaspored(1, 2, 2, default);
+
+            var novi = await context.Raspored.AsNoTracking().FirstAsync(r => r.Id == 1);
+
+            Assert.False(rezultat);
+            Assert.Equal(stari.Linija_id, novi.Linija_id);
+            Assert.Equal(stari.Voz_id, novi.Voz_id);
+            Assert.Equal(stari.Vreme_polaska, novi.Vreme_polaska);
         }
     }
 }

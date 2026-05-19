@@ -92,22 +92,28 @@ namespace ZelezniceSrbije.Repositories
             return db.Stanica.Where(x => x.Region == region).ToListAsync();
         }
 
-        public async Task IzmeniLiniju(Linija l, List<StanicaLinija> stajalista)
+        public async Task<bool> IzmeniLiniju(Linija l, List<StanicaLinija> stajalista)
         {
-           var linija =  await db.Linija.FindAsync(l.Id);
+            var linija = await db.Linija.FindAsync(l.Id);
+            if (linija == null)
+                return false;
             linija.Naziv = l.Naziv;
             linija.Cena_po_minutu = l.Cena_po_minutu;
             await db.StanicaLinija.Where(x => x.Linija_id == l.Id).ExecuteDeleteAsync();
             await db.StanicaLinija.AddRangeAsync(stajalista);
             await db.SaveChangesAsync();
+            return true;
         }
 
-        public async Task IzmeniStanicu(Stanica s)
+        public async Task<bool> IzmeniStanicu(Stanica s)
         {
             var stanica = await db.Stanica.FindAsync(s.Id);
+            if (stanica == null)
+                return false;
             stanica.Naziv = s.Naziv;
             stanica.Region = s.Region;
             await db.SaveChangesAsync();
+            return true;
         }
     }
 }

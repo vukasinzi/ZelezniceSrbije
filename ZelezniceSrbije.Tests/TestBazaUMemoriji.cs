@@ -145,7 +145,7 @@ namespace ZelezniceSrbije.Tests
                     new Kondukter("Nikola", "Nikolic", "nikola@gmail.com", "kondukter987", "LEG-002") { Id = 302 }
                 );
             }
-
+            
             await context.SaveChangesAsync();
         }
     }

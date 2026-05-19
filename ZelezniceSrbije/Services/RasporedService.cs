@@ -59,22 +59,21 @@ namespace ZelezniceSrbije.Services
         public async Task<bool> DodajRaspored(int linija_id, int voz_id, DateTime vreme_polaska)
         {
             Raspored r = new(vreme_polaska, linija_id, voz_id);
+
             if (!r.JeValidan())
                 return false;
-            await repo.DodajRaspored(r);
-            return true;
+
+            return await repo.DodajRaspored(r);
         }
 
-        public async Task<bool> IzmeniRaspored(int id,int linija_id, int voz_id, DateTime vreme_polaska)
+        public async Task<bool> IzmeniRaspored(int id, int linija_id, int voz_id, DateTime vreme_polaska)
         {
-            Raspored r = new(id,vreme_polaska, linija_id, voz_id);
+            Raspored r = new(id, vreme_polaska, linija_id, voz_id);
+
             if (!r.JeValidan())
                 return false;
-           var provera = await repo.ProveriRaspored(id);
-            if (provera == null)
-                return false;
-            await repo.IzmeniRaspored(r);
-            return true;
+
+            return await repo.IzmeniRaspored(r);
         }
     }
 }

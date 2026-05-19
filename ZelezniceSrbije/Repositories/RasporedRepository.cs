@@ -7,10 +7,12 @@ namespace ZelezniceSrbije.Repositories
     public class RasporedRepository : IRasporedRepository
     {
         private readonly VozAppContext db;
+
         public RasporedRepository(VozAppContext db)
         {
             this.db = db;
         }
+
         public async Task<List<RasporedDTO>> PretraziAsync(string polaziste, string odrediste, DateTime datum)
         {
             Stanica pol = await db.Stanica.FirstOrDefaultAsync(x => x.Naziv == polaziste);
@@ -47,8 +49,10 @@ namespace ZelezniceSrbije.Repositories
                 where slPol.Stanica_id == pol.Id
                       && slOdr.Stanica_id == odr.Id
                       && slPol.Redosled < slOdr.Redosled
-                      && r.Vreme_polaska >= odKad
-                      && r.Vreme_polaska < sutra
+                      && r.Vreme_polaska.AddMinutes(slPol.Vreme_od_polaska) >=
+                      odKad //vazna ispravka, ne smem proveravati kad je voz krenuo, vec ako nije jos dosao na tu stanicu
+                      && r.Vreme_polaska <
+                      sutra //treba svakako da omogucim kupovinu karte, bez obzira na to dal je krenuo sa pocetne stanice ili ne. ona je nebitna
                 select new RasporedDTO
                 {
                     Id = r.Id,
@@ -61,7 +65,7 @@ namespace ZelezniceSrbije.Repositories
 
             return await Task.FromResult(rezultat);
         }
-      
+
         public async Task<Raspored> ProveriRaspored(int id)
         {
             return await db.Raspored.FindAsync(id);
@@ -95,21 +99,44 @@ namespace ZelezniceSrbije.Repositories
             db.Raspored.Remove(raspored);
             await db.SaveChangesAsync();
         }
-        public async Task DodajRaspored(Raspored r)
+
+        public async Task<bool> DodajRaspored(Raspored r)
         {
+            var postojiLinija = await db.Linija.AnyAsync(x => x.Id == r.Linija_id);
+            if (!postojiLinija)
+                return false;
+
+            var postojiVoz = await db.Voz.AnyAsync(x => x.Id == r.Voz_id);
+            if (!postojiVoz)
+                return false;
+
             await db.Raspored.AddAsync(r);
             await db.SaveChangesAsync();
+
+            return true;
         }
 
-        public async Task IzmeniRaspored(Raspored r)
+        public async Task<bool> IzmeniRaspored(Raspored r)
         {
             var nas_raspored = await db.Raspored.FindAsync(r.Id);
             if (nas_raspored == null)
-                return;
+                return false;
+
+            var postojiLinija = await db.Linija.AnyAsync(x => x.Id == r.Linija_id);
+            if (!postojiLinija)
+                return false;
+
+            var postojiVoz = await db.Voz.AnyAsync(x => x.Id == r.Voz_id);
+            if (!postojiVoz)
+                return false;
+
             nas_raspored.Voz_id = r.Voz_id;
             nas_raspored.Linija_id = r.Linija_id;
             nas_raspored.Vreme_polaska = r.Vreme_polaska;
+
             await db.SaveChangesAsync();
+
+            return true;
         }
     }
 }

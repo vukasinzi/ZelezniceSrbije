@@ -98,42 +98,48 @@ namespace ZelezniceSrbije.Repositories
             return await db.Korisnik.FirstOrDefaultAsync(x => x.Email == email);
         }
 
-        public async Task IzmeniAdministratora(Administrator admin, int id)
+        public async Task<bool> UkloniAdministratora(int id)
+        {
+            var admin = await db.Admin.FirstOrDefaultAsync(x => x.Id == id);
+            if (admin == null)
+                return false;
+            await db.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM Administrator WHERE Id = {id}");
+            return true;
+        }
+
+        public async Task<bool> UkloniKonduktera(int id)
+        {
+            var kondukter = await db.Kondukter.FirstOrDefaultAsync(x => x.Id == id);
+            if (kondukter == null)
+                return false;
+            await db.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM Kondukter WHERE Id = {id}");
+            return true;
+        }
+
+        public async Task<bool> IzmeniAdministratora(Administrator admin, int id)
         {
             var a = await db.Admin.FirstOrDefaultAsync(x => x.Id == id);
             if (a == null)
-                return;
-
+                return false;
             a.Ime = admin.Ime;
             a.Prezime = admin.Prezime;
             a.Email = admin.Email;
             a.Datum_zaposlenja = admin.Datum_zaposlenja;
-
             await db.SaveChangesAsync();
+            return true;
         }
 
-        public async Task IzmeniKonduktera(Kondukter kondukter, int id)
+        public async Task<bool> IzmeniKonduktera(Kondukter kondukter, int id)
         {
             var k = await db.Kondukter.FirstOrDefaultAsync(x => x.Id == id);
             if (k == null)
-                return;
-
+                return false;
             k.Ime = kondukter.Ime;
             k.Prezime = kondukter.Prezime;
             k.Email = kondukter.Email;
             k.Broj_legitimacije = kondukter.Broj_legitimacije;
-
             await db.SaveChangesAsync();
-        }
-
-        public async Task UkloniAdministratora(int id)
-        {
-            await db.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM Administrator WHERE Id = {id}");
-        }
-
-        public async Task UkloniKonduktera(int id)
-        {
-            await db.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM Kondukter WHERE Id = {id}");
+            return true;
         }
     }
 }

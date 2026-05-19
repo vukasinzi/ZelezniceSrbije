@@ -106,6 +106,8 @@ namespace ZelezniceSrbije.Services
             List<StanicaLinija> stajalista = new();
             if (!l.JeValidan())
                 return false;
+            if (stanicaIds == null || redosled == null || vreme_od_polaska == null)
+                return false;
             if (stanicaIds.Count != redosled.Count || stanicaIds.Count != vreme_od_polaska.Count)
                 return false;
             for (int i = 0; i < redosled.Count; i++)
@@ -115,20 +117,15 @@ namespace ZelezniceSrbije.Services
                 StanicaLinija sl = new(vreme_od_polaska[i], redosled[i], stanicaIds[i], id);
                 stajalista.Add(sl);
             }
-            
-            await repo.IzmeniLiniju(l,stajalista);
-            return true;
+            return await repo.IzmeniLiniju(l, stajalista);
         }
-
-      
 
         public async Task<bool> IzmeniStanicu(int id, string naziv, string region)
         {
             Stanica s = new(id, naziv, region);
             if (!s.JeValidan())
                 return false;
-            await repo.IzmeniStanicu(s);
-            return true;
+            return await repo.IzmeniStanicu(s);
         }
     }
 }

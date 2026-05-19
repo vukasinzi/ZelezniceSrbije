@@ -67,42 +67,34 @@ namespace ZelezniceSrbije.Services
         }
 
 
-        public async Task<bool> IzmeniAdministratora(int id, string ime, string prezime, string email, DateTime? datum)
-        {
-
-            Administrator admin = new(ime, prezime, email, "dummypolje", datum);
-            if (!admin.JeValidan())
-                return false;
-            await repo.IzmeniAdministratora(admin, id);
-            return true;
-        }
-
-        public async Task<bool> IzmeniKonduktera(int id, string ime, string prezime, string email, string broj_legitimacije)
-
-        {
-            Kondukter kondukter = new(ime, prezime, email, "dummypolje", broj_legitimacije);
-            if (!kondukter.JeValidan())
-                return false;
-            await repo.IzmeniKonduktera(kondukter, id);
-            return true;
-        }
-
         public async Task<bool> UkloniAdministratora(int id)
         {
             if (id <= 0)
                 return false;
-
-            await repo.UkloniAdministratora(id);
-            return true;
+            return await repo.UkloniAdministratora(id);
         }
 
         public async Task<bool> UkloniKonduktera(int id)
         {
             if (id <= 0)
                 return false;
+            return await repo.UkloniKonduktera(id);
+        }
 
-            await repo.UkloniKonduktera(id);
-            return true;
+        public async Task<bool> IzmeniAdministratora(int id, string ime, string prezime, string email, DateTime? datum)
+        {
+            Administrator admin = new(ime, prezime, email, "dummypolje", datum);
+            if (!admin.JeValidan())
+                return false;
+            return await repo.IzmeniAdministratora(admin, id);
+        }
+
+        public async Task<bool> IzmeniKonduktera(int id, string ime, string prezime, string email, string broj_legitimacije)
+        {
+            Kondukter kondukter = new(ime, prezime, email, "dummypolje", broj_legitimacije);
+            if (!kondukter.JeValidan())
+                return false;
+            return await repo.IzmeniKonduktera(kondukter, id);
         }
     }
 }
