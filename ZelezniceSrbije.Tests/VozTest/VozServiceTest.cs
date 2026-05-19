@@ -57,6 +57,7 @@ namespace ZelezniceSrbije.Tests.VozTest
                 new TipVoza(2, "Tip2", "Opis"),
                 new TipVoza(3, "Tip3", "Opis")
             );
+
             context.Voz.AddRange(
                 new Voz(1, "Laznjak1", "LA-33-ZNJAK1", false, 1),
                 new Voz(2, "Laznjak2", "LA-33-ZNJAK2", true, 2),
@@ -85,58 +86,98 @@ namespace ZelezniceSrbije.Tests.VozTest
             Assert.Equal(trebaDaUspe, rezultat);
 
             var tipovi = await servis.UcitajSveTipoveVoza();
-            if (trebaDaUspe)
-                Assert.Single(tipovi);
-            else
-                Assert.Empty(tipovi);
-        }
 
+            if (trebaDaUspe)
+            {
+                Assert.Single(tipovi);
+                Assert.Equal(naziv, tipovi[0].Naziv);
+                Assert.Equal(opis, tipovi[0].Opis);
+            }
+            else
+            {
+                Assert.Empty(tipovi);
+            }
+        }
 
         [Theory]
         [InlineData("", "SRB-001", 1, true, false)]
         [InlineData("Voz 1", "", 1, true, false)]
         [InlineData("Voz 1", "SRB-001", 0, true, false)]
         [InlineData("Voz 1", "SRB-001", -1, true, false)]
-        [InlineData(null, "SRB-001",1, true, false)]
-        [InlineData("Voz 1",null,1, true, false)]
-        [InlineData("Voz 1","SRB-001",1, true, true)]
-        [InlineData("Voz 1","SRB-001",2, true, false)]
-        public async Task DodajVoz_Test(string naziv, string serijski_broj, int tip_voza_id, bool aktivan, bool trebaDaUspe)
+        [InlineData(null, "SRB-001", 1, true, false)]
+        [InlineData("Voz 1", null, 1, true, false)]
+        [InlineData("Voz 1", "SRB-001", 1, true, true)]
+        [InlineData("Voz 1", "SRB-001", 2, true, false)]
+        public async Task DodajVoz_Test(string? naziv, string? serijski_broj, int tip_voza_id, bool aktivan, bool trebaDaUspe)
         {
             context.TipVoza.Add(new TipVoza(1, "Soko", "Brzi voz....."));
-            var rezultat = await servis.DodajVoz(naziv, serijski_broj, tip_voza_id, aktivan);
+            await context.SaveChangesAsync();
+
+            var rezultat = await servis.DodajVoz(naziv!, serijski_broj!, tip_voza_id, aktivan);
+
             Assert.Equal(trebaDaUspe, rezultat);
 
             var vozovi = await servis.UcitajSveVozove();
-            if (trebaDaUspe)
-                Assert.Single(vozovi);
-            else
-                Assert.Empty(vozovi);
-        }
 
-      
+            if (trebaDaUspe)
+            {
+                Assert.Single(vozovi);
+                Assert.Equal(naziv, vozovi[0].Naziv);
+                Assert.Equal(serijski_broj, vozovi[0].Serijski_broj);
+                Assert.Equal(tip_voza_id, vozovi[0].Tip_voza_id);
+                Assert.Equal(aktivan, vozovi[0].Aktivan);
+            }
+            else
+            {
+                Assert.Empty(vozovi);
+            }
+        }
 
         [Theory]
         [InlineData(1, "", "Brzi voz", false)]
         [InlineData(1, "Intercity", "", false)]
         [InlineData(1, null, "Brzi voz", false)]
         [InlineData(1, "Novi naziv", null, false)]
-        [InlineData(1,"Novi naziv","Novi opis",true)]
+        [InlineData(1, "Novi naziv", "Novi opis", true)]
         public async Task IzmeniTipVoza_Test(int id, string? naziv, string? opis, bool trebaDaUspe)
         {
             context.TipVoza.Add(new TipVoza(id, "Stari naziv", "Stari opis"));
             await context.SaveChangesAsync();
 
-            var rezultat = await servis.IzmeniTipVoza(id, naziv, opis);
+            var rezultat = await servis.IzmeniTipVoza(id, naziv!, opis!);
+
             Assert.Equal(trebaDaUspe, rezultat);
+
+            List<TipVoza> tipovi = await servis.UcitajSveTipoveVoza();
+
             if (trebaDaUspe)
             {
-                List<TipVoza> tip = await servis.UcitajSveTipoveVoza();
-                Assert.Equal(tip[0].Naziv, naziv);
+                Assert.Equal(naziv, tipovi[0].Naziv);
+                Assert.Equal(opis, tipovi[0].Opis);
             }
-               
+            else
+            {
+                Assert.Equal("Stari naziv", tipovi[0].Naziv);
+                Assert.Equal("Stari opis", tipovi[0].Opis);
+            }
         }
-      
+
+        [Fact]
+        public async Task IzmeniTipVoza_NepostojeciId_Test()
+        {
+            context.TipVoza.Add(new TipVoza(1, "Stari naziv", "Stari opis"));
+            await context.SaveChangesAsync();
+
+            var rezultat = await servis.IzmeniTipVoza(2, "Novi naziv", "Novi opis");
+
+            Assert.False(rezultat);
+
+            var tipovi = await servis.UcitajSveTipoveVoza();
+
+            Assert.Single(tipovi);
+            Assert.Equal("Stari naziv", tipovi[0].Naziv);
+            Assert.Equal("Stari opis", tipovi[0].Opis);
+        }
 
         [Theory]
         [InlineData(1, "", "SRB-001", true, 1, false)]
@@ -146,32 +187,67 @@ namespace ZelezniceSrbije.Tests.VozTest
         [InlineData(1, null, "SRB-001", true, 1, false)]
         [InlineData(1, "Voz 1", null, true, 1, false)]
         [InlineData(1, "Voz 1", "SRB-001", true, 1, true)]
-        public async Task IzmeniVoz_Test(int id, string naziv, string serijski_broj, bool aktivan, int tip_voza_id, bool trebaDaUspe)
+        [InlineData(1, "Voz 1", "SRB-001", true, 2, false)]
+        public async Task IzmeniVoz_Test(int id, string? naziv, string? serijski_broj, bool aktivan, int tip_voza_id, bool trebaDaUspe)
         {
             context.TipVoza.Add(new TipVoza(1, "Tip1", "Opis"));
             context.Voz.Add(new Voz(id, "Stari naziv", "SRB-000", false, 1));
             await context.SaveChangesAsync();
 
-            var rezultat = await servis.IzmeniVoz(id, naziv, serijski_broj, aktivan, tip_voza_id);
+            var rezultat = await servis.IzmeniVoz(id, naziv!, serijski_broj!, aktivan, tip_voza_id);
+
             Assert.Equal(trebaDaUspe, rezultat);
+
+            List<Voz> vozovi = await servis.UcitajSveVozove();
+
             if (trebaDaUspe)
             {
-                List<Voz> tip = await servis.UcitajSveVozove();
-                Assert.Equal(tip[0].Naziv, naziv);
+                Assert.Equal(naziv, vozovi[0].Naziv);
+                Assert.Equal(serijski_broj, vozovi[0].Serijski_broj);
+                Assert.Equal(aktivan, vozovi[0].Aktivan);
+                Assert.Equal(tip_voza_id, vozovi[0].Tip_voza_id);
+            }
+            else
+            {
+                Assert.Equal("Stari naziv", vozovi[0].Naziv);
+                Assert.Equal("SRB-000", vozovi[0].Serijski_broj);
+                Assert.False(vozovi[0].Aktivan);
+                Assert.Equal(1, vozovi[0].Tip_voza_id);
             }
         }
 
+        [Fact]
+        public async Task IzmeniVoz_NepostojeciId_Test()
+        {
+            context.TipVoza.Add(new TipVoza(1, "Tip1", "Opis"));
+            context.Voz.Add(new Voz(1, "Stari naziv", "SRB-000", false, 1));
+            await context.SaveChangesAsync();
+
+            var rezultat = await servis.IzmeniVoz(2, "Novi naziv", "SRB-001", true, 1);
+
+            Assert.False(rezultat);
+
+            var vozovi = await servis.UcitajSveVozove();
+
+            Assert.Single(vozovi);
+            Assert.Equal("Stari naziv", vozovi[0].Naziv);
+            Assert.Equal("SRB-000", vozovi[0].Serijski_broj);
+            Assert.False(vozovi[0].Aktivan);
+            Assert.Equal(1, vozovi[0].Tip_voza_id);
+        }
 
         [Theory]
-        [InlineData(1,true)]
-        [InlineData(-1,false)]
-        [InlineData(0,false)]
-        public async Task UkloniTipVoza_Test(int id,bool trebaDaUspe)
+        [InlineData(1, true)]
+        [InlineData(2, false)]
+        [InlineData(-1, false)]
+        [InlineData(0, false)]
+        public async Task UkloniTipVoza_Test(int id, bool trebaDaUspe)
         {
             context.TipVoza.Add(new TipVoza(1, "Fejk", "Opis"));
             await context.SaveChangesAsync();
 
             var rezultat = await servis.UkloniTipVoza(id);
+
             var tipovi = await servis.UcitajSveTipoveVoza();
 
             if (trebaDaUspe)
@@ -183,23 +259,25 @@ namespace ZelezniceSrbije.Tests.VozTest
             {
                 Assert.False(rezultat);
                 Assert.Single(tipovi);
+                Assert.Equal("Fejk", tipovi[0].Naziv);
             }
         }
 
-
-
         [Theory]
-        [InlineData(1,true)]
-        [InlineData(2,false)]
-        [InlineData(-1,false)]
-        public async Task UkloniVoz_Test(int id,bool trebaDaUspe)
+        [InlineData(1, true)]
+        [InlineData(2, false)]
+        [InlineData(-1, false)]
+        [InlineData(0, false)]
+        public async Task UkloniVoz_Test(int id, bool trebaDaUspe)
         {
             context.TipVoza.Add(new TipVoza(1, "Fejk tip", "Opis"));
             context.Voz.Add(new Voz(1, "Fejk", "SRB-001", true, 1));
             await context.SaveChangesAsync();
 
             var rezultat = await servis.UkloniVoz(id);
+
             var vozovi = await servis.UcitajSveVozove();
+
             if (trebaDaUspe)
             {
                 Assert.True(rezultat);
@@ -209,9 +287,9 @@ namespace ZelezniceSrbije.Tests.VozTest
             {
                 Assert.False(rezultat);
                 Assert.Single(vozovi);
-            }    
-
+                Assert.Equal("Fejk", vozovi[0].Naziv);
+                Assert.Equal("SRB-001", vozovi[0].Serijski_broj);
+            }
         }
-
     }
 }
