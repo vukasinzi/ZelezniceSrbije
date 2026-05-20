@@ -5,15 +5,24 @@ using ZelezniceSrbije.Models.ViewModels;
 
 namespace ZelezniceSrbije.Repositories;
 
+/// <inheritdoc/>
 public class KartaRepository : IKartaRepository
 {
+    /// <summary>
+    /// Kontekst baze podataka aplikacije.
+    /// </summary>
     private readonly VozAppContext db;
 
+    /// <summary>
+    /// Kreira novi repozitorijum za karte.
+    /// </summary>
+    /// <param name="db">Kontekst baze podataka aplikacije.</param>
     public KartaRepository(VozAppContext db)
     {
         this.db = db;
     }
 
+    /// <inheritdoc/>
     public async Task<bool> ProveriKartu(int putnik_id, int raspored_id, int polaziste_id, int odrediste_id)
     {
         var ok = await db.Putnik.AnyAsync(p => p.Id == putnik_id)
@@ -23,6 +32,7 @@ public class KartaRepository : IKartaRepository
         return ok;
     }
 
+    /// <inheritdoc/>
     public async Task<Karta> KupiKartu(int putnik_id, int raspored_id, int polaziste_id, int odrediste_id)
     {
         var podaci = await (
@@ -74,6 +84,7 @@ public class KartaRepository : IKartaRepository
         return x;
     }
 
+    /// <inheritdoc/>
     public async Task<KartaDTO> VratiKartu(int karta_id, int putnik_id)
     {
         /*
@@ -145,6 +156,7 @@ public class KartaRepository : IKartaRepository
         return karta;
     }
 
+    /// <inheritdoc/>
     public async Task<List<KartaDTO>> VratiKarte(int putnik_id)
     {
         var podaci = await (

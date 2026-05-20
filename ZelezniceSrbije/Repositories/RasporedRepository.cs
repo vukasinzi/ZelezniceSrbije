@@ -4,15 +4,24 @@ using ZelezniceSrbije.Models;
 
 namespace ZelezniceSrbije.Repositories
 {
+    /// <inheritdoc/>
     public class RasporedRepository : IRasporedRepository
     {
+        /// <summary>
+        /// Kontekst baze podataka aplikacije.
+        /// </summary>
         private readonly VozAppContext db;
 
+        /// <summary>
+        /// Kreira novi repozitorijum za rasporede.
+        /// </summary>
+        /// <param name="db">Kontekst baze podataka aplikacije.</param>
         public RasporedRepository(VozAppContext db)
         {
             this.db = db;
         }
 
+        /// <inheritdoc/>
         public async Task<List<RasporedDTO>> PretraziAsync(string polaziste, string odrediste, DateTime datum)
         {
             Stanica pol = await db.Stanica.FirstOrDefaultAsync(x => x.Naziv == polaziste);
@@ -66,11 +75,13 @@ namespace ZelezniceSrbije.Repositories
             return await Task.FromResult(rezultat);
         }
 
+        /// <inheritdoc/>
         public async Task<Raspored> ProveriRaspored(int id)
         {
             return await db.Raspored.FindAsync(id);
         }
 
+        /// <inheritdoc/>
         public async Task<List<Raspored>> UcitajRasporede(DateTime? datum)
         {
             var dan = datum.Value.Date;
@@ -85,12 +96,14 @@ namespace ZelezniceSrbije.Repositories
                 .ToListAsync();
         }
 
+        /// <inheritdoc/>
         public async Task<List<Stanica>> UcitajStaniceAsync()
         {
             List<Stanica> stanice = await db.Stanica.AsNoTracking().ToListAsync();
             return await Task.FromResult(stanice);
         }
 
+        /// <inheritdoc/>
         public async Task UkloniRaspored(int id)
         {
             var raspored = await db.Raspored.FindAsync(id);
@@ -100,6 +113,7 @@ namespace ZelezniceSrbije.Repositories
             await db.SaveChangesAsync();
         }
 
+        /// <inheritdoc/>
         public async Task<bool> DodajRaspored(Raspored r)
         {
             var postojiLinija = await db.Linija.AnyAsync(x => x.Id == r.Linija_id);
@@ -116,6 +130,7 @@ namespace ZelezniceSrbije.Repositories
             return true;
         }
 
+        /// <inheritdoc/>
         public async Task<bool> IzmeniRaspored(Raspored r)
         {
             var nas_raspored = await db.Raspored.FindAsync(r.Id);

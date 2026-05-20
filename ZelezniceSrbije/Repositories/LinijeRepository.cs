@@ -4,14 +4,24 @@ using ZelezniceSrbije.Models;
 
 namespace ZelezniceSrbije.Repositories
 {
+    /// <inheritdoc/>
     public class LinijeRepository : ILinijeRepository
     {
+        /// <summary>
+        /// Kontekst baze podataka aplikacije.
+        /// </summary>
         public VozAppContext db;
+
+        /// <summary>
+        /// Kreira novi repozitorijum za linije i stanice.
+        /// </summary>
+        /// <param name="db">Kontekst baze podataka aplikacije.</param>
         public LinijeRepository(VozAppContext db)
         {
             this.db = db;
         }
 
+        /// <inheritdoc/>
         public async Task DodajLiniju(Linija l)
         {
 
@@ -19,6 +29,7 @@ namespace ZelezniceSrbije.Repositories
             await db.SaveChangesAsync();
         }
 
+        /// <inheritdoc/>
         public async Task DodajStajalistaZaLiniju(List<StanicaLinija> fejk)
         {
             await db.StanicaLinija.AddRangeAsync(fejk);
@@ -26,6 +37,7 @@ namespace ZelezniceSrbije.Repositories
 
         }
 
+        /// <inheritdoc/>
         public async Task DodajStanicu(Stanica s)
         {
             await db.Stanica.AddAsync(s);
@@ -33,35 +45,47 @@ namespace ZelezniceSrbije.Repositories
 
         }
 
+        /// <inheritdoc/>
         public async Task UkloniLiniju(int id)
         {
             var linija = await db.Linija.FindAsync(id);
             _ = db.Linija.Remove(linija);
             await db.SaveChangesAsync();
         }
+
+        /// <inheritdoc/>
         public async Task UkloniStanicu(int id)
         {
             var stanica = await db.Stanica.FindAsync(id);
             _ = db.Stanica.Remove(stanica);
             await db.SaveChangesAsync();
         }
+
+        /// <inheritdoc/>
         public async Task<object> ProveriLiniju(string naziv)
         {
             return await db.Linija.FirstOrDefaultAsync(x => x.Naziv == naziv);
         }
+
+        /// <inheritdoc/>
         public async Task<object> ProveriLiniju(int id)
         {
             return await db.Linija.FindAsync(id);
         }
+
+        /// <inheritdoc/>
         public async Task<object> ProveriStanicu(int id)
         {
             return await db.Stanica.FirstOrDefaultAsync(x => x.Id == id);
         }
+
+        /// <inheritdoc/>
         public async Task<object> ProveriStanicu(string naziv)
         {
             return await db.Stanica.FirstOrDefaultAsync(x => x.Naziv == naziv);
         }
 
+        /// <inheritdoc/>
         public async Task<List<LinijaDTO>> UcitajSveLinije()
         {
             var redovi = await (
@@ -83,7 +107,7 @@ namespace ZelezniceSrbije.Repositories
             return linije.OrderBy(x=> x.linija.Naziv).ToList();
         }
 
-      
+        /// <inheritdoc/>
         public Task<List<Stanica>> UcitajSveStanice(string region)
         {
             if(region == null || region.Trim() == "")
@@ -92,6 +116,7 @@ namespace ZelezniceSrbije.Repositories
             return db.Stanica.Where(x => x.Region == region).ToListAsync();
         }
 
+        /// <inheritdoc/>
         public async Task<bool> IzmeniLiniju(Linija l, List<StanicaLinija> stajalista)
         {
             var linija = await db.Linija.FindAsync(l.Id);
@@ -105,6 +130,7 @@ namespace ZelezniceSrbije.Repositories
             return true;
         }
 
+        /// <inheritdoc/>
         public async Task<bool> IzmeniStanicu(Stanica s)
         {
             var stanica = await db.Stanica.FindAsync(s.Id);

@@ -3,16 +3,24 @@ using ZelezniceSrbije.Repositories;
 
 namespace ZelezniceSrbije.Services
 {
+    /// <inheritdoc/>
     public class RasporedService : IRasporedService
     {
-
+        /// <summary>
+        /// Repozitorijum za rad sa rasporedima.
+        /// </summary>
         private IRasporedRepository repo;
+
+        /// <summary>
+        /// Kreira novi servis za rasporede.
+        /// </summary>
+        /// <param name="repo">Repozitorijum za rad sa rasporedima.</param>
         public RasporedService(IRasporedRepository repo)
         {
             this.repo = repo;
         }
 
-
+        /// <inheritdoc/>
         public async Task<List<RasporedDTO>> PretraziAsync(string polaziste, string odrediste, DateTime datum){
             List<RasporedDTO> lista = new();
             if ( polaziste == null || odrediste == null || polaziste?.Length == 0 || odrediste?.Length == 0 )
@@ -27,6 +35,7 @@ namespace ZelezniceSrbije.Services
             return lista;
         }
 
+        /// <inheritdoc/>
         public async Task<List<Raspored>> UcitajRasporede(DateTime? datum)
         {
             if (datum == null)
@@ -38,6 +47,7 @@ namespace ZelezniceSrbije.Services
             return rasporedi;
         }
 
+        /// <inheritdoc/>
         public async Task<List<Stanica>> UcitajStaniceAsync()
         {
             List<Stanica> lista = await repo.UcitajStaniceAsync();
@@ -45,6 +55,7 @@ namespace ZelezniceSrbije.Services
 
         }
 
+        /// <inheritdoc/>
         public async Task<bool> UkloniRaspored(int id)
         {
             if (id <= 0)
@@ -56,6 +67,8 @@ namespace ZelezniceSrbije.Services
             await repo.UkloniRaspored(id);
             return true;
         }
+
+        /// <inheritdoc/>
         public async Task<bool> DodajRaspored(int linija_id, int voz_id, DateTime vreme_polaska)
         {
             Raspored r = new(vreme_polaska, linija_id, voz_id);
@@ -66,6 +79,7 @@ namespace ZelezniceSrbije.Services
             return await repo.DodajRaspored(r);
         }
 
+        /// <inheritdoc/>
         public async Task<bool> IzmeniRaspored(int id, int linija_id, int voz_id, DateTime vreme_polaska)
         {
             Raspored r = new(id, vreme_polaska, linija_id, voz_id);
