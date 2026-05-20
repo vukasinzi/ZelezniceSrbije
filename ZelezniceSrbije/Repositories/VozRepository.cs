@@ -4,37 +4,50 @@ using ZelezniceSrbije.Models;
 
 namespace ZelezniceSrbije.Repositories
 {
+    /// <inheritdoc/>
     public class VozRepository : IVozRepository
     {
+        /// <summary>
+        /// Kontekst baze podataka aplikacije.
+        /// </summary>
         private readonly VozAppContext db;
 
+        /// <summary>
+        /// Kreira novi repozitorijum za vozove.
+        /// </summary>
+        /// <param name="db">Kontekst baze podataka aplikacije.</param>
         public VozRepository(VozAppContext db)
         {
             this.db = db;
         }
 
+        /// <inheritdoc/>
         public async Task DodajTipVoza(TipVoza tipVoza)
         {
             await db.TipVoza.AddAsync(tipVoza);
             await db.SaveChangesAsync();
         }
 
+        /// <inheritdoc/>
         public async Task DodajVoz(Voz voz)
         {
             await db.Voz.AddAsync(voz);
             await db.SaveChangesAsync();
         }
 
+        /// <inheritdoc/>
         public async Task<List<TipVoza>> UcitajSveTipoveVoza()
         {
             return await db.TipVoza.ToListAsync();
         }
 
+        /// <inheritdoc/>
         public async Task<List<Voz>> UcitajSveVozove()
         {
             return await db.Voz.ToListAsync();
         }
 
+        /// <inheritdoc/>
         public async Task UkloniTipVoza(int id)
         {
             var tip = await db.TipVoza.FindAsync(id);
@@ -42,6 +55,7 @@ namespace ZelezniceSrbije.Repositories
             await db.SaveChangesAsync();
         }
 
+        /// <inheritdoc/>
         public async Task UkloniVoz(int id)
         {
             var voz = await db.Voz.FindAsync(id);
@@ -49,6 +63,7 @@ namespace ZelezniceSrbije.Repositories
             await db.SaveChangesAsync();
         }
 
+        /// <inheritdoc/>
         public async Task IzmeniTipVoza(TipVoza tipVoza)
         {
             var tip = await db.TipVoza.FindAsync(tipVoza.Id);
@@ -57,6 +72,7 @@ namespace ZelezniceSrbije.Repositories
             await db.SaveChangesAsync();
         }
 
+        /// <inheritdoc/>
         public async Task IzmeniVoz(Voz voz)
         {
             var postojeceVozilo = await db.Voz.FindAsync(voz.Id);
@@ -67,6 +83,7 @@ namespace ZelezniceSrbije.Repositories
             await db.SaveChangesAsync();
         }
 
+        /// <inheritdoc/>
         public async Task<bool> PostojiTipVoza(int id)
         {
             var tip_voza = await db.TipVoza.FindAsync(id);
@@ -75,6 +92,7 @@ namespace ZelezniceSrbije.Repositories
             return false;
         }
 
+        /// <inheritdoc/>
         public async Task<bool> PostojiVoz(int id)
         {
             var voz = await db.Voz.FindAsync(id);

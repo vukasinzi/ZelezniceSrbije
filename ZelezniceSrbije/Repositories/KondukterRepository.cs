@@ -4,10 +4,21 @@ using ZelezniceSrbije.Models;
 
 namespace ZelezniceSrbije.Repositories;
 
+/// <inheritdoc/>
 public class KondukterRepository : IKondukterRepository
 {
+    /// <summary>
+    /// Kontekst baze podataka aplikacije.
+    /// </summary>
     private VozAppContext db;
+
+    /// <summary>
+    /// Kreira novi repozitorijum za kondukterske funkcionalnosti.
+    /// </summary>
+    /// <param name="db">Kontekst baze podataka aplikacije.</param>
     public KondukterRepository(VozAppContext db) => this.db = db;
+
+    /// <inheritdoc/>
     public async Task<RasporedDTO?> VratiRaspored(int raspored_id)
     {
         var podaci = await (
@@ -42,6 +53,7 @@ public class KondukterRepository : IKondukterRepository
         };
     }
 
+    /// <inheritdoc/>
     public async Task<List<RasporedDTO>?> VratiRasporedeZaDanas()
     {
         DateTime dtm = DateTime.Now;
@@ -63,6 +75,8 @@ public class KondukterRepository : IKondukterRepository
 
         return podaci.Count == 0 ? null : podaci;
     }
+
+    /// <inheritdoc/>
     public async Task<bool> OcitajKartu(Guid token, int raspored_id)
     {
         var karta = await db.Karta.FirstOrDefaultAsync(k => k.Qr_token == token && k.Raspored_id == raspored_id && !k.Ocitana);
