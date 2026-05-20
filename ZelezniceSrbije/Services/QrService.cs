@@ -2,8 +2,13 @@ using QRCoder;
 
 namespace ZelezniceSrbije.Services;
 
+/// <inheritdoc/>
 public class QrService : IQrService
 {
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentException">
+    /// Baca se ako je QR payload prazan.
+    /// </exception>
     public byte[] GenerisiQrKod(string payload)
     {
         if (string.IsNullOrWhiteSpace(payload))

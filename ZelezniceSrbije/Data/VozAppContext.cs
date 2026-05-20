@@ -3,23 +3,79 @@ using ZelezniceSrbije.Models;
 
 namespace ZelezniceSrbije.Data
 {
+    /// <summary>
+    /// Kontekst baze podataka za aplikaciju.
+    /// Sadrži DbSet kolekcije i konfiguraciju modela.
+    /// </summary>
     public class VozAppContext : DbContext
     {
+        /// <summary>
+        /// Kreira novi kontekst baze podataka.
+        /// </summary>
+        /// <param name="opcije">Opcije za podešavanje konteksta baze.</param>
         public VozAppContext(DbContextOptions<VozAppContext> opcije) : base(opcije)
         {
         }
+
+        /// <summary>
+        /// Korisnici sistema.
+        /// </summary>
         public DbSet<Korisnik> Korisnik { get; set; }
+
+        /// <summary>
+        /// Putnici sistema.
+        /// </summary>
         public DbSet<Putnik> Putnik { get; set; }
+
+        /// <summary>
+        /// Administratori sistema.
+        /// </summary>
         public DbSet<Administrator> Admin { get; set; }
+
+        /// <summary>
+        /// Kondukteri sistema.
+        /// </summary>
         public DbSet<Kondukter> Kondukter { get; set; }
+
+        /// <summary>
+        /// Veze između stanica i linija.
+        /// </summary>
         public DbSet<StanicaLinija> StanicaLinija { get; set; }//LINIJA STANICA
+
+        /// <summary>
+        /// Rasporedi vožnje.
+        /// </summary>
         public DbSet<Raspored> Raspored { get; set; }
+
+        /// <summary>
+        /// Vozovi u sistemu.
+        /// </summary>
         public DbSet<Voz> Voz { get; set; }
+
+        /// <summary>
+        /// Tipovi vozova.
+        /// </summary>
         public DbSet<TipVoza> TipVoza { get; set; }
+
+        /// <summary>
+        /// Linije vožnje.
+        /// </summary>
         public DbSet<Linija> Linija { get; set; }
+
+        /// <summary>
+        /// Stanice u sistemu.
+        /// </summary>
         public DbSet<Stanica> Stanica { get; set; }
+
+        /// <summary>
+        /// Karte korisnika.
+        /// </summary>
         public DbSet<Karta> Karta { get; set; }
 
+        /// <summary>
+        /// Podešava mapiranje modela na tabele i relacije u bazi.
+        /// </summary>
+        /// <param name="modelBuilder">Objekat za konfiguraciju modela.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Putnik>().ToTable("Putnik");

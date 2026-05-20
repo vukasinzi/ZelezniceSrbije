@@ -3,14 +3,24 @@ using ZelezniceSrbije.Repositories;
 
 namespace ZelezniceSrbije.Services
 {
+    /// <inheritdoc/>
     public class LinijeService : ILinijeServis
     {
+        /// <summary>
+        /// Repozitorijum za rad sa linijama i stanicama.
+        /// </summary>
         ILinijeRepository repo;
+
+        /// <summary>
+        /// Kreira novi servis za linije i stanice.
+        /// </summary>
+        /// <param name="repo">Repozitorijum za rad sa linijama i stanicama.</param>
         public LinijeService(ILinijeRepository repo)
         {
             this.repo = repo;
         }
         
+        /// <inheritdoc/>
         public async Task<bool> DodajLiniju(string naziv, int cena_po_minutu, List<int> stanicaIds, List<int> redosled, List<int> vreme_od_polaska)
         {
             Linija l = new(naziv, cena_po_minutu);
@@ -36,7 +46,7 @@ namespace ZelezniceSrbije.Services
             return false;
         }
 
-    
+        /// <inheritdoc/>
         public async Task<bool> DodajStanicu(string naziv, string region)
         {
             Stanica s = new(naziv, region);
@@ -50,6 +60,8 @@ namespace ZelezniceSrbije.Services
             }
             return false;
         }
+
+        /// <inheritdoc/>
         public async Task<bool> UkloniLiniju(int id)
         {
             try
@@ -70,6 +82,8 @@ namespace ZelezniceSrbije.Services
             }
             
         }
+
+        /// <inheritdoc/>
         public async Task<bool> UkloniStanicu(int id)
         {
             try
@@ -88,11 +102,14 @@ namespace ZelezniceSrbije.Services
                 return false;
             }
         }
+
+        /// <inheritdoc/>
         public async Task<List<LinijaDTO>> UcitajSveLinije()
         {
             return await repo.UcitajSveLinije();
         }
 
+        /// <inheritdoc/>
         public async Task<List<Stanica>> UcitajSveStanice(string region)
         {
             
@@ -100,6 +117,7 @@ namespace ZelezniceSrbije.Services
 
         }
 
+        /// <inheritdoc/>
         public async Task<bool> IzmeniLiniju(int id, string naziv, int cena_po_minutu, List<int> stanicaIds, List<int> redosled, List<int> vreme_od_polaska)
         {
             Linija l = new(id, naziv, cena_po_minutu);
@@ -120,6 +138,7 @@ namespace ZelezniceSrbije.Services
             return await repo.IzmeniLiniju(l, stajalista);
         }
 
+        /// <inheritdoc/>
         public async Task<bool> IzmeniStanicu(int id, string naziv, string region)
         {
             Stanica s = new(id, naziv, region);

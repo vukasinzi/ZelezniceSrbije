@@ -7,8 +7,18 @@ using ZelezniceSrbije.Models;
 
 namespace ZelezniceSrbije.Tests
 {
+    /// <summary>
+    /// Pomoćna klasa za kreiranje i popunjavanje test baze u memoriji.
+    /// Koristi SQLite bazu za potrebe testiranja.
+    /// </summary>
     public static class TestBazaUMemoriji
     {
+        /// <summary>
+        /// Kreira novi kontekst baze podataka u memoriji.
+        /// </summary>
+        /// <returns>
+        /// Kontekst baze podataka i otvorena SQLite konekcija.
+        /// </returns>
         public static (VozAppContext context, SqliteConnection connection) KreirajContext()
         {
             var connection = new SqliteConnection("Data Source=:memory:");
@@ -22,6 +32,11 @@ namespace ZelezniceSrbije.Tests
             return (context, connection);
         }
 
+        /// <summary>
+        /// Popunjava test bazu osnovnim podacima.
+        /// Dodaje stanice, tipove vozova, vozove, linije, rasporede i korisnike.
+        /// </summary>
+        /// <param name="context">Kontekst test baze podataka.</param>
         public static async Task PopuniSvePodatkeAsync(VozAppContext context)
         {
             var datum = DateTime.Today;
