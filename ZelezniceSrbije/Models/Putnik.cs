@@ -10,6 +10,7 @@ namespace ZelezniceSrbije.Models
     {
         /// <summary>
         /// Broj telefona putnika.
+        /// Dozvoljena vrednost: ne sme biti prazan, sme sadržati samo cifre i može imati najviše 20 karaktera.
         /// </summary>
         public string Broj_telefona { get; set; }
 

@@ -8,6 +8,7 @@
     {
         /// <summary>
         /// Broj legitimacije konduktera.
+        /// Dozvoljena vrednost: ne sme biti prazan i može imati najviše 50 karaktera.
         /// </summary>
         public string Broj_legitimacije { get; set; }
 

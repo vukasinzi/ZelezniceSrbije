@@ -8,31 +8,37 @@ public class Raspored
 {
     /// <summary>
     /// Jedinstveni identifikator rasporeda.
+    /// Dozvoljena vrednost: 0 za novi raspored ili pozitivan broj za postojeći raspored.
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
     /// Vreme polaska voza.
+    /// Dozvoljena vrednost: mora biti uneto vreme polaska.
     /// </summary>
     public DateTime Vreme_polaska { get; set; }
 
     /// <summary>
     /// Identifikator linije.
+    /// Dozvoljena vrednost: mora biti veći od 0.
     /// </summary>
     public int Linija_id { get; set; }
 
     /// <summary>
     /// Identifikator voza.
+    /// Dozvoljena vrednost: mora biti veći od 0.
     /// </summary>
     public int Voz_id { get; set; }
 
     /// <summary>
     /// Linija koja pripada rasporedu.
+    /// Dozvoljena vrednost: linija povezana preko identifikatora Linija_id.
     /// </summary>
     public Linija? Linija { get; set; }
 
     /// <summary>
     /// Voz koji pripada rasporedu.
+    /// Dozvoljena vrednost: voz povezan preko identifikatora Voz_id.
     /// </summary>
     public Voz? Voz { get; set; }
 
