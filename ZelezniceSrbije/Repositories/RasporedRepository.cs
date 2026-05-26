@@ -22,10 +22,11 @@ namespace ZelezniceSrbije.Repositories
         }
 
         /// <inheritdoc/>
-        public async Task<List<RasporedDTO>> PretraziAsync(string polaziste, string odrediste, DateTime datum)
+          public async Task<List<RasporedDTO>> PretraziAsync(string polaziste, string odrediste, DateTime datum)
         {
             Stanica pol = await db.Stanica.FirstOrDefaultAsync(x => x.Naziv == polaziste);
             Stanica odr = await db.Stanica.FirstOrDefaultAsync(x => x.Naziv == odrediste);
+
             if (pol == null || odr == null)
                 return null;
 
@@ -58,10 +59,9 @@ namespace ZelezniceSrbije.Repositories
                 where slPol.Stanica_id == pol.Id
                       && slOdr.Stanica_id == odr.Id
                       && slPol.Redosled < slOdr.Redosled
-                      && r.Vreme_polaska.AddMinutes(slPol.Vreme_od_polaska) >=
-                      odKad //vazna ispravka, ne smem proveravati kad je voz krenuo, vec ako nije jos dosao na tu stanicu
-                      && r.Vreme_polaska <
-                      sutra //treba svakako da omogucim kupovinu karte, bez obzira na to dal je krenuo sa pocetne stanice ili ne. ona je nebitna
+                      && r.Vreme_polaska.AddMinutes(slPol.Vreme_od_polaska) >= odKad
+                      //vazna ispravka, ne smem proveravati kad je voz krenuo, vec ako nije jos dosao na tu stanicu
+                      && r.Vreme_polaska.AddMinutes(slPol.Vreme_od_polaska) < sutra
                 select new RasporedDTO
                 {
                     Id = r.Id,
@@ -70,11 +70,12 @@ namespace ZelezniceSrbije.Repositories
                     PolazakSaPol = r.Vreme_polaska.AddMinutes(slPol.Vreme_od_polaska),
                     DolazakNaOdr = r.Vreme_polaska.AddMinutes(slOdr.Vreme_od_polaska)
                 }
-            ).ToListAsync();
+            )
+            .OrderBy(x => x.PolazakSaPol)
+            .ToListAsync();
 
-            return await Task.FromResult(rezultat);
+            return rezultat;
         }
-
         /// <inheritdoc/>
         public async Task<Raspored> ProveriRaspored(int id)
         {

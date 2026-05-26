@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using ZelezniceSrbije.Models;
 
 namespace ZelezniceSrbije.Repositories
