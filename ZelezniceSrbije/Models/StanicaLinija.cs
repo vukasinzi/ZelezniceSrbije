@@ -4,7 +4,7 @@
     /// Predstavlja vezu između stanice i linije.
     /// Čuva redosled stanice na liniji i vreme od polaska.
     /// </summary>
-    public class StanicaLinija//StanicaLinija
+    public class StanicaLinija
     {
         /// <summary>
         /// Kreira novu vezu između stanice i linije.
@@ -55,5 +55,22 @@
         /// Linija koja pripada ovoj vezi.
         /// </summary>
         public Linija Linija { get; set; }
+
+        /// <summary>
+        /// Proverava da li je veza između stanice i linije validna.
+        /// </summary>
+        /// <returns>
+        /// True ako je veza validna, false ako nije.
+        /// </returns>
+        public bool JeValidan()
+        {
+            if (Vreme_od_polaska < 0 || Redosled <= 0)
+                return false;
+
+            if (Stanica_id <= 0 || Linija_id <= 0)
+                return false;
+
+            return true;
+        }
     }
 }

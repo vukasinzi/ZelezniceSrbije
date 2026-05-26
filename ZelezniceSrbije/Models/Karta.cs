@@ -109,15 +109,44 @@ public class Karta
         Cena = cena;
         Putnik_id = putnikId;
         Raspored_id = rasporedId;
-        Polaziste = polaziste;
-        Odrediste = odrediste;
-        Linija = linija;
-        Tip_voza = tipVoza;
+        Polaziste = polaziste?.Trim() ?? string.Empty;
+        Odrediste = odrediste?.Trim() ?? string.Empty;
+        Linija = linija?.Trim() ?? string.Empty;
+        Tip_voza = tipVoza?.Trim() ?? string.Empty;
         Vreme_polaska = polazak;
         Vreme_dolaska = dolazak;
         Trajanje_min = trajanje;
-        Kondukter = kondukter;
+        Kondukter = kondukter?.Trim();
         Qr_token = token;
         Ocitana = false;
+    }
+
+    /// <summary>
+    /// Proverava da li je karta validna.
+    /// </summary>
+    /// <returns>
+    /// True ako je karta validna, false ako nije.
+    /// </returns>
+    public bool JeValidan()
+    {
+        if (Cena <= 0 || Putnik_id <= 0 || Raspored_id <= 0)
+            return false;
+
+        if (string.IsNullOrWhiteSpace(Polaziste) || string.IsNullOrWhiteSpace(Odrediste))
+            return false;
+
+        if (string.IsNullOrWhiteSpace(Linija) || string.IsNullOrWhiteSpace(Tip_voza))
+            return false;
+
+        if (Trajanje_min <= 0)
+            return false;
+
+        if (Vreme_dolaska <= Vreme_polaska)
+            return false;
+
+        if (Qr_token == Guid.Empty)
+            return false;
+
+        return true;
     }
 }
