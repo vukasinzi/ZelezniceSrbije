@@ -35,6 +35,8 @@ public class KartaRepository : IKartaRepository
     /// <inheritdoc/>
     public async Task<Karta> KupiKartu(int putnik_id, int raspored_id, int polaziste_id, int odrediste_id)
     {
+        var sada = DateTime.Now;
+
         var podaci = await (
             from r in db.Raspored
             join v in db.Voz on r.Voz_id equals v.Id
@@ -48,6 +50,7 @@ public class KartaRepository : IKartaRepository
                   && pol.Stanica_id == polaziste_id
                   && odr.Stanica_id == odrediste_id
                   && pol.Redosled < odr.Redosled
+                  && r.Vreme_polaska.AddMinutes(pol.Vreme_od_polaska) >= sada
             select new
             {
                 CenaKarte = (decimal)((odr.Vreme_od_polaska - pol.Vreme_od_polaska) * l.Cena_po_minutu),
@@ -81,9 +84,9 @@ public class KartaRepository : IKartaRepository
 
         await db.Karta.AddAsync(x);
         await db.SaveChangesAsync();
+
         return x;
     }
-
     /// <inheritdoc/>
     public async Task<KartaDTO> VratiKartu(int karta_id, int putnik_id)
     {

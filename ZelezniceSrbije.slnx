@@ -1,4 +1,9 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".env" />
+    <File Path="compose.yaml" />
+    <File Path="ZelezniceSrbije\Dockerfile" />
+  </Folder>
   <Project Path="ZelezniceSrbije.Tests/ZelezniceSrbije.Tests.csproj" />
   <Project Path="ZelezniceSrbije/ZelezniceSrbije.csproj" />
 </Solution>
