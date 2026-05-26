@@ -4,6 +4,7 @@ using ZelezniceSrbije.Data;
 using ZelezniceSrbije.Repositories;
 using ZelezniceSrbije.Services;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews(options =>
@@ -15,8 +16,7 @@ builder.Services.AddAntiforgery(options =>
     options.HeaderName = "X-CSRF-TOKEN";
 });
 
-builder.Services.AddDbContext<VozAppContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<VozAppContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IKorisnikRepository, KorisnikRepository>();
 builder.Services.AddScoped<IKorisnikService, KorisnikService>();
@@ -46,7 +46,6 @@ builder.Services.AddAuthentication("Cookies")
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
