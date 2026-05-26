@@ -42,31 +42,37 @@ namespace ZelezniceSrbije.Models
 
         /// <summary>
         /// Jedinstveni identifikator voza.
+        /// Dozvoljena vrednost: 0 za novi voz ili pozitivan broj za postojeći voz.
         /// </summary>
         public int Id { get; set; }
 
         /// <summary>
         /// Naziv voza.
+        /// Dozvoljena vrednost: ne sme biti prazan i može imati najviše 100 karaktera.
         /// </summary>
         public string Naziv { get; set; }
 
         /// <summary>
         /// Serijski broj voza.
+        /// Dozvoljena vrednost: ne sme biti prazan i može imati najviše 50 karaktera.
         /// </summary>
         public string Serijski_broj { get; set; }
 
         /// <summary>
         /// Označava da li je voz aktivan.
+        /// Dozvoljena vrednost: true ako je voz aktivan, false ako nije.
         /// </summary>
         public bool Aktivan { get; set; }
 
         /// <summary>
         /// Identifikator tipa voza.
+        /// Dozvoljena vrednost: mora biti veći od 0.
         /// </summary>
         public int Tip_voza_id { get; set; }
 
         /// <summary>
         /// Tip voza kojem voz pripada.
+        /// Dozvoljena vrednost: tip voza povezan preko identifikatora Tip_voza_id.
         /// </summary>
         [ForeignKey(nameof(Tip_voza_id))]
         public TipVoza TipVoza { get; set; }

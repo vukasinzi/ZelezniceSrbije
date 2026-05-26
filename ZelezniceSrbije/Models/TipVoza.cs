@@ -32,16 +32,19 @@
 
         /// <summary>
         /// Jedinstveni identifikator tipa voza.
+        /// Dozvoljena vrednost: 0 za novi tip voza ili pozitivan broj za postojeći tip voza.
         /// </summary>
         public int Id { get; set; }
 
         /// <summary>
         /// Naziv tipa voza.
+        /// Dozvoljena vrednost: ne sme biti prazan i može imati najviše 100 karaktera.
         /// </summary>
         public string Naziv { get; set; }
 
         /// <summary>
         /// Opis tipa voza.
+        /// Dozvoljena vrednost: ne sme biti prazan i može imati najviše 500 karaktera.
         /// </summary>
         public string Opis { get; set; }
 
@@ -56,7 +59,7 @@
             if (string.IsNullOrWhiteSpace(Naziv) || Naziv.Length > 100)
                 return false;
 
-            if (string.IsNullOrWhiteSpace(Opis) || Opis.Length > 500) 
+            if (string.IsNullOrWhiteSpace(Opis) || Opis.Length > 500)
                 return false;
 
             return true;

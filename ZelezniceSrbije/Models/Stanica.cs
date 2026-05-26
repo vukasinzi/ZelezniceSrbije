@@ -15,8 +15,8 @@
         public Stanica(int id, string naziv, string region)
         {
             Id = id;
-            Naziv = naziv?.Trim(); 
-            Region = region?.Trim(); 
+            Naziv = naziv?.Trim();
+            Region = region?.Trim();
         }
 
         /// <summary>
@@ -25,7 +25,7 @@
         /// <param name="naziv">Naziv stanice.</param>
         /// <param name="region">Region kojem stanica pripada.</param>
         public Stanica(string naziv, string region)
-        { 
+        {
             Naziv = naziv?.Trim();
             Region = region?.Trim();
         }
@@ -46,18 +46,20 @@
 
         /// <summary>
         /// Jedinstveni identifikator stanice.
+        /// Dozvoljena vrednost: 0 za novu stanicu ili pozitivan broj za postojeću stanicu.
         /// </summary>
         public int Id { get; set; }
 
         /// <summary>
         /// Naziv stanice.
+        /// Dozvoljena vrednost: ne sme biti prazan.
         /// </summary>
         public string Naziv { get; set; }
 
         /// <summary>
         /// Region kojem stanica pripada.
+        /// Dozvoljena vrednost: ne sme biti prazan.
         /// </summary>
         public string Region { get; set; }
-
     }
 }

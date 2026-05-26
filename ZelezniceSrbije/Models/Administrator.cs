@@ -8,6 +8,7 @@
     {
         /// <summary>
         /// Datum zaposlenja administratora.
+        /// Dozvoljena vrednost: mora biti unet i ne sme biti datum u budućnosti.
         /// </summary>
         public DateTime? Datum_zaposlenja { get; set; }
 

@@ -8,26 +8,31 @@
     {
         /// <summary>
         /// Jedinstveni identifikator korisnika.
+        /// Dozvoljena vrednost: 0 za novog korisnika ili pozitivan broj za postojećeg korisnika.
         /// </summary>
         public int Id { get; set; }
 
         /// <summary>
         /// Ime korisnika.
+        /// Dozvoljena vrednost: ne sme biti prazno i može imati najviše 20 karaktera.
         /// </summary>
         public string Ime { get; set; }
 
         /// <summary>
         /// Prezime korisnika.
+        /// Dozvoljena vrednost: ne sme biti prazno i može imati najviše 20 karaktera.
         /// </summary>
         public string Prezime { get; set; }
 
         /// <summary>
         /// Email adresa korisnika.
+        /// Dozvoljena vrednost: ne sme biti prazna, mora sadržati znak @ i može imati najviše 150 karaktera.
         /// </summary>
         public string Email { get; set; }
 
         /// <summary>
         /// Lozinka korisnika.
+        /// Dozvoljena vrednost: ne sme biti prazna i mora imati najmanje 6 karaktera.
         /// </summary>
         public string Lozinka { get; set; }
 
