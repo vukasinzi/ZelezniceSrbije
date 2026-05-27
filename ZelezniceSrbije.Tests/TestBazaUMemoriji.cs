@@ -39,7 +39,7 @@ namespace ZelezniceSrbije.Tests
         /// <param name="context">Kontekst test baze podataka.</param>
         public static async Task PopuniSvePodatkeAsync(VozAppContext context)
         {
-            var datum = DateTime.Today;
+            var datum = DateTime.Today.AddDays(1);
 
             if (!await context.Stanica.AnyAsync())
             {

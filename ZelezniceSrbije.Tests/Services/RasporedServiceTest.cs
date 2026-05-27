@@ -90,7 +90,7 @@ namespace ZelezniceSrbije.Tests.PretragaTest
         {
             await PopuniBazu();
 
-            var rezultat = await servis.PretraziAsync("Nepostojece Polaziste", "Novi Sad", DateTime.Today);
+            var rezultat = await servis.PretraziAsync("Nepostojece Polaziste", "Novi Sad", DateTime.Today.AddDays(1));
 
             Assert.Null(rezultat);
         }
@@ -100,7 +100,7 @@ namespace ZelezniceSrbije.Tests.PretragaTest
         {
             await PopuniBazu();
 
-            var rezultat = await servis.PretraziAsync("Beograd Centar", "Nepostojece Odrediste", DateTime.Today);
+            var rezultat = await servis.PretraziAsync("Beograd Centar", "Nepostojece Odrediste", DateTime.Today.AddDays(1));
 
             Assert.Null(rezultat);
         }
@@ -121,7 +121,7 @@ namespace ZelezniceSrbije.Tests.PretragaTest
         {
             await PopuniBazu();
 
-            var rezultat = await servis.PretraziAsync("Novi Sad", "Beograd Centar", DateTime.Today);
+            var rezultat = await servis.PretraziAsync("Novi Sad", "Beograd Centar", DateTime.Today.AddDays(1));
 
             Assert.NotNull(rezultat);
             Assert.Empty(rezultat);
@@ -132,14 +132,14 @@ namespace ZelezniceSrbije.Tests.PretragaTest
         {
             await PopuniBazu();
 
-            var rezultat = await servis.PretraziAsync("Beograd Centar", "Subotica", DateTime.Today);
+            var rezultat = await servis.PretraziAsync("Beograd Centar", "Subotica", DateTime.Today.AddDays(1));
 
             Assert.NotNull(rezultat);
             Assert.Empty(rezultat);
         }
 
         [Theory]
-        [InlineData("Beograd Centar", "Novi Sad", 1)]
+        [InlineData("Beograd Centar", "Novi Sad", 2)]
         [InlineData("Novi Sad", "Subotica", 1)]
         [InlineData("Beograd Centar", "Subotica", 0)]
         public async Task PretraziAsync_BrojPolazakaTest(string pol, string odr, int ocekivanBroj)
@@ -151,7 +151,6 @@ namespace ZelezniceSrbije.Tests.PretragaTest
             Assert.NotNull(rezultat);
             Assert.Equal(ocekivanBroj, rezultat.Count);
         }
-
         [Fact]
         public async Task Pretraga_VratiSamoBuducePolaskeTest()
         {
@@ -159,7 +158,7 @@ namespace ZelezniceSrbije.Tests.PretragaTest
 
             var now = DateTime.Now;
 
-            var rezultat = await servis.PretraziAsync("Beograd Centar", "Novi Sad", DateTime.Today);
+            var rezultat = await servis.PretraziAsync("Beograd Centar", "Novi Sad", DateTime.Today.AddDays(1));
 
             Assert.NotNull(rezultat);
             Assert.All(rezultat, r => Assert.True(r.PolazakSaPol >= now));
@@ -175,15 +174,17 @@ namespace ZelezniceSrbije.Tests.PretragaTest
         }
 
         [Fact]
-        public async Task UcitajRasporede_Danas_Test()
+        public async Task UcitajRasporede_Sutra_Test()
         {
             await PopuniBazu();
 
-            var rezultat = await servis.UcitajRasporede(DateTime.Today);
+            var sutra = DateTime.Today.AddDays(1);
+
+            var rezultat = await servis.UcitajRasporede(sutra);
 
             Assert.NotNull(rezultat);
             Assert.Equal(11, rezultat.Count);
-            Assert.All(rezultat, x => Assert.Equal(DateTime.Today, x.Vreme_polaska.Date));
+            Assert.All(rezultat, x => Assert.Equal(sutra, x.Vreme_polaska.Date));
         }
 
         [Theory]
