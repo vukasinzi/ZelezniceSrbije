@@ -2,7 +2,7 @@
 
 /// <summary>
 /// Predstavlja raspored polaska voza.
-/// Raspored sadrži vreme polaska, liniju i voz.
+/// Raspored sadrži vreme polaska, liniju, voz i opcioni šablon rasporeda.
 /// </summary>
 public class Raspored
 {
@@ -31,16 +31,22 @@ public class Raspored
     public int Voz_id { get; set; }
 
     /// <summary>
+    /// Identifikator šablona rasporeda.
+    /// Dozvoljena vrednost: null ako raspored nije generisan iz šablona ili pozitivan broj ako jeste.
+    /// </summary>
+    public int? Sablon_id { get; set; }
+
+    /// <summary>
     /// Linija koja pripada rasporedu.
     /// Dozvoljena vrednost: linija povezana preko identifikatora Linija_id.
     /// </summary>
-    public Linija? Linija { get; set; }
+    public Linija Linija { get; set; }
 
     /// <summary>
     /// Voz koji pripada rasporedu.
     /// Dozvoljena vrednost: voz povezan preko identifikatora Voz_id.
     /// </summary>
-    public Voz? Voz { get; set; }
+    public Voz Voz { get; set; }
 
     /// <summary>
     /// Kreira prazan raspored.
@@ -53,11 +59,13 @@ public class Raspored
     /// <param name="vreme_polaska">Vreme polaska voza.</param>
     /// <param name="linija_id">Identifikator linije.</param>
     /// <param name="voz_id">Identifikator voza.</param>
-    public Raspored(DateTime vreme_polaska, int linija_id, int voz_id)
+    /// <param name="sablon_id">Identifikator šablona rasporeda.</param>
+    public Raspored(DateTime vreme_polaska, int linija_id, int voz_id, int? sablon_id = null)
     {
         Vreme_polaska = vreme_polaska;
         Linija_id = linija_id;
         Voz_id = voz_id;
+        Sablon_id = sablon_id;
     }
 
     /// <summary>
@@ -67,12 +75,14 @@ public class Raspored
     /// <param name="vreme_polaska">Vreme polaska voza.</param>
     /// <param name="linija_id">Identifikator linije.</param>
     /// <param name="voz_id">Identifikator voza.</param>
-    public Raspored(int id, DateTime vreme_polaska, int linija_id, int voz_id)
+    /// <param name="sablon_id">Identifikator šablona rasporeda.</param>
+    public Raspored(int id, DateTime vreme_polaska, int linija_id, int voz_id, int? sablon_id = null)
     {
         Id = id;
         Vreme_polaska = vreme_polaska;
         Linija_id = linija_id;
         Voz_id = voz_id;
+        Sablon_id = sablon_id;
     }
 
     /// <summary>
@@ -87,6 +97,9 @@ public class Raspored
             return false;
 
         if (Linija_id <= 0 || Voz_id <= 0)
+            return false;
+
+        if (Sablon_id != null && Sablon_id <= 0)
             return false;
 
         return true;

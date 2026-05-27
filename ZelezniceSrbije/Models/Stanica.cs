@@ -30,6 +30,8 @@
             Region = region?.Trim();
         }
 
+        
+
         /// <summary>
         /// Proverava da li je stanica validna.
         /// </summary>
