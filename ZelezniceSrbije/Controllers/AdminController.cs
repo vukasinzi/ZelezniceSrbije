@@ -364,13 +364,13 @@ namespace ZelezniceSrbije.Controllers
         }
 
         /// <summary>
-        /// Dodaje novu liniju.
+        /// Dodaje novu liniju sa stanicama, redosledom i vremenima od polaska.
         /// </summary>
         /// <param name="naziv">Naziv linije.</param>
         /// <param name="cena_po_minutu">Cena putovanja po minutu.</param>
         /// <param name="stanicaIds">Identifikatori stanica na liniji.</param>
-        /// <param name="redosled">Redosled stanica na liniji.</param>
-        /// <param name="vreme_od_polaska">Vremena dolaska do stanica od polaska.</param>
+        /// <param name="redosled">Redosled stanica na liniji, u istom broju kao stanice.</param>
+        /// <param name="vreme_od_polaska">Vremena dolaska do stanica od polaska, u istom broju kao stanice.</param>
         /// <returns>
         /// Ok ako je linija uspešno dodata, inače BadRequest.
         /// </returns>

@@ -9,16 +9,11 @@ namespace ZelezniceSrbije.Repositories
     public interface ILinijeRepository
     {
         /// <summary>
-        /// Dodaje novu liniju.
+        /// Dodaje novu liniju zajedno sa njenim stajalištima.
         /// </summary>
         /// <param name="l">Linija koja se dodaje.</param>
-        Task DodajLiniju(Linija l);
-
-        /// <summary>
-        /// Dodaje stajališta za liniju.
-        /// </summary>
-        /// <param name="fejk">Lista stajališta za liniju.</param>
-        Task DodajStajalistaZaLiniju(List<StanicaLinija> fejk);
+        /// <param name="stajalista">Lista stajališta koja pripada liniji.</param>
+        Task DodajLinijuSaStajalistima(Linija l, List<StanicaLinija> stajalista);
 
         /// <summary>
         /// Dodaje novu stanicu.

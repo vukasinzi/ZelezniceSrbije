@@ -89,6 +89,50 @@ namespace ZelezniceSrbije.Tests.LinijeTest
         }
 
         [Fact]
+        public async Task DodajLiniju_RedosledNijeIsteDuzine_Test()
+        {
+            await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
+            var rezultat = await _service.DodajLiniju("Uzice - Subotica", 10, new List<int> { 6, 1, 2, 3 }, new List<int> { 1, 2, 3 }, new List<int> { 0, 90, 180, 360 });
+            Assert.False(rezultat);
+            var linija = await context.Linija.FirstOrDefaultAsync(x => x.Naziv == "Uzice - Subotica");
+            Assert.Null(linija);
+        }
+
+        [Fact]
+        public async Task DodajLiniju_VremeNijeIsteDuzine_Test()
+        {
+            await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
+            var rezultat = await _service.DodajLiniju("Uzice - Subotica", 10, new List<int> { 6, 1, 2, 3 }, new List<int> { 1, 2, 3, 4 }, new List<int> { 0, 90, 180 });
+            Assert.False(rezultat);
+            var linija = await context.Linija.FirstOrDefaultAsync(x => x.Naziv == "Uzice - Subotica");
+            Assert.Null(linija);
+        }
+
+        [Fact]
+        public async Task DodajLiniju_NegativanId_Test()
+        {
+            await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
+            var rezultat = await _service.DodajLiniju("Uzice - Subotica", 10, new List<int> { -1, 1, 2, 3 }, new List<int> { 1, 2, 3, 4 }, new List<int> { 0, 90, 180, 360 });
+            Assert.False(rezultat);
+        }
+
+        [Fact]
+        public async Task DodajLiniju_NegativanRedosled_Test()
+        {
+            await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
+            var rezultat = await _service.DodajLiniju("Uzice - Subotica", 10, new List<int> { 6, 1, 2, 3 }, new List<int> { -1, 2, 3, 4 }, new List<int> { 0, 90, 180, 360 });
+            Assert.False(rezultat);
+        }
+
+        [Fact]
+        public async Task DodajLiniju_NegativnoVremePolaska_Test()
+        {
+            await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
+            var rezultat = await _service.DodajLiniju("Uzice - Subotica", 10, new List<int> { 6, 1, 2, 3 }, new List<int> { 1, 2, 3, 4 }, new List<int> { -1, 90, 180, 360 });
+            Assert.False(rezultat);
+        }
+
+        [Fact]
         public async Task DodajLiniju_LinijaVecPostoji_Test()
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
@@ -124,13 +168,18 @@ namespace ZelezniceSrbije.Tests.LinijeTest
         }
 
         [Theory]
-        [InlineData(1, true)]  
+        [InlineData(7, true)]  
         [InlineData(0, false)] 
         [InlineData(-1, false)] 
         [InlineData(321213, false)] 
         public async Task UkloniLiniju_Test(int id, bool trebaDaUspe)
         {
             await TestBazaUMemoriji.PopuniSvePodatkeAsync(context);
+            if (trebaDaUspe)
+            {
+                context.Linija.Add(new Linija(id, "Test Linija", 10));
+                await context.SaveChangesAsync();
+            }
 
             var rezultat = await _service.UkloniLiniju(id);
 

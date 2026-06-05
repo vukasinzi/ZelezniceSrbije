@@ -22,19 +22,13 @@ namespace ZelezniceSrbije.Repositories
         }
 
         /// <inheritdoc/>
-        public async Task DodajLiniju(Linija l)
+        public async Task DodajLinijuSaStajalistima(Linija l, List<StanicaLinija> stajalista)
         {
-
             await db.Linija.AddAsync(l);
+            foreach (var stajaliste in stajalista)
+                stajaliste.Linija = l;
+            await db.StanicaLinija.AddRangeAsync(stajalista);
             await db.SaveChangesAsync();
-        }
-
-        /// <inheritdoc/>
-        public async Task DodajStajalistaZaLiniju(List<StanicaLinija> fejk)
-        {
-            await db.StanicaLinija.AddRangeAsync(fejk);
-            await db.SaveChangesAsync();
-
         }
 
         /// <inheritdoc/>

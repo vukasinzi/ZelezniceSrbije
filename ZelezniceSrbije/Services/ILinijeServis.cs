@@ -9,15 +9,15 @@ namespace ZelezniceSrbije.Services
     public interface ILinijeServis
     {
         /// <summary>
-        /// Dodaje novu liniju sa zadatim stanicama.
+        /// Dodaje novu liniju sa zadatim stanicama, redosledom i vremenima od polaska.
         /// </summary>
         /// <param name="naziv">Naziv linije.</param>
         /// <param name="cena_po_minutu">Cena putovanja po minutu.</param>
         /// <param name="stanicaIds">Identifikatori stanica na liniji.</param>
-        /// <param name="redosled">Redosled stanica na liniji.</param>
-        /// <param name="vreme_od_polaska">Vremena dolaska do stanica od polaska.</param>
+        /// <param name="redosled">Redosled stanica na liniji, u istom broju kao stanice.</param>
+        /// <param name="vreme_od_polaska">Vremena dolaska do stanica od polaska, u istom broju kao stanice.</param>
         /// <returns>
-        /// True ako je linija uspešno dodata, false ako nije.
+        /// True ako je linija uspešno dodata, false ako podaci nisu validni ili linija već postoji.
         /// </returns>
         Task<bool> DodajLiniju(string naziv, int cena_po_minutu, List<int> stanicaIds, List<int> redosled, List<int> vreme_od_polaska);
 

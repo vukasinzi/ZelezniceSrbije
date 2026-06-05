@@ -10,11 +10,26 @@ namespace ZelezniceSrbije.Data
     public class VozAppContext : DbContext
     {
         /// <summary>
+        /// Označava da li se kontekst koristi u testovima.
+        /// </summary>
+        private readonly bool test;
+
+        /// <summary>
         /// Kreira novi kontekst baze podataka.
         /// </summary>
         /// <param name="opcije">Opcije za podešavanje konteksta baze.</param>
-        public VozAppContext(DbContextOptions<VozAppContext> opcije) : base(opcije)
+        public VozAppContext(DbContextOptions<VozAppContext> opcije) : this(opcije, false)
         {
+        }
+
+        /// <summary>
+        /// Kreira novi kontekst baze podataka.
+        /// </summary>
+        /// <param name="opcije">Opcije za podešavanje konteksta baze.</param>
+        /// <param name="test">Označava da li se kontekst koristi u testovima.</param>
+        public VozAppContext(DbContextOptions<VozAppContext> opcije, bool test) : base(opcije)
+        {
+            this.test = test;
         }
 
         /// <summary>
@@ -265,7 +280,8 @@ namespace ZelezniceSrbije.Data
                     .HasForeignKey(x => x.Voz_id)
                     .OnDelete(DeleteBehavior.NoAction);
             });
-            DodajSeedPodatke(modelBuilder);
+            if (!test)
+                DodajSeedPodatke(modelBuilder);
         }
 
 

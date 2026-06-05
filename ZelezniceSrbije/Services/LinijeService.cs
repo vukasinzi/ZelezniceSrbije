@@ -26,21 +26,24 @@ namespace ZelezniceSrbije.Services
             Linija l = new(naziv, cena_po_minutu);
             if (!l.JeValidan())
                 return false;
-            if (stanicaIds == null || stanicaIds.Count <= 1)
+            if (stanicaIds == null|| redosled == null || vreme_od_polaska == null)
+                return false;
+            if (stanicaIds.Count <= 1)
+                return false;
+            if (stanicaIds.Count != redosled.Count || stanicaIds.Count != vreme_od_polaska.Count)
                 return false;
 
             var provera = await repo.ProveriLiniju(naziv);
             if (provera == null)
             {
-                List<StanicaLinija> fejk = new();
-                await repo.DodajLiniju(l);
+                List<StanicaLinija> stajalista = new();
                 for(int i =0;i<stanicaIds.Count;i++)
                 {
-                    StanicaLinija sl = new(vreme_od_polaska[i], redosled[i], stanicaIds[i], l.Id);
-                    fejk.Add(sl);
+                    if (stanicaIds[i] <= 0 || redosled[i] <= 0 || vreme_od_polaska[i] < 0)
+                        return false;
+                    stajalista.Add(new StanicaLinija(vreme_od_polaska[i], redosled[i], stanicaIds[i], 0));
                 }
-                await repo.DodajStajalistaZaLiniju(fejk);
-                fejk.Clear();
+                await repo.DodajLinijuSaStajalistima(l, stajalista);
                 return true;
             }
             return false;

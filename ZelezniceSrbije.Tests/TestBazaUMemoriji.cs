@@ -26,7 +26,7 @@ namespace ZelezniceSrbije.Tests
 
             var opcije = new DbContextOptionsBuilder<VozAppContext>().UseSqlite(connection).Options;
 
-            var context = new VozAppContext(opcije);
+            var context = new VozAppContext(opcije, true);
             context.Database.EnsureCreated();
 
             return (context, connection);

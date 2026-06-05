@@ -1,0 +1,17 @@
+.git/
+.idea/
+.vs/
+.vscode/
+
+bin/
+obj/
+
+.env
+
+**/bin/
+**/obj/
+
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
