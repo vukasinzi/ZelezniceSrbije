@@ -49,7 +49,7 @@ namespace ZelezniceSrbije.Controllers
         /// <param name="email">Email korisnika.</param>
         /// <param name="lozinka">Lozinka korisnika.</param>
         /// <returns>
-        /// Preusmerava na početnu stranicu ako je prijava uspešna, inače vraća BadRequest.
+        /// Preusmerava na početnu stranicu ako je prijava uspešna, inače vraća formu sa greškom.
         /// </returns>
         [HttpPost]
         public async Task<IActionResult> Login(string email, string lozinka)
@@ -57,7 +57,8 @@ namespace ZelezniceSrbije.Controllers
             var korisnik = await servis.LogInAsync(email, lozinka);
             if (korisnik == null)
             {
-                return BadRequest("Pogresna lozinka ili mejl");
+                ModelState.AddModelError(string.Empty, "Pogrešna lozinka ili mejl");
+                return View("Login");
             }
 
             var rola = korisnik.GetType().Name;
@@ -103,7 +104,7 @@ namespace ZelezniceSrbije.Controllers
         /// <param name="broj_telefona">Broj telefona putnika.</param>
         /// <param name="lozinka">Lozinka putnika.</param>
         /// <returns>
-        /// Preusmerava na početnu stranicu ako je registracija uspešna, inače vraća BadRequest.
+        /// Preusmerava na početnu stranicu ako je registracija uspešna, inače vraća formu sa greškom.
         /// </returns>
         [HttpPost]
         public async Task<IActionResult> Registracija(string ime, string prezime, string email, string broj_telefona, string lozinka)
@@ -113,7 +114,8 @@ namespace ZelezniceSrbije.Controllers
             var korisnik = await servis.RegistrujAsync(p);
             if (korisnik == null)
             {
-                return BadRequest("Mejl je zauzet");
+                ModelState.AddModelError(string.Empty, "Podaci nisu validni ili je mejl zauzet");
+                return View(p);
             }
 
             var rola = korisnik.GetType().Name;
